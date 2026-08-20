@@ -7,7 +7,7 @@ import { honorBoardService, type HonorBoardDetailsResult } from '../../../core/s
 import { settingsRepository } from '../../../core/repositories/settings.repository';
 import { avatarAssetService } from '../../../core/services/avatar-asset.service';
 import type { GlobalAvatarSystemSettings } from '../../../core/types/avatar-theme.types';
-import { DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS } from '../../../core/services/avatar-theme-registry';
+import { avatarThemeRegistry, DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS } from '../../../core/services/avatar-theme-registry';
 import { formatDateVietnamese } from '../../../shared/utilities/date';
 import { TopRankPodium } from './components/TopRankPodium';
 import { HonorTitleCard } from './components/HonorTitleCard';
@@ -44,7 +44,7 @@ export const HonorBoardDetailPage: React.FC = () => {
       ]);
       setDetails(data);
 
-      const activeSysSettings = settings.avatarSystemSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
+      const activeSysSettings = avatarThemeRegistry.resolveGlobalSettings(settings);
       setGlobalAvatarSettings(activeSysSettings);
 
       const uploadedIds = activeSysSettings.levels

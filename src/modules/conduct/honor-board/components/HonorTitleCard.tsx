@@ -93,7 +93,9 @@ export const HonorTitleCard: React.FC<HonorTitleCardProps> = ({
             <div className="flex items-center gap-2.5 min-w-0">
               <StudentAvatar
                 student={rec.student}
-                score={rec.pointsAtAward ?? rec.metricValue}
+                score={rec.pointsAtAward}
+                rankLevelOrOrder={rec.rankLevelAtAward}
+                preferRankAvatar={true}
                 globalActiveThemeId={globalActiveThemeId}
                 globalSettings={globalSettings}
                 uploadedAssetUrls={uploadedAssetUrls}

@@ -81,7 +81,9 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
           <div className="relative">
             <StudentAvatar
               student={recipient.student}
-              score={recipient.pointsAtAward ?? recipient.metricValue}
+              score={recipient.pointsAtAward}
+              rankLevelOrOrder={recipient.rankLevelAtAward}
+              preferRankAvatar={true}
               globalActiveThemeId={globalActiveThemeId}
               globalSettings={globalSettings}
               uploadedAssetUrls={uploadedAssetUrls}
@@ -187,7 +189,9 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
                 </span>
                 <StudentAvatar
                   student={item!.student}
-                  score={item!.pointsAtAward ?? item!.metricValue}
+                  score={item!.pointsAtAward}
+                  rankLevelOrOrder={item!.rankLevelAtAward}
+                  preferRankAvatar={true}
                   globalActiveThemeId={globalActiveThemeId}
                   globalSettings={globalSettings}
                   uploadedAssetUrls={uploadedAssetUrls}

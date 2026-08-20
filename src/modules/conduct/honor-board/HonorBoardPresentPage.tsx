@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { honorBoardService, type HonorBoardDetailsResult } from '../../../core/services/honor-board.service';
 import { settingsRepository } from '../../../core/repositories/settings.repository';
 import { avatarAssetService } from '../../../core/services/avatar-asset.service';
-import { DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS } from '../../../core/services/avatar-theme-registry';
+import { avatarThemeRegistry, DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS } from '../../../core/services/avatar-theme-registry';
 import type { GlobalAvatarSystemSettings } from '../../../core/types/avatar-theme.types';
 import { StudentAvatar } from '../../../shared/components/StudentAvatar';
 import { formatDateVietnamese } from '../../../shared/utilities/date';
@@ -38,7 +38,7 @@ export const HonorBoardPresentPage: React.FC = () => {
       ]);
       setDetails(data);
 
-      const activeSysSettings = settings.avatarSystemSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
+      const activeSysSettings = avatarThemeRegistry.resolveGlobalSettings(settings);
       setGlobalAvatarSettings(activeSysSettings);
 
       const uploadedIds = activeSysSettings.levels
@@ -213,7 +213,9 @@ export const HonorBoardPresentPage: React.FC = () => {
                     <div className="relative mb-3">
                       <StudentAvatar
                         student={rec.student}
-                        score={rec.pointsAtAward ?? rec.metricValue}
+                        score={rec.pointsAtAward}
+                        rankLevelOrOrder={rec.rankLevelAtAward}
+                        preferRankAvatar={true}
                         globalActiveThemeId={globalAvatarSettings.presetThemeId}
                         globalSettings={globalAvatarSettings}
                         uploadedAssetUrls={uploadedAssetUrls}
@@ -256,7 +258,9 @@ export const HonorBoardPresentPage: React.FC = () => {
                   <div className="flex justify-center mb-2">
                     <StudentAvatar
                       student={rec.student}
-                      score={rec.pointsAtAward ?? rec.metricValue}
+                      score={rec.pointsAtAward}
+                      rankLevelOrOrder={rec.rankLevelAtAward}
+                      preferRankAvatar={true}
                       globalActiveThemeId={globalAvatarSettings.presetThemeId}
                       globalSettings={globalAvatarSettings}
                       uploadedAssetUrls={uploadedAssetUrls}

@@ -24,6 +24,7 @@ export interface StudentAvatarProps {
   rankLevelOrOrder?: number | null;
   customAvatar?: string | null;
   defaultAvatarKey?: string | null;
+  preferRankAvatar?: boolean;
   name?: string;
   size?: StudentAvatarSize;
   shape?: 'circle' | 'square' | 'rounded';
@@ -63,6 +64,7 @@ export const StudentAvatar: React.FC<StudentAvatarProps> = ({
   rankLevelOrOrder,
   customAvatar,
   defaultAvatarKey,
+  preferRankAvatar,
   name,
   size = 'md',
   shape = 'circle',
@@ -91,6 +93,7 @@ export const StudentAvatar: React.FC<StudentAvatarProps> = ({
     score,
     avatarLevel,
     rankLevelOrOrder,
+    preferRankAvatar,
   });
 
   const avatarSrc = resolved.assetUrl;

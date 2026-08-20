@@ -8,7 +8,7 @@ import type {
   ResolvedStudentAvatar,
   StudentAvatarPresentation,
 } from '../types/avatar-theme.types';
-import type { Student } from '../database/types';
+import type { Student, UserSettings } from '../database/types';
 import { avatarCatalogService } from './avatar-catalog.service';
 import { avatarCardThemeService, DEFAULT_5_LEVEL_CARD_PALETTE } from './avatar-card-theme.service';
 
@@ -482,6 +482,24 @@ export class AvatarThemeRegistry {
   }
 
   /**
+   * Chuẩn hóa nạp GlobalAvatarSystemSettings từ UserSettings
+   */
+  resolveGlobalSettings(settings?: UserSettings | null): GlobalAvatarSystemSettings {
+    if (settings?.avatarSystemSettings && settings.avatarSystemSettings.levels?.length === 5) {
+      return settings.avatarSystemSettings;
+    }
+    if (settings?.activeAvatarThemeId) {
+      const presetLevels = this.getPresetThemeLevelDefinitions(settings.activeAvatarThemeId);
+      return {
+        ...DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS,
+        presetThemeId: settings.activeAvatarThemeId,
+        levels: presetLevels,
+      };
+    }
+    return DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
+  }
+
+  /**
    * Helper ViewModel Resolver (Unified & Synchronized with Settings)
    */
   resolveStudentAvatarViewModel(options: {
@@ -495,16 +513,31 @@ export class AvatarThemeRegistry {
     score?: number | null;
     avatarLevel?: AvatarProgressLevel | null;
     rankLevelOrOrder?: number | null;
+    preferRankAvatar?: boolean;
   }): ResolvedStudentAvatar {
-    // 1. Explicit custom portrait photo (base64 / URL)
-    if (options.customAvatar && options.customAvatar.trim().length > 0) {
+    const settings = options.globalSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
+    const activeThemeId = options.globalActiveThemeId || settings.presetThemeId || options.avatarThemeId || DEFAULT_AVATAR_THEME_ID;
+    const theme = this.getThemeById(activeThemeId) || this.themes.get(DEFAULT_AVATAR_THEME_ID)!;
+
+    // Check if customAvatar is an actual photo (Base64 data URI, blob, or web URL)
+    const isRealCustomPhoto =
+      typeof options.customAvatar === 'string' &&
+      options.customAvatar.trim().length > 0 &&
+      (options.customAvatar.startsWith('data:image/') ||
+        options.customAvatar.startsWith('blob:') ||
+        options.customAvatar.startsWith('http://') ||
+        options.customAvatar.startsWith('https://') ||
+        options.customAvatar.startsWith('/'));
+
+    // 1. Explicit custom portrait photo (base64 / URL), unless preferRankAvatar is requested
+    if (!options.preferRankAvatar && isRealCustomPhoto) {
       return {
         themeId: 'custom',
         themeName: 'Tùy chỉnh',
         level: 1,
         stageName: 'Tùy chỉnh',
         assetKey: 'custom',
-        assetUrl: options.customAvatar,
+        assetUrl: options.customAvatar!,
         altText: 'Avatar tùy chỉnh',
         isFallback: false,
         isLegacy: true,
@@ -512,16 +545,14 @@ export class AvatarThemeRegistry {
     }
 
     // 2. 5-Level Avatar System (Central Theme & Progression)
-    const settings = options.globalSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
-    const activeThemeId = options.globalActiveThemeId || settings.presetThemeId || options.avatarThemeId || DEFAULT_AVATAR_THEME_ID;
-    const theme = this.getThemeById(activeThemeId) || this.themes.get(DEFAULT_AVATAR_THEME_ID)!;
-
     let targetLevel: AvatarProgressLevel = 1;
     if (options.avatarLevel && options.avatarLevel >= 1 && options.avatarLevel <= 5) {
       targetLevel = options.avatarLevel;
     } else if (options.score !== undefined && options.score !== null) {
       const thresholds = settings.levels ? settings.levels.map((l) => ({ level: l.level, minPoints: l.minPoints })) : DEFAULT_AVATAR_LEVEL_THRESHOLDS;
       targetLevel = resolveAvatarProgressLevelFromScore(options.score, thresholds);
+    } else if (options.rankLevelOrOrder) {
+      targetLevel = resolveAvatarProgressLevel(options.rankLevelOrOrder);
     }
 
     const levelDef = settings.levels?.find((l) => l.level === targetLevel);
@@ -558,7 +589,22 @@ export class AvatarThemeRegistry {
       };
     }
 
-    // 3. Fallback to explicit avatarKey if 5-level did not resolve
+    // 3. Fallback to explicit custom photo if not previously returned
+    if (isRealCustomPhoto) {
+      return {
+        themeId: 'custom',
+        themeName: 'Tùy chỉnh',
+        level: 1,
+        stageName: 'Tùy chỉnh',
+        assetKey: 'custom',
+        assetUrl: options.customAvatar!,
+        altText: 'Avatar tùy chỉnh',
+        isFallback: false,
+        isLegacy: true,
+      };
+    }
+
+    // 4. Fallback to explicit avatarKey if 5-level did not resolve
     if (options.avatarKey && options.avatarKey.trim().length > 0) {
       const catalogItem = avatarCatalogService.getItemByKey(options.avatarKey);
       if (catalogItem) {
@@ -576,7 +622,7 @@ export class AvatarThemeRegistry {
       }
     }
 
-    // 4. Default fallback
+    // 5. Default fallback
     const defaultUrl = avatarCatalogService.getDefaultAvatarUrl();
     return {
       themeId: theme.id,

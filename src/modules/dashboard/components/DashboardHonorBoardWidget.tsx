@@ -4,6 +4,10 @@ import { Card } from '../../../shared/components/Card';
 import { Button } from '../../../shared/components/Button';
 import { StudentAvatar } from '../../../shared/components/StudentAvatar';
 import { honorBoardRepository, honorRecipientRepository } from '../../../core/repositories/honor-board.repository';
+import { settingsRepository } from '../../../core/repositories/settings.repository';
+import { avatarAssetService } from '../../../core/services/avatar-asset.service';
+import { avatarThemeRegistry, DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS } from '../../../core/services/avatar-theme-registry';
+import type { GlobalAvatarSystemSettings } from '../../../core/types/avatar-theme.types';
 import { db } from '../../../core/database/db';
 import type { HonorBoard, HonorRecipient, Student } from '../../../core/database/types';
 import { Trophy, ArrowRight, Plus, Crown } from 'lucide-react';
@@ -19,6 +23,8 @@ export const DashboardHonorBoardWidget: React.FC<DashboardHonorBoardWidgetProps>
   const [latestBoard, setLatestBoard] = useState<HonorBoard | null>(null);
   const [topRecipients, setTopRecipients] = useState<{ recipient: HonorRecipient; student: Student }[]>([]);
   const [totalHonors, setTotalHonors] = useState<number>(0);
+  const [globalAvatarSettings, setGlobalAvatarSettings] = useState<GlobalAvatarSystemSettings>(DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS);
+  const [uploadedAssetUrls, setUploadedAssetUrls] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -29,7 +35,22 @@ export const DashboardHonorBoardWidget: React.FC<DashboardHonorBoardWidgetProps>
       }
       setLoading(true);
       try {
-        const boards = await honorBoardRepository.findByClass(classId);
+        const [boards, settings] = await Promise.all([
+          honorBoardRepository.findByClass(classId),
+          settingsRepository.getSettings(),
+        ]);
+
+        const activeSysSettings = avatarThemeRegistry.resolveGlobalSettings(settings);
+        setGlobalAvatarSettings(activeSysSettings);
+
+        const uploadedIds = activeSysSettings.levels
+          .filter((l) => l.image.kind === 'UPLOADED')
+          .map((l) => (l.image as { kind: 'UPLOADED'; assetId: string }).assetId);
+        if (uploadedIds.length > 0) {
+          const urlMap = await avatarAssetService.preloadAssetUrls(uploadedIds);
+          setUploadedAssetUrls(urlMap);
+        }
+
         const published = boards.find((b) => b.status === 'published');
 
         if (published) {
@@ -132,6 +153,11 @@ export const DashboardHonorBoardWidget: React.FC<DashboardHonorBoardWidgetProps>
                     <StudentAvatar
                       student={student}
                       score={recipient.pointsAtAward}
+                      rankLevelOrOrder={recipient.rankLevelAtAward}
+                      preferRankAvatar={true}
+                      globalActiveThemeId={globalAvatarSettings.presetThemeId}
+                      globalSettings={globalAvatarSettings}
+                      uploadedAssetUrls={uploadedAssetUrls}
                       size="xs"
                       className="border border-app shrink-0 shadow-2xs"
                     />

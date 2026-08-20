@@ -13,7 +13,7 @@ import { honorBoardService } from '../../../core/services/honor-board.service';
 import { honorRuleEngineService, type TitleEvaluationResult } from '../../../core/services/honor-rule-engine.service';
 import { rankSeedService } from '../../../core/services/rank-seed.service';
 import { avatarAssetService } from '../../../core/services/avatar-asset.service';
-import { DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS } from '../../../core/services/avatar-theme-registry';
+import { avatarThemeRegistry, DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS } from '../../../core/services/avatar-theme-registry';
 import type { GlobalAvatarSystemSettings } from '../../../core/types/avatar-theme.types';
 import { StudentAvatar } from '../../../shared/components/StudentAvatar';
 import { getTodayDateString } from '../../../shared/utilities/date';
@@ -72,7 +72,7 @@ export const HonorBoardCreateWizard: React.FC = () => {
       setSelectedTitleIds(uniqueTitles.filter((t) => t.isActive).map((t) => t.id));
 
       const settings = await settingsRepository.getSettings();
-      const activeSysSettings = settings.avatarSystemSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
+      const activeSysSettings = avatarThemeRegistry.resolveGlobalSettings(settings);
       setGlobalAvatarSettings(activeSysSettings);
 
       const uploadedIds = activeSysSettings.levels
@@ -419,7 +419,9 @@ export const HonorBoardCreateWizard: React.FC = () => {
                           <div className="flex items-center gap-2 min-w-0">
                             <StudentAvatar
                               student={cand.student}
-                              score={cand.points ?? cand.metricValue}
+                              score={cand.points}
+                              rankLevelOrOrder={cand.rankLevel}
+                              preferRankAvatar={true}
                               globalActiveThemeId={globalAvatarSettings.presetThemeId}
                               globalSettings={globalAvatarSettings}
                               uploadedAssetUrls={uploadedAssetUrls}

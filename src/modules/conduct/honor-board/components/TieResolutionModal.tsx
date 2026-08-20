@@ -83,7 +83,9 @@ export const TieResolutionModal: React.FC<TieResolutionModalProps> = ({
                 <div className="flex items-center gap-2.5 min-w-0">
                   <StudentAvatar
                     student={cand.student}
-                    score={cand.points ?? cand.metricValue}
+                    score={cand.points}
+                    rankLevelOrOrder={cand.rankLevel}
+                    preferRankAvatar={true}
                     globalActiveThemeId={globalActiveThemeId}
                     globalSettings={globalSettings}
                     uploadedAssetUrls={uploadedAssetUrls}
