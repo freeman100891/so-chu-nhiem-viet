@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <circle cx="50" cy="50" r="48" fill="#EBF3FF" stroke="#3B82F6" stroke-width="3"/>
+  <!-- Body/Shirt -->
+  <path d="M22 88 C25 65, 40 62, 50 62 C60 62, 75 65, 78 88 Z" fill="#3B82F6"/>
+  <!-- Collar / Red Scarf -->
+  <path d="M42 62 L50 74 L58 62 Z" fill="#EF4444"/>
+  <path d="M47 70 L50 82 L53 70 Z" fill="#DC2626"/>
+  <!-- Head -->
+  <circle cx="50" cy="42" r="22" fill="#FDDFB7"/>
+  <!-- Hair -->
+  <path d="M28 38 C28 22, 40 18, 50 18 C60 18, 72 22, 72 38 C68 30, 60 26, 50 26 C40 26, 32 30, 28 38 Z" fill="#2E1C14"/>
+  <path d="M30 38 Q32 26 50 26 Q68 26 70 38" fill="none" stroke="#2E1C14" stroke-width="4"/>
+  <!-- Eyes -->
+  <circle cx="42" cy="42" r="2.5" fill="#1E293B"/>
+  <circle cx="58" cy="42" r="2.5" fill="#1E293B"/>
+  <circle cx="43" cy="41" r="0.8" fill="#FFFFFF"/>
+  <circle cx="59" cy="41" r="0.8" fill="#FFFFFF"/>
+  <!-- Cheeks -->
+  <ellipse cx="37" cy="47" rx="3" ry="1.5" fill="#FCA5A5" opacity="0.6"/>
+  <ellipse cx="63" cy="47" rx="3" ry="1.5" fill="#FCA5A5" opacity="0.6"/>
+  <!-- Smile -->
+  <path d="M45 49 Q50 54 55 49" fill="none" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="plantBg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0fdf4"/>
+      <stop offset="100%" stop-color="#dcfce7"/>
+    </linearGradient>
+    <linearGradient id="seedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a16207"/>
+      <stop offset="100%" stop-color="#713f12"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#plantBg1)" stroke="#86efac" stroke-width="2"/>
+  <!-- Soil Mound -->
+  <path d="M25 76 Q50 68 75 76 L80 92 L20 92 Z" fill="#854d0e" opacity="0.85"/>
+  <ellipse cx="50" cy="74" rx="22" ry="5" fill="#a16207"/>
+  <!-- Seed / Sprouting Kernel -->
+  <path d="M50 48 C44 48 40 56 42 66 C44 72 56 72 58 66 C60 56 56 48 50 48 Z" fill="url(#seedGrad)"/>
+  <!-- Tiny green sprout emergence -->
+  <path d="M50 50 Q50 36 56 32 Q62 36 58 44 Z" fill="#4ade80"/>
+  <path d="M50 50 Q48 40 44 38 Q40 42 46 48 Z" fill="#22c55e"/>
+  <!-- Cute Face on Seed -->
+  <circle cx="47" cy="62" r="1.5" fill="#fef08a"/>
+  <circle cx="53" cy="62" r="1.5" fill="#fef08a"/>
+  <path d="M48 66 Q50 68 52 66" stroke="#fef08a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+</svg>

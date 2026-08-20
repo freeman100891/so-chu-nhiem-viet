@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <circle cx="50" cy="50" r="48" fill="#EFF6FF" stroke="#3B82F6" stroke-width="3"/>
+  <!-- Tuft ears -->
+  <polygon points="26,30 34,14 44,28" fill="#1E3A8A"/>
+  <polygon points="74,30 66,14 56,28" fill="#1E3A8A"/>
+  <!-- Body / Head -->
+  <circle cx="50" cy="52" r="28" fill="#1D4ED8"/>
+  <!-- Big Eyes Rings -->
+  <circle cx="39" cy="46" r="11" fill="#FFFFFF"/>
+  <circle cx="61" cy="46" r="11" fill="#FFFFFF"/>
+  <circle cx="39" cy="46" r="6" fill="#F59E0B"/>
+  <circle cx="61" cy="46" r="6" fill="#F59E0B"/>
+  <circle cx="39" cy="46" r="3.5" fill="#0F172A"/>
+  <circle cx="61" cy="46" r="3.5" fill="#0F172A"/>
+  <circle cx="41" cy="44" r="1.2" fill="#FFFFFF"/>
+  <circle cx="63" cy="44" r="1.2" fill="#FFFFFF"/>
+  <!-- Beak -->
+  <polygon points="46,52 54,52 50,60" fill="#EA580C"/>
+  <!-- Chest Feathers -->
+  <path d="M42 66 Q50 70 58 66" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round"/>
+  <path d="M44 72 Q50 76 56 72" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round"/>
+</svg>

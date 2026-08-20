@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gamerBg5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="legendGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#e11d48"/>
+    </linearGradient>
+    <linearGradient id="skinGradG5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa"/>
+      <stop offset="100%" stop-color="#fbcfe8"/>
+    </linearGradient>
+  </defs>
+  <!-- Cyber Night Dark Background with Champion Hologram Ring -->
+  <circle cx="50" cy="50" r="46" fill="url(#gamerBg5)" stroke="url(#legendGold)" stroke-width="2.5"/>
+  <!-- Champion Gold Headset Crown with Wings -->
+  <path d="M20 48 Q20 10 50 10 Q80 10 80 48" stroke="url(#legendGold)" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Hologram Wings on Headset -->
+  <polygon points="26,20 12,8 30,12" fill="url(#legendGold)"/>
+  <polygon points="74,20 88,8 70,12" fill="url(#legendGold)"/>
+  <rect x="16" y="38" width="8" height="18" rx="4" fill="#fbbf24"/>
+  <rect x="76" y="38" width="8" height="18" rx="4" fill="#fbbf24"/>
+  <!-- Face -->
+  <circle cx="50" cy="51" r="18" fill="url(#skinGradG5)"/>
+  <!-- Cyber Legendary Golden Visor Goggles -->
+  <rect x="33" y="43" width="34" height="10" rx="5" fill="#0f172a"/>
+  <path d="M36 46 L64 46" stroke="url(#legendGold)" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Diamond Stars on Visor -->
+  <polygon points="42,48 43,50 45,50 43.5,51.5 44,53.5 42,52 40,53.5 40.5,51.5 39,50 41,50" fill="#fde047"/>
+  <polygon points="58,48 59,50 61,50 59.5,51.5 60,53.5 58,52 56,53.5 56.5,51.5 55,50 57,50" fill="#fde047"/>
+  <!-- Confident Smile -->
+  <path d="M45 58 Q50 62 55 58" stroke="#0f172a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="40" cy="55" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <circle cx="60" cy="55" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <!-- Legendary Esports Champion Mantle -->
+  <path d="M24 75 Q50 64 76 75 L84 96 L16 96 Z" fill="#0f172a"/>
+  <path d="M41 68 L50 78 L59 68" fill="#fef08a"/>
+  <!-- Grand Master Champion Star Medallion -->
+  <circle cx="50" cy="85" r="6" fill="url(#legendGold)"/>
+  <polygon points="50,81 51.5,84 54.5,84 52,86 53,89 50,87 47,89 48,86 45.5,84 48.5,84" fill="#ffffff"/>
+</svg>

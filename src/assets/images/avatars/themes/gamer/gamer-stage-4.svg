@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gamerBg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#faf5ff"/>
+      <stop offset="100%" stop-color="#e9d5ff"/>
+    </linearGradient>
+    <linearGradient id="skinGradG4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa"/>
+      <stop offset="100%" stop-color="#fbcfe8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#gamerBg4)" stroke="#a855f7" stroke-width="2"/>
+  <!-- Grandmaster Headset with Glowing Cat Ears / Cyber Crest -->
+  <path d="M22 48 Q22 14 50 14 Q78 14 78 48" stroke="#7e22ce" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <polygon points="32,18 24,6 40,14" fill="#a855f7"/>
+  <polygon points="68,18 76,6 60,14" fill="#a855f7"/>
+  <rect x="18" y="38" width="8" height="18" rx="4" fill="#c084fc"/>
+  <rect x="74" y="38" width="8" height="18" rx="4" fill="#c084fc"/>
+  <!-- Face -->
+  <circle cx="50" cy="51" r="18" fill="url(#skinGradG4)"/>
+  <!-- Cyber VR Goggles with Purple Neon Flare -->
+  <rect x="34" y="44" width="32" height="10" rx="5" fill="#581c87"/>
+  <path d="M38 47 L62 47" stroke="#e9d5ff" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="42" cy="51" r="1" fill="#f43f5e"/>
+  <circle cx="58" cy="51" r="1" fill="#3b82f6"/>
+  <!-- Confident Smile -->
+  <path d="M45 58 Q50 62 55 58" stroke="#581c87" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="40" cy="55" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <circle cx="60" cy="55" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <!-- Master Esports Armor Jacket -->
+  <path d="M26 75 Q50 65 74 75 L82 96 L18 96 Z" fill="#6b21a8"/>
+  <path d="M42 69 L50 78 L58 69" fill="#f3e8ff"/>
+  <!-- Master Gem on Chest -->
+  <polygon points="50,81 54,85 50,91 46,85" fill="#fde047"/>
+</svg>

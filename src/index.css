@@ -1,0 +1,308 @@
+@import "tailwindcss";
+
+/* -------------------------------------------------------------------------- */
+/* DESIGN TOKENS & CULTURAL VIETNAMESE THEMES SYSTEM                          */
+/* -------------------------------------------------------------------------- */
+
+:root {
+  /* Default Fallback Theme: Hành Quân Tri Thức (military) */
+  --bg-app: #F4F6F0;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #E9ECE0;
+  --text-main: #1C2819;
+  --text-muted: #5C6B57;
+  --border-app: #D1D7C4;
+  --color-primary: #2D5A27;
+  --color-primary-fg: #FFFFFF;
+  --color-primary-light: #E2EBE0;
+  --accent-gold: #EAB308;
+  --accent-flag: #DC2626;
+
+  /* Backward Compatibility Aliases */
+  --bg-main: var(--bg-app);
+  --border-color: var(--border-app);
+  --primary-color: var(--color-primary);
+  --primary-hover: var(--color-primary);
+  --primary-light: var(--color-primary-light);
+  --primary-text: var(--color-primary-fg);
+  --accent-color: var(--accent-gold);
+
+  /* Live Classroom Cute Color Tokens */
+  --live-primary: #4F8EF7;
+  --live-secondary: #70D7C4;
+  --live-yellow: #FFD166;
+  --live-coral: #FF7B7B;
+  --live-purple: #9B8AFB;
+  --live-bg: #F5FAFF;
+  --live-text: #24324A;
+
+  /* -------------------------------------------------------------------------- */
+  /* RESPONSIVE FLUID SCALING DESIGN TOKENS (CLAMPING)                         */
+  /* -------------------------------------------------------------------------- */
+  /* Typography Clamping */
+  --text-xs: clamp(0.75rem, 0.7rem + 0.1vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 0.8rem + 0.14vw, 1rem);
+  --text-base: clamp(1rem, 0.92rem + 0.18vw, 1.25rem);
+  --text-md: clamp(1.0625rem, 0.96rem + 0.24vw, 1.375rem);
+  --text-lg: clamp(1.25rem, 1.08rem + 0.35vw, 1.625rem);
+  --text-xl: clamp(1.5rem, 1.2rem + 0.6vw, 2.125rem);
+  --text-display: clamp(2rem, 1.45rem + 1.15vw, 3.5rem);
+
+  /* Spacing Clamping */
+  --space-1: clamp(0.25rem, 0.18rem + 0.15vw, 0.5rem);
+  --space-2: clamp(0.5rem, 0.35rem + 0.25vw, 0.875rem);
+  --space-3: clamp(0.75rem, 0.55rem + 0.35vw, 1.25rem);
+  --space-4: clamp(1rem, 0.7rem + 0.55vw, 1.75rem);
+  --space-5: clamp(1.25rem, 0.85rem + 0.75vw, 2.25rem);
+
+  /* Component Size Clamping */
+  --control-height: clamp(2.5rem, 2.2rem + 0.55vw, 3.5rem);
+  --icon-size: clamp(1.125rem, 1rem + 0.25vw, 1.5rem);
+  --student-avatar-size: clamp(3.5rem, 2.8rem + 1.25vw, 5.5rem);
+  --sidebar-width: clamp(15.5rem, 13.5rem + 2vw, 19rem);
+  --topbar-height: clamp(4rem, 3.5rem + 0.8vw, 5.25rem);
+  --card-radius: clamp(0.875rem, 0.7rem + 0.25vw, 1.25rem);
+}
+
+/* -------------------------------------------------------------------------- */
+/* DENSITY AND SCALE MODIFIERS                                               */
+/* -------------------------------------------------------------------------- */
+html[data-density="large"],
+[data-density="large"] {
+  --student-avatar-size: clamp(4.5rem, 3.5rem + 1.8vw, 6.5rem);
+  --text-md: clamp(1.15rem, 1.05rem + 0.3vw, 1.5rem);
+  --control-height: clamp(2.85rem, 2.5rem + 0.7vw, 3.75rem);
+}
+
+html[data-density="compact"],
+[data-density="compact"] {
+  --student-avatar-size: clamp(2.75rem, 2.25rem + 0.8vw, 3.75rem);
+  --text-md: clamp(0.95rem, 0.88rem + 0.15vw, 1.15rem);
+  --control-height: clamp(2.25rem, 2rem + 0.4vw, 3rem);
+}
+
+html[data-ui-scale="presentation"],
+[data-ui-scale="presentation"] {
+  --text-sm: clamp(1rem, 0.9rem + 0.25vw, 1.25rem);
+  --text-base: clamp(1.125rem, 1rem + 0.35vw, 1.5rem);
+  --text-md: clamp(1.25rem, 1.05rem + 0.5vw, 1.75rem);
+  --text-lg: clamp(1.5rem, 1.15rem + 0.8vw, 2.25rem);
+  --student-avatar-size: clamp(5rem, 3.5rem + 2.2vw, 8rem);
+  --control-height: clamp(3.25rem, 2.8rem + 0.8vw, 4.5rem);
+  --space-3: clamp(1rem, 0.8rem + 0.5vw, 1.75rem);
+  --space-4: clamp(1.25rem, 1rem + 0.8vw, 2.5rem);
+}
+
+/* THEME 1: HÀNH QUÂN TRI THỨC (military / traditional) */
+html[data-theme="military"],
+html[data-theme="traditional"],
+[data-theme="military"],
+[data-theme="traditional"] {
+  --bg-app: #F4F6F0;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #E9ECE0;
+  --text-main: #1C2819;
+  --text-muted: #5C6B57;
+  --border-app: #D1D7C4;
+  --color-primary: #2D5A27;
+  --color-primary-fg: #FFFFFF;
+  --color-primary-light: #E2EBE0;
+  --accent-gold: #EAB308;
+  --accent-flag: #DC2626;
+
+  --bg-main: var(--bg-app);
+  --border-color: var(--border-app);
+  --primary-color: var(--color-primary);
+  --primary-hover: #22441D;
+  --primary-light: var(--color-primary-light);
+  --primary-text: var(--color-primary-fg);
+  --accent-color: var(--accent-gold);
+}
+
+/* THEME 2: SẮC MÀU 54 DÂN TỘC (ethnic / lotus) */
+html[data-theme="ethnic"],
+html[data-theme="lotus"],
+[data-theme="ethnic"],
+[data-theme="lotus"] {
+  --bg-app: #FDFBF7;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #F5EFE6;
+  --text-main: #1E1B18;
+  --text-muted: #6B5E52;
+  --border-app: #E5DCD0;
+  --color-primary: #1E3A8A; /* Chàm đậm */
+  --color-primary-fg: #FFFFFF;
+  --color-primary-light: #E0E7FF;
+  --accent-gold: #D97706; /* Vàng ấm */
+  --accent-flag: #991B1B; /* Đỏ đất */
+
+  --bg-main: var(--bg-app);
+  --border-color: var(--border-app);
+  --primary-color: var(--color-primary);
+  --primary-hover: #172554;
+  --primary-light: var(--color-primary-light);
+  --primary-text: var(--color-primary-fg);
+  --accent-color: var(--accent-gold);
+}
+
+/* THEME 3: ĐẤT NƯỚC BA MIỀN (regions / modern) */
+html[data-theme="regions"],
+html[data-theme="modern"],
+[data-theme="regions"],
+[data-theme="modern"] {
+  --bg-app: #F5F8F5;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #E6F0E6;
+  --text-main: #112211;
+  --text-muted: #4B6B4B;
+  --border-app: #D1E3D1;
+  --color-primary: #059669; /* Xanh tre / Xanh đồng ruộng */
+  --color-primary-fg: #FFFFFF;
+  --color-primary-light: #D1FAE5;
+  --accent-gold: #EAB308; /* Vàng lúa chín */
+  --accent-flag: #B91C1C; /* Đỏ gạch Miền Bắc */
+
+  --bg-main: var(--bg-app);
+  --border-color: var(--border-app);
+  --primary-color: var(--color-primary);
+  --primary-hover: #047857;
+  --primary-light: var(--color-primary-light);
+  --primary-text: var(--color-primary-fg);
+  --accent-color: var(--accent-gold);
+}
+
+@theme {
+  --color-app-base: var(--bg-app);
+  --color-app-surface: var(--bg-surface);
+  --color-app-surface-hover: var(--bg-surface-hover);
+  --color-app-main: var(--text-main);
+  --color-app-muted: var(--text-muted);
+  --color-app-border: var(--border-app);
+  --color-app-primary: var(--color-primary);
+  --color-app-primary-fg: var(--color-primary-fg);
+  --color-app-primary-light: var(--color-primary-light);
+
+  --color-live-primary: var(--live-primary);
+  --color-live-secondary: var(--live-secondary);
+  --color-live-yellow: var(--live-yellow);
+  --color-live-coral: var(--live-coral);
+  --color-live-purple: var(--live-purple);
+  --color-live-bg: var(--live-bg);
+  --color-live-text: var(--live-text);
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Utility mapping classes */
+.bg-app-base { background-color: var(--bg-app); }
+.bg-app-main { background-color: var(--bg-app); }
+.bg-app-surface { background-color: var(--bg-surface); }
+.bg-app-surface-hover { background-color: var(--bg-surface-hover); }
+.bg-app-surface-hover:hover { background-color: var(--bg-surface-hover); }
+.text-app-main { color: var(--text-main); }
+.text-app-muted { color: var(--text-muted); }
+.border-app { border-color: var(--border-app); }
+.bg-app-primary { background-color: var(--color-primary); }
+.bg-app-primary-hover:hover { background-color: var(--color-primary); }
+.text-app-primary { color: var(--color-primary); }
+.text-app-primary-fg { color: var(--color-primary-fg); }
+.bg-app-primary-light { background-color: var(--color-primary-light); }
+.bg-app-accent { background-color: var(--accent-gold); }
+
+/* Focus ring for accessibility WCAG AA */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion preference support */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .gift-card-inner {
+    transition: none !important;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3D FLIP CARD COMPONENT (FEAT-GIFT-002)                                     */
+/* -------------------------------------------------------------------------- */
+.gift-card-perspective {
+  perspective: 1200px;
+}
+
+.gift-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gift-card-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.gift-card-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.gift-card-front {
+  transform: rotateY(0deg);
+}
+
+.gift-card-back {
+  transform: rotateY(180deg);
+}
+
+/* -------------------------------------------------------------------------- */
+/* FLUID RESPONSIVE STUDENT GRID & CARD SYSTEM                                */
+/* -------------------------------------------------------------------------- */
+.student-grid-fluid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(13.5rem, 13vw, 19.5rem), 1fr));
+  gap: var(--space-3);
+  width: 100%;
+}
+
+/* Constrain 4K ultra-wide screens to max 5-6 columns so cards remain large & legible */
+@media (min-width: 2200px) {
+  .student-grid-fluid {
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  }
+}
+
+/* Container Query for Student Cards */
+.student-card-container {
+  container-type: inline-size;
+}
+
+@container (min-width: 16rem) {
+  .student-card-name {
+    font-size: var(--text-md);
+  }
+  .student-card-avatar {
+    width: clamp(3.75rem, 25cqi, 5.5rem);
+    height: clamp(3.75rem, 25cqi, 5.5rem);
+  }
+}
+
+/* Hide presentation elements when in presentation mode */
+html[data-ui-scale="presentation"] .hide-on-presentation {
+  display: none !important;
+}
+

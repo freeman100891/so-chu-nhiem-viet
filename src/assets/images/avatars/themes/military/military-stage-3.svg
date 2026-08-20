@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#fde68a"/>
+    </linearGradient>
+    <linearGradient id="skinGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa"/>
+      <stop offset="100%" stop-color="#fbcfe8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#bgGrad3)" stroke="#f59e0b" stroke-width="2"/>
+  <!-- Cap / Visor (Doi truong - Squad Leader Visor Cap) -->
+  <path d="M26 34 Q50 16 74 34 Q78 38 72 43 Q50 46 28 43 Q22 38 26 34 Z" fill="#b45309"/>
+  <path d="M28 42 Q50 48 72 42 L74 45 Q50 51 26 45 Z" fill="#78350f"/>
+  <polygon points="50,26 52,31 57,31 53,34 55,39 50,36 45,39 47,34 43,31 48,31" fill="#fef08a"/>
+  <!-- Face -->
+  <circle cx="50" cy="51" r="18" fill="url(#skinGrad3)"/>
+  <!-- Eyes & Confident Smile -->
+  <circle cx="44" cy="50" r="2.5" fill="#1e293b"/>
+  <circle cx="56" cy="50" r="2.5" fill="#1e293b"/>
+  <circle cx="45" cy="49" r="0.8" fill="#ffffff"/>
+  <circle cx="57" cy="49" r="0.8" fill="#ffffff"/>
+  <path d="M45 57 Q50 62 55 57" stroke="#b91c1c" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="40" cy="55" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <circle cx="60" cy="55" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <!-- Uniform Body (Level 3: Amber Officer Jacket) -->
+  <path d="M28 75 Q50 66 72 75 L80 96 L20 96 Z" fill="#92400e"/>
+  <path d="M43 70 L50 78 L57 70" fill="#fef3c7"/>
+  <!-- Gold Shoulder Epaulets & Star -->
+  <rect x="23" y="74" width="8" height="4" rx="2" fill="#fbbf24"/>
+  <rect x="69" y="74" width="8" height="4" rx="2" fill="#fbbf24"/>
+  <polygon points="50,83 51.5,86.5 55,86.5 52,89 53.5,92.5 50,90 46.5,92.5 48,89 45,86.5 48.5,86.5" fill="#fde047"/>
+</svg>

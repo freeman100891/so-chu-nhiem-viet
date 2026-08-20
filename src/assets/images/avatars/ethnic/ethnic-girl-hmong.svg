@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <circle cx="50" cy="50" r="48" fill="#FDF2F8" stroke="#DB2777" stroke-width="3"/>
+  <!-- H'Mong Colorful Traditional Brocade Shirt -->
+  <path d="M22 88 C25 65, 40 62, 50 62 C60 62, 75 65, 78 88 Z" fill="#BE185D"/>
+  <path d="M38 62 L50 78 L62 62 Z" fill="#0284C7"/>
+  <path d="M42 62 L50 74 L58 62 Z" fill="#FACC15"/>
+  <!-- Silver Torc / Necklace -->
+  <path d="M36 60 Q50 68 64 60" fill="none" stroke="#E2E8F0" stroke-width="3" stroke-linecap="round"/>
+  <!-- Head -->
+  <circle cx="50" cy="42" r="22" fill="#FEE4CB"/>
+  <!-- H'Mong Brocade Headdress Hat -->
+  <path d="M22 32 C26 14, 74 14, 78 32 L78 36 L22 36 Z" fill="#1E1B4B"/>
+  <rect x="22" y="30" width="56" height="6" fill="#F43F5E"/>
+  <line x1="24" y1="33" x2="76" y2="33" stroke="#FDE047" stroke-width="1.5" stroke-dasharray="2,2"/>
+  <!-- Pompoms on Hat -->
+  <circle cx="24" cy="24" r="3.5" fill="#EC4899"/>
+  <circle cx="34" cy="20" r="3.5" fill="#3B82F6"/>
+  <circle cx="50" cy="18" r="4" fill="#EAB308"/>
+  <circle cx="66" cy="20" r="3.5" fill="#3B82F6"/>
+  <circle cx="76" cy="24" r="3.5" fill="#EC4899"/>
+  <!-- Hair & Face -->
+  <path d="M28 36 C34 32, 66 32, 72 36" fill="none" stroke="#18181B" stroke-width="2"/>
+  <circle cx="42" cy="44" r="2.5" fill="#0F172A"/>
+  <circle cx="58" cy="44" r="2.5" fill="#0F172A"/>
+  <circle cx="43" cy="43" r="0.8" fill="#FFFFFF"/>
+  <circle cx="59" cy="43" r="0.8" fill="#FFFFFF"/>
+  <circle cx="36" cy="48" r="3" fill="#FDA4AF" opacity="0.7"/>
+  <circle cx="64" cy="48" r="3" fill="#FDA4AF" opacity="0.7"/>
+  <path d="M45 52 Q50 57 55 52" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"/>
+</svg>

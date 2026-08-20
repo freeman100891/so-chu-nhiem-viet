@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="plantBg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ecfdf5"/>
+      <stop offset="100%" stop-color="#a7f3d0"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#plantBg3)" stroke="#10b981" stroke-width="2"/>
+  <!-- Soil with grass -->
+  <path d="M22 80 Q50 72 78 80 L84 94 L16 94 Z" fill="#78350f"/>
+  <path d="M26 78 L30 72 L34 78 M64 78 L68 72 L72 78" stroke="#16a34a" stroke-width="2" fill="none"/>
+  <!-- Young Tree Trunk -->
+  <path d="M47 80 L48 45 L52 45 L53 80 Z" fill="#92400e"/>
+  <!-- Multiple Foliage Clusters -->
+  <circle cx="50" cy="35" r="16" fill="#10b981"/>
+  <circle cx="38" cy="40" r="12" fill="#059669"/>
+  <circle cx="62" cy="40" r="12" fill="#34d399"/>
+  <circle cx="50" cy="24" r="10" fill="#6ee7b7"/>
+  <!-- Small Flower Bud -->
+  <circle cx="50" cy="18" r="4" fill="#fbbf24"/>
+  <circle cx="50" cy="18" r="2" fill="#ef4444"/>
+  <!-- Cute Face on Foliage -->
+  <circle cx="45" cy="34" r="2" fill="#064e3b"/>
+  <circle cx="55" cy="34" r="2" fill="#064e3b"/>
+  <path d="M47 39 Q50 42 53 39" stroke="#064e3b" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>

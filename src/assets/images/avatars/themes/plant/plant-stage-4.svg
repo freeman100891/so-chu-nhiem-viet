@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="plantBg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0fdf4"/>
+      <stop offset="100%" stop-color="#86efac"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#plantBg4)" stroke="#15803d" stroke-width="2"/>
+  <!-- Rich Ground & Roots -->
+  <path d="M18 82 Q50 74 82 82 L88 94 L12 94 Z" fill="#713f12"/>
+  <!-- Strong Tree Trunk & Branches -->
+  <path d="M44 82 Q46 55 42 46 Q34 40 32 38 M56 82 Q54 55 58 46 Q66 40 68 38" stroke="#854d0e" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- Dense Mature Canopy -->
+  <circle cx="50" cy="38" r="22" fill="#15803d"/>
+  <circle cx="34" cy="40" r="16" fill="#16a34a"/>
+  <circle cx="66" cy="40" r="16" fill="#16a34a"/>
+  <circle cx="40" cy="25" r="15" fill="#22c55e"/>
+  <circle cx="60" cy="25" r="15" fill="#4ade80"/>
+  <circle cx="50" cy="18" r="12" fill="#86efac"/>
+  <!-- Red & Golden Fruits -->
+  <circle cx="32" cy="36" r="3.5" fill="#ef4444"/>
+  <circle cx="68" cy="36" r="3.5" fill="#ef4444"/>
+  <circle cx="48" cy="28" r="3.5" fill="#f59e0b"/>
+  <circle cx="58" cy="44" r="3.5" fill="#f59e0b"/>
+  <!-- Cheerful Face -->
+  <circle cx="45" cy="38" r="2" fill="#052e16"/>
+  <circle cx="55" cy="38" r="2" fill="#052e16"/>
+  <path d="M46 44 Q50 48 54 44" stroke="#052e16" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+</svg>

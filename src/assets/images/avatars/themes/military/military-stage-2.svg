@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#bae6fd"/>
+    </linearGradient>
+    <linearGradient id="skinGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa"/>
+      <stop offset="100%" stop-color="#fbcfe8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#bgGrad2)" stroke="#38bdf8" stroke-width="2"/>
+  <!-- Cap with Green badge (Chien si) -->
+  <path d="M28 36 Q50 20 72 36 Q76 40 72 44 Q50 47 28 44 Q24 40 28 36 Z" fill="#0369a1"/>
+  <circle cx="50" cy="33" r="3.5" fill="#38bdf8"/>
+  <!-- Face -->
+  <circle cx="50" cy="50" r="18" fill="url(#skinGrad2)"/>
+  <!-- Eyes & Smile -->
+  <circle cx="44" cy="49" r="2.5" fill="#1e293b"/>
+  <circle cx="56" cy="49" r="2.5" fill="#1e293b"/>
+  <circle cx="45" cy="48" r="0.8" fill="#ffffff"/>
+  <circle cx="57" cy="48" r="0.8" fill="#ffffff"/>
+  <path d="M46 56 Q50 60 54 56" stroke="#e11d48" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="40" cy="54" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <circle cx="60" cy="54" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <!-- Uniform Body (Level 2: Sky Blue Uniform) -->
+  <path d="M30 74 Q50 67 70 74 L78 96 L22 96 Z" fill="#0284c7"/>
+  <path d="M44 70 L50 78 L56 70" fill="#ffffff"/>
+  <!-- Rank Strip 2 Chevrons -->
+  <path d="M45 83 L50 86 L55 83" stroke="#fde047" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M45 87 L50 90 L55 87" stroke="#fde047" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>

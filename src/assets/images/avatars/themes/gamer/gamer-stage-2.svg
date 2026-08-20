@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gamerBg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ecfeff"/>
+      <stop offset="100%" stop-color="#cffafe"/>
+    </linearGradient>
+    <linearGradient id="skinGradG2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa"/>
+      <stop offset="100%" stop-color="#fbcfe8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#gamerBg2)" stroke="#06b6d4" stroke-width="2"/>
+  <!-- Cyan Gaming Headset with Mic -->
+  <path d="M26 48 Q26 22 50 22 Q74 22 74 48" stroke="#0891b2" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+  <rect x="22" y="42" width="7" height="14" rx="3.5" fill="#06b6d4"/>
+  <rect x="71" y="42" width="7" height="14" rx="3.5" fill="#06b6d4"/>
+  <!-- Mic Boom -->
+  <path d="M25 54 Q30 64 42 62" stroke="#0891b2" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <circle cx="42" cy="62" r="2" fill="#22d3ee"/>
+  <!-- Face -->
+  <circle cx="50" cy="50" r="18" fill="url(#skinGradG2)"/>
+  <!-- Eyes & Confident Smile -->
+  <circle cx="44" cy="49" r="2.5" fill="#083344"/>
+  <circle cx="56" cy="49" r="2.5" fill="#083344"/>
+  <circle cx="45" cy="48" r="0.8" fill="#ffffff"/>
+  <circle cx="57" cy="48" r="0.8" fill="#ffffff"/>
+  <path d="M46 56 Q50 60 54 56" stroke="#0891b2" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="40" cy="54" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <circle cx="60" cy="54" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <!-- Hoodie with Game Controller Badge -->
+  <path d="M30 74 Q50 67 70 74 L78 96 L22 96 Z" fill="#0e7490"/>
+  <path d="M44 70 L50 78 L56 70" fill="#cffafe"/>
+  <circle cx="50" cy="85" r="4.5" fill="#22d3ee"/>
+  <rect x="47" y="84" width="6" height="2" rx="1" fill="#083344"/>
+  <rect x="49" y="82" width="2" height="6" rx="1" fill="#083344"/>
+</svg>

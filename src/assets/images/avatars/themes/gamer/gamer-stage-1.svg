@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gamerBg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="skinGradG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa"/>
+      <stop offset="100%" stop-color="#fbcfe8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#gamerBg1)" stroke="#94a3b8" stroke-width="2"/>
+  <!-- Basic Starter Headset -->
+  <path d="M28 48 Q28 26 50 26 Q72 26 72 48" stroke="#475569" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <rect x="24" y="44" width="6" height="12" rx="3" fill="#64748b"/>
+  <rect x="70" y="44" width="6" height="12" rx="3" fill="#64748b"/>
+  <!-- Face -->
+  <circle cx="50" cy="50" r="18" fill="url(#skinGradG)"/>
+  <!-- Eyes & Gamer Smile -->
+  <circle cx="44" cy="49" r="2.5" fill="#0f172a"/>
+  <circle cx="56" cy="49" r="2.5" fill="#0f172a"/>
+  <circle cx="45" cy="48" r="0.8" fill="#ffffff"/>
+  <circle cx="57" cy="48" r="0.8" fill="#ffffff"/>
+  <path d="M46 56 Q50 60 54 56" stroke="#475569" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="40" cy="54" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <circle cx="60" cy="54" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <!-- T-shirt with Bronze D-pad -->
+  <path d="M32 74 Q50 68 68 74 L76 96 L24 96 Z" fill="#334155"/>
+  <!-- D-pad icon on shirt -->
+  <rect x="48" y="80" width="4" height="10" rx="1" fill="#94a3b8"/>
+  <rect x="45" y="83" width="10" height="4" rx="1" fill="#94a3b8"/>
+</svg>

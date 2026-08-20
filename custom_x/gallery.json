@@ -1,0 +1,22 @@
+{
+  "items": [
+    { "file": "custom_1.png", "label": "Chiến sĩ" },
+    { "file": "custom_2.png", "label": "Chiến sĩ" },
+    { "file": "custom_3.png", "label": "Chiến sĩ " },
+    { "file": "custom_4.png", "label": "Chiến sĩ " },
+    { "file": "custom_5.png", "label": "Chiến sĩ " },
+    { "file": "custom_6.png", "label": "Chiến sĩ " },
+    { "file": "custom_7.png", "label": "Chiến sĩ " },
+    { "file": "custom_8.png", "label": "Chiến sĩ " },
+    { "file": "custom_9.png", "label": "Chiến sĩ " },
+    { "file": "custom_10.png", "label": "Chiến sĩ " },
+    { "file": "custom_11.png", "label": "Chiến sĩ " },
+    { "file": "custom_12.png", "label": "Chiến sĩ " },
+    { "file": "custom_13.png", "label": "Chiến sĩ " },
+    { "file": "custom_14.png", "label": "Chiến sĩ " },
+    { "file": "custom_15.png", "label": "Chiến sĩ " },
+    { "file": "custom_16.png", "label": "Chiến sĩ" },
+    { "file": "custom_17.png", "label": "Chiến sĩ " },
+    { "file": "custom_18.png", "label": "Chiến sĩ" }
+  ]
+}

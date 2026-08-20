@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="skinGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa"/>
+      <stop offset="100%" stop-color="#fbcfe8"/>
+    </linearGradient>
+  </defs>
+  <!-- Royal Navy Background with Gold Ring -->
+  <circle cx="50" cy="50" r="46" fill="url(#bgGrad5)" stroke="url(#goldGrad)" stroke-width="2.5"/>
+  <!-- Grand Marshal Cap (Thong linh / General Field Cap) -->
+  <path d="M22 30 Q50 8 78 30 Q82 35 76 40 Q50 44 24 40 Q18 35 22 30 Z" fill="#0f172a"/>
+  <path d="M24 39 Q50 46 76 39 L78 44 Q50 51 22 44 Z" fill="url(#goldGrad)"/>
+  <!-- Golden Wreath & 4 Stars on Cap -->
+  <path d="M38 31 Q50 37 62 31" stroke="url(#goldGrad)" stroke-width="2.5" fill="none"/>
+  <polygon points="50,20 52,25 57,25 53,28 55,33 50,30 45,33 47,28 43,25 48,25" fill="#fde047"/>
+  <!-- Face -->
+  <circle cx="50" cy="51" r="18" fill="url(#skinGrad5)"/>
+  <!-- Eyes & Confident Leader Smile -->
+  <circle cx="44" cy="50" r="2.5" fill="#1e293b"/>
+  <circle cx="56" cy="50" r="2.5" fill="#1e293b"/>
+  <circle cx="45" cy="49" r="0.8" fill="#ffffff"/>
+  <circle cx="57" cy="49" r="0.8" fill="#ffffff"/>
+  <path d="M45 57 Q50 62 55 57" stroke="#b91c1c" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="40" cy="55" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <circle cx="60" cy="55" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <!-- Uniform Body (Level 5: Royal Navy & Gold Epaulets Coat) -->
+  <path d="M24 75 Q50 64 76 75 L84 96 L16 96 Z" fill="#1e293b"/>
+  <path d="M41 68 L50 78 L59 68" fill="#f8fafc"/>
+  <path d="M50 78 L50 96" stroke="url(#goldGrad)" stroke-width="2"/>
+  <!-- Gold Marshal Epaulets -->
+  <rect x="17" y="73" width="12" height="5" rx="2" fill="url(#goldGrad)"/>
+  <rect x="71" y="73" width="12" height="5" rx="2" fill="url(#goldGrad)"/>
+  <polygon points="50,83 51.5,86 55,86 52.5,88 53.5,91 50,89 46.5,91 47.5,88 45,86 48.5,86" fill="#fde047"/>
+</svg>

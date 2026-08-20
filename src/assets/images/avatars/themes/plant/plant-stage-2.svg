@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="plantBg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0fdf4"/>
+      <stop offset="100%" stop-color="#bbf7d0"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#plantBg2)" stroke="#4ade80" stroke-width="2"/>
+  <!-- Pot / Soil -->
+  <path d="M30 76 Q50 70 70 76 L66 94 L34 94 Z" fill="#b45309"/>
+  <!-- Stem -->
+  <path d="M50 74 Q49 55 50 42" stroke="#16a34a" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Two Vibrant Fresh Leaves -->
+  <path d="M50 48 Q32 36 34 26 Q46 28 50 44 Z" fill="#22c55e"/>
+  <path d="M50 44 Q68 32 66 22 Q54 24 50 40 Z" fill="#4ade80"/>
+  <!-- Water Droplet on Leaf -->
+  <circle cx="60" cy="27" r="2.5" fill="#38bdf8" opacity="0.9"/>
+  <!-- Dew sparkle -->
+  <circle cx="59.5" cy="26" r="0.8" fill="#ffffff"/>
+  <!-- Cute Happy Sprout Face on Stem -->
+  <circle cx="47" cy="56" r="1.5" fill="#14532d"/>
+  <circle cx="53" cy="56" r="1.5" fill="#14532d"/>
+  <path d="M48 60 Q50 62 52 60" stroke="#14532d" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+</svg>

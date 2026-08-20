@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="royalBg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb"/>
+      <stop offset="100%" stop-color="#fde68a"/>
+    </linearGradient>
+    <linearGradient id="skinGradR2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa"/>
+      <stop offset="100%" stop-color="#fbcfe8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#royalBg2)" stroke="#f59e0b" stroke-width="2"/>
+  <!-- Villager / Citizen Feather Hat -->
+  <path d="M28 36 Q50 20 72 36 Q76 40 72 44 Q50 47 28 44 Q24 40 28 36 Z" fill="#b45309"/>
+  <!-- Green Feather on Hat -->
+  <path d="M64 36 Q74 20 68 14 Q60 22 62 34 Z" fill="#16a34a"/>
+  <!-- Face -->
+  <circle cx="50" cy="50" r="18" fill="url(#skinGradR2)"/>
+  <!-- Eyes & Cheerful Smile -->
+  <circle cx="44" cy="49" r="2.5" fill="#431407"/>
+  <circle cx="56" cy="49" r="2.5" fill="#431407"/>
+  <circle cx="45" cy="48" r="0.8" fill="#ffffff"/>
+  <circle cx="57" cy="48" r="0.8" fill="#ffffff"/>
+  <path d="M46 56 Q50 60 54 56" stroke="#b45309" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="40" cy="54" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <circle cx="60" cy="54" r="2.5" fill="#f43f5e" opacity="0.4"/>
+  <!-- Citizen Tunic with Belt -->
+  <path d="M30 74 Q50 67 70 74 L78 96 L22 96 Z" fill="#d97706"/>
+  <path d="M44 70 L50 78 L56 70" fill="#fef3c7"/>
+  <rect x="36" y="85" width="28" height="4" rx="2" fill="#78350f"/>
+  <rect x="47" y="84" width="6" height="6" rx="1" fill="#fbbf24"/>
+</svg>
