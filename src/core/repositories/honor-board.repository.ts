@@ -4,12 +4,26 @@ import type { HonorTitle, HonorBoard, HonorRecipient } from '../database/types';
 export class HonorTitleRepository {
   async getAll(): Promise<HonorTitle[]> {
     const list = await db.honorTitles.filter((t) => !t.deletedAt).toArray();
-    return list.sort((a, b) => a.sortOrder - b.sortOrder);
+    const map = new Map<string, HonorTitle>();
+    for (const item of list) {
+      const key = item.code || item.name || item.id;
+      if (!map.has(key)) {
+        map.set(key, item);
+      }
+    }
+    return Array.from(map.values()).sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   async getActive(): Promise<HonorTitle[]> {
     const list = await db.honorTitles.filter((t) => !t.deletedAt && t.isActive).toArray();
-    return list.sort((a, b) => a.sortOrder - b.sortOrder);
+    const map = new Map<string, HonorTitle>();
+    for (const item of list) {
+      const key = item.code || item.name || item.id;
+      if (!map.has(key)) {
+        map.set(key, item);
+      }
+    }
+    return Array.from(map.values()).sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   async findById(id: string): Promise<HonorTitle | undefined> {

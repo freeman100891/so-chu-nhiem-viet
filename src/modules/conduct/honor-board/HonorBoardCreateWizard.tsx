@@ -59,8 +59,11 @@ export const HonorBoardCreateWizard: React.FC = () => {
   const loadInitialData = useCallback(async () => {
     try {
       const titles = await honorTitleSeedService.seedDefaultTitles();
-      setAvailableTitles(titles);
-      setSelectedTitleIds(titles.filter((t) => t.isActive).map((t) => t.id));
+      const uniqueTitles = Array.from(
+        new Map(titles.map((t) => [t.code || t.id, t])).values()
+      ).sort((a, b) => a.sortOrder - b.sortOrder);
+      setAvailableTitles(uniqueTitles);
+      setSelectedTitleIds(uniqueTitles.filter((t) => t.isActive).map((t) => t.id));
 
       const settings = await settingsRepository.getSettings();
       let yearId = settings.activeAcademicYearId;

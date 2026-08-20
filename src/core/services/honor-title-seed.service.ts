@@ -105,43 +105,102 @@ export const DEFAULT_HONOR_TITLES: DefaultTitleDef[] = [
 ];
 
 export class HonorTitleSeedService {
+  private seedPromise: Promise<HonorTitle[]> | null = null;
+
   /**
-   * Khởi tạo 8 danh hiệu mặc định vào database nếu chưa có
+   * Khởi tạo và tối ưu hóa 8 danh hiệu mặc định, tự động dọn dẹp các bản ghi trùng lặp
    */
   async seedDefaultTitles(): Promise<HonorTitle[]> {
-    const existing = await db.honorTitles.filter((t) => !t.deletedAt).toArray();
-    if (existing.length > 0) {
-      existing.sort((a, b) => a.sortOrder - b.sortOrder);
-      return existing;
+    if (this.seedPromise) {
+      return this.seedPromise;
     }
 
+    this.seedPromise = this._doSeedDefaultTitles().finally(() => {
+      this.seedPromise = null;
+    });
+
+    return this.seedPromise;
+  }
+
+  private async _doSeedDefaultTitles(): Promise<HonorTitle[]> {
+    const allRecords = await db.honorTitles.toArray();
+
+    // Group existing non-deleted titles by code (or name if code is missing)
+    const byCode = new Map<string, HonorTitle[]>();
+    const duplicateIdsToDelete: string[] = [];
+
+    for (const item of allRecords) {
+      if (item.deletedAt) continue;
+      const code = item.code || item.name;
+      const list = byCode.get(code) || [];
+      list.push(item);
+      byCode.set(code, list);
+    }
+
+    // Identify duplicates and keep only 1 canonical record per code
+    const keptTitles: HonorTitle[] = [];
+    for (const [, items] of byCode.entries()) {
+      // Sort to keep the best one (prefer active, earliest created)
+      items.sort((a, b) => {
+        if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      });
+      const canonical = items[0]!;
+      keptTitles.push(canonical);
+
+      // Other duplicates are marked for deletion
+      for (let i = 1; i < items.length; i++) {
+        duplicateIdsToDelete.push(items[i]!.id);
+      }
+    }
+
+    // If duplicate records were detected in the database, delete them cleanly
+    if (duplicateIdsToDelete.length > 0) {
+      await db.honorTitles.bulkDelete(duplicateIdsToDelete);
+    }
+
+    // Check if any default titles are missing and insert them
+    const existingCodes = new Set(keptTitles.map((t) => t.code));
     const now = new Date().toISOString();
-    const createdList: HonorTitle[] = [];
 
     for (const def of DEFAULT_HONOR_TITLES) {
-      const title: HonorTitle = {
-        id: crypto.randomUUID(),
-        code: def.code,
-        name: def.name,
-        description: def.description,
-        calculationType: def.calculationType,
-        iconKey: def.iconKey,
-        badgeKey: def.badgeKey,
-        colorToken: def.colorToken,
-        maxRecipients: def.maxRecipients,
-        isActive: true,
-        sortOrder: def.sortOrder,
-        createdAt: now,
-        updatedAt: now,
-        deletedAt: null,
-      };
+      if (!existingCodes.has(def.code)) {
+        const title: HonorTitle = {
+          id: crypto.randomUUID(),
+          code: def.code,
+          name: def.name,
+          description: def.description,
+          calculationType: def.calculationType,
+          iconKey: def.iconKey,
+          badgeKey: def.badgeKey,
+          colorToken: def.colorToken,
+          maxRecipients: def.maxRecipients,
+          isActive: true,
+          sortOrder: def.sortOrder,
+          createdAt: now,
+          updatedAt: now,
+          deletedAt: null,
+        };
 
-      await db.honorTitles.add(title);
-      createdList.push(title);
+        await db.honorTitles.add(title);
+        keptTitles.push(title);
+      }
     }
 
-    return createdList;
+    // Deduplicate and sort by sortOrder
+    const finalMap = new Map<string, HonorTitle>();
+    for (const t of keptTitles) {
+      const key = t.code || t.name;
+      if (!finalMap.has(key)) {
+        finalMap.set(key, t);
+      }
+    }
+
+    const result = Array.from(finalMap.values());
+    result.sort((a, b) => a.sortOrder - b.sortOrder);
+    return result;
   }
 }
 
 export const honorTitleSeedService = new HonorTitleSeedService();
+

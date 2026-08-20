@@ -271,4 +271,54 @@ describe('Honor Board System Unit Tests', () => {
     expect(evalResults[0]?.hasTie).toBe(true);
     expect(evalResults[0]?.tiedCandidates.length).toBe(4);
   });
+
+  it('5. Self-heals and cleans up duplicate honor titles in database', async () => {
+    // Intentionally insert duplicate titles in database
+    await honorTitleSeedService.seedDefaultTitles();
+    const existing = await db.honorTitles.toArray();
+    expect(existing.length).toBe(8);
+
+    // Duplicate all 8 titles with new random IDs
+    const now = new Date().toISOString();
+    for (const item of existing) {
+      await db.honorTitles.add({
+        ...item,
+        id: crypto.randomUUID(),
+        createdAt: now,
+      });
+    }
+
+    const beforeCleanup = await db.honorTitles.toArray();
+    expect(beforeCleanup.length).toBe(16);
+
+    // Running seedDefaultTitles should automatically detect duplicates, clean DB down to 8, and return exactly 8
+    const cleaned = await honorTitleSeedService.seedDefaultTitles();
+    expect(cleaned.length).toBe(8);
+
+    const inDbAfter = await db.honorTitles.toArray();
+    expect(inDbAfter.length).toBe(8);
+
+    // Verify all 8 codes are unique
+    const uniqueCodes = new Set(inDbAfter.map((t) => t.code));
+    expect(uniqueCodes.size).toBe(8);
+  });
+
+  it('6. Handles concurrent seedDefaultTitles calls safely without duplicates', async () => {
+    // Run 5 simultaneous seedDefaultTitles promises concurrently
+    const results = await Promise.all([
+      honorTitleSeedService.seedDefaultTitles(),
+      honorTitleSeedService.seedDefaultTitles(),
+      honorTitleSeedService.seedDefaultTitles(),
+      honorTitleSeedService.seedDefaultTitles(),
+      honorTitleSeedService.seedDefaultTitles(),
+    ]);
+
+    for (const res of results) {
+      expect(res.length).toBe(8);
+    }
+
+    const inDb = await db.honorTitles.toArray();
+    expect(inDb.length).toBe(8);
+  });
 });
+
