@@ -3,7 +3,7 @@ import { StudentAvatar } from '../../../../shared/components/StudentAvatar';
 import type { HonorBoardRecipientDetail } from '../../../../core/services/honor-board.service';
 import type { GlobalAvatarSystemSettings } from '../../../../core/types/avatar-theme.types';
 import { playPromotionFanfare } from '../../../../shared/utilities/sound';
-import { Crown, Trophy, Medal, Sparkles, Tv, Volume2, VolumeX, Flame, Award } from 'lucide-react';
+import { Crown, Trophy, Medal, Sparkles, Tv, Volume2, VolumeX, Award } from 'lucide-react';
 import { cn } from '../../../../shared/utilities/cn';
 
 export interface TopRankPodiumProps {

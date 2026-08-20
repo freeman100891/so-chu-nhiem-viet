@@ -493,7 +493,7 @@ export class AvatarThemeRegistry {
       return {
         ...DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS,
         presetThemeId: settings.activeAvatarThemeId,
-        levels: presetLevels,
+        levels: presetLevels as unknown as typeof DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS.levels,
       };
     }
     return DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;

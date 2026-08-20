@@ -263,7 +263,7 @@ describe('Honor Board Avatar Synchronization Tests', () => {
 
     expect(normalized.presetThemeId).toBe('plant_growth');
     expect(normalized.levels.length).toBe(5);
-    expect(normalized.levels[0]?.image.assetKey).toBe('plant/plant-stage-1');
+    expect(normalized.levels[0]?.image.kind === 'BUILT_IN' ? normalized.levels[0].image.assetKey : '').toBe('plant/plant-stage-1');
   });
 
   it('6. TopRankPodium renders 3D stage elements, sound toggle, presentation button, and winner banner', () => {

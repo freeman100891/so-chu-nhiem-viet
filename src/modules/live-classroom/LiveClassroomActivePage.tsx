@@ -53,7 +53,6 @@ import {
   Clock,
   Hand,
   Search,
-  Maximize2,
   Minimize2,
   ChevronRight,
   ChevronLeft,

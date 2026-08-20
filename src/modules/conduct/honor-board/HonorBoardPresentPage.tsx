@@ -105,7 +105,6 @@ export const HonorBoardPresentPage: React.FC = () => {
       opacity: 1,
     }));
 
-    let animationFrameId: number;
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
       let aliveCount = 0;
@@ -131,7 +130,7 @@ export const HonorBoardPresentPage: React.FC = () => {
       }
 
       if (aliveCount > 0) {
-        animationFrameId = requestAnimationFrame(animate);
+        requestAnimationFrame(animate);
       } else {
         ctx.clearRect(0, 0, width, height);
       }
@@ -239,9 +238,12 @@ export const HonorBoardPresentPage: React.FC = () => {
   useEffect(() => {
     if (slides[currentSlide]?.type === 'podium') {
       const cleanup = runPodiumSequence();
-      return cleanup;
+      return () => {
+        cleanup?.();
+      };
     } else {
       setPodiumRevealStep(5);
+      return undefined;
     }
   }, [currentSlide, slides, runPodiumSequence]);
 
