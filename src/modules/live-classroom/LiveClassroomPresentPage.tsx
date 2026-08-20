@@ -162,11 +162,11 @@ export const LiveClassroomPresentPage: React.FC = () => {
       <CuteRainbowSVG className="absolute bottom-6 right-6 w-56 h-56 opacity-10 pointer-events-none" />
 
       {/* TOP BAR: CLASS TITLE & STATUS */}
-      <div className="flex items-center justify-between z-10">
+      <div className="flex items-center justify-between z-10 flex-wrap gap-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate(`/live-classroom/${sessionId}`)}
-            className="p-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 shadow-xs flex items-center gap-1.5 text-xs font-extrabold"
+            className="p-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-md flex items-center gap-2 text-xs font-black transition-all active:scale-95"
             title="Quay lại Bảng điều khiển giáo viên"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -174,10 +174,10 @@ export const LiveClassroomPresentPage: React.FC = () => {
           </button>
 
           <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+            <h1 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2.5">
               <span>{session?.title || 'Phiên học trực tuyến'}</span>
               {classRoom && (
-                <span className="px-3 py-0.5 rounded-full bg-blue-100 text-blue-800 text-xs font-black">
+                <span className="px-3.5 py-1 rounded-full bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-200 text-xs font-black border border-blue-300 dark:border-blue-700 shadow-2xs">
                   Lớp {classRoom.name}
                 </span>
               )}
@@ -186,9 +186,9 @@ export const LiveClassroomPresentPage: React.FC = () => {
         </div>
 
         {/* CONTROLS & TIMERS */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           {timerRemaining !== null && (
-            <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-amber-400 text-amber-950 font-mono text-lg font-black shadow-md animate-pulse">
+            <div className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-400 text-amber-950 font-mono text-xl font-black shadow-lg ring-2 ring-amber-300 animate-pulse">
               <Clock className="w-5 h-5" />
               <span>{formatTime(timerRemaining)}</span>
             </div>
@@ -196,7 +196,7 @@ export const LiveClassroomPresentPage: React.FC = () => {
 
           <button
             onClick={handleToggleFullscreen}
-            className="p-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 shadow-xs"
+            className="p-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-md transition-all active:scale-95"
             title="Toàn màn hình (F11)"
           >
             <Maximize className="w-5 h-5" />
@@ -204,7 +204,7 @@ export const LiveClassroomPresentPage: React.FC = () => {
 
           <button
             onClick={handleOpenInNewWindow}
-            className="p-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 shadow-xs"
+            className="p-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-md transition-all active:scale-95"
             title="Mở trong cửa sổ mới"
           >
             <ExternalLink className="w-5 h-5" />
@@ -214,11 +214,11 @@ export const LiveClassroomPresentPage: React.FC = () => {
 
       {/* CELEBRATION POINT BANNER */}
       {pointCelebration && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 p-4 rounded-3xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-900 shadow-2xl border-4 border-white animate-bounce flex items-center gap-3">
-          <CuteStarSVG className="w-10 h-10" />
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 p-5 rounded-3xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 text-slate-950 shadow-2xl border-4 border-white animate-bounce flex items-center gap-4">
+          <CuteStarSVG className="w-12 h-12 shrink-0 animate-spin" />
           <div>
-            <h3 className="font-extrabold text-lg">Khen thưởng: {pointCelebration.studentName}</h3>
-            <p className="text-xs font-bold text-slate-800">+{pointCelebration.points} Điểm thi đua • {pointCelebration.reason}</p>
+            <h3 className="font-black text-xl">Khen thưởng: {pointCelebration.studentName}</h3>
+            <p className="text-sm font-black text-slate-900">+{pointCelebration.points} Điểm thi đua • {pointCelebration.reason}</p>
           </div>
         </div>
       )}
@@ -228,41 +228,41 @@ export const LiveClassroomPresentPage: React.FC = () => {
         {/* LEFT / CENTER: RANDOM STUDENT CALLOUT WHEEL OR BROADCAST TOOLS */}
         <div className="lg:col-span-2 space-y-6 text-center flex flex-col justify-center items-center">
           {activeBreak && activeBreak.active ? (
-            <div className="w-full max-w-lg p-8 rounded-3xl bg-gradient-to-r from-blue-500 to-teal-500 text-white shadow-2xl space-y-4 animate-fadeIn">
-              <h2 className="text-2xl font-extrabold">{activeBreak.message}</h2>
-              <div className="p-4 rounded-2xl bg-white/20 text-yellow-300 font-mono text-5xl font-extrabold tracking-widest inline-block shadow-inner">
+            <div className="w-full max-w-lg p-10 rounded-3xl bg-gradient-to-br from-blue-600 via-teal-600 to-indigo-600 text-white shadow-2xl space-y-5 animate-fadeIn border-4 border-white/30">
+              <h2 className="text-3xl font-black">{activeBreak.message}</h2>
+              <div className="p-5 rounded-3xl bg-black/20 text-yellow-300 font-mono text-6xl font-black tracking-widest inline-block shadow-inner ring-2 ring-yellow-400/40">
                 {formatTime(activeBreak.remainingSeconds)}
               </div>
             </div>
           ) : activePoll ? (
-            <div className="w-full max-w-lg p-8 rounded-3xl bg-white border-4 border-indigo-400 shadow-2xl space-y-4 animate-scaleUp text-left">
-              <span className="px-3.5 py-1 rounded-full bg-indigo-100 text-indigo-900 font-black text-xs uppercase tracking-wider">
+            <div className="w-full max-w-lg p-8 rounded-3xl bg-white/95 dark:bg-slate-900/95 border-4 border-indigo-500 shadow-2xl space-y-5 animate-scaleUp text-left backdrop-blur-md">
+              <span className="px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-900 font-black text-xs uppercase tracking-wider shadow-2xs">
                 Bình chọn / Khảo sát nhanh
               </span>
-              <h2 className="text-2xl font-black text-slate-900">{activePoll.question}</h2>
-              <div className="space-y-2">
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100">{activePoll.question}</h2>
+              <div className="space-y-2.5">
                 {activePoll.options.map((opt, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-sm font-bold text-slate-800">
+                  <div key={idx} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-between text-base font-bold text-slate-800 dark:text-slate-200 shadow-xs">
                     <span>{String.fromCharCode(65 + idx)}. {opt}</span>
                     {activePoll.counts[idx] !== undefined && (
-                      <span className="font-mono text-indigo-600 font-extrabold">{activePoll.counts[idx]} phiếu</span>
+                      <span className="font-mono text-indigo-600 dark:text-indigo-400 font-black text-lg">{activePoll.counts[idx]} phiếu</span>
                     )}
                   </div>
                 ))}
               </div>
             </div>
           ) : activeQr ? (
-            <div className="w-full max-w-lg p-8 rounded-3xl bg-white border-4 border-teal-400 shadow-2xl space-y-4 animate-scaleUp text-center">
-              <span className="px-3.5 py-1 rounded-full bg-teal-100 text-teal-900 font-black text-xs uppercase tracking-wider">
+            <div className="w-full max-w-lg p-8 rounded-3xl bg-white/95 dark:bg-slate-900/95 border-4 border-teal-500 shadow-2xl space-y-5 animate-scaleUp text-center backdrop-blur-md">
+              <span className="px-4 py-1.5 rounded-full bg-teal-100 text-teal-900 font-black text-xs uppercase tracking-wider shadow-2xs">
                 Quét mã QR
               </span>
-              <h2 className="text-2xl font-black text-slate-900">{activeQr.title}</h2>
-              <p className="text-sm text-slate-500 font-mono break-all">{activeQr.url}</p>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100">{activeQr.title}</h2>
+              <p className="text-sm text-slate-500 font-mono break-all bg-slate-100 dark:bg-slate-800 p-3 rounded-xl">{activeQr.url}</p>
             </div>
           ) : selectedStudent ? (
-            <div className="w-full max-w-lg p-8 rounded-3xl bg-white border-4 border-blue-400 shadow-2xl space-y-4 animate-scaleUp">
-              <span className="px-4 py-1.5 rounded-full bg-blue-100 text-blue-800 font-extrabold text-xs uppercase tracking-wider inline-flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-blue-600" />
+            <div className="w-full max-w-lg p-10 rounded-3xl bg-white/95 dark:bg-slate-900/95 border-4 border-blue-500 shadow-2xl space-y-6 animate-scaleUp backdrop-blur-md">
+              <span className="px-5 py-2 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-900 font-black text-xs uppercase tracking-wider inline-flex items-center gap-2 shadow-2xs ring-1 ring-blue-300">
+                <Sparkles className="w-5 h-5 text-blue-600 animate-spin" />
                 Học sinh được chọn phát biểu
               </span>
               <div className="flex justify-center">
@@ -272,36 +272,36 @@ export const LiveClassroomPresentPage: React.FC = () => {
                   size="xl"
                 />
               </div>
-              <h2 className="text-3xl font-black text-slate-900">{selectedStudent.student.fullName}</h2>
-              <p className="text-sm font-bold text-slate-500">Mã học sinh: {selectedStudent.student.studentCode}</p>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">{selectedStudent.student.fullName}</h2>
+              <p className="text-base font-bold text-slate-500">Mã học sinh: {selectedStudent.student.studentCode}</p>
             </div>
           ) : (
-            <div className="text-center space-y-3 opacity-60">
-              <CuteCloudSVG className="w-32 h-32 mx-auto" />
-              <h3 className="text-2xl font-extrabold text-slate-700">Lớp học đang diễn ra sôi nổi</h3>
-              <p className="text-sm font-medium text-slate-500">Màn hình tự động cập nhật hoạt động từ thầy/cô giáo</p>
+            <div className="text-center space-y-4 opacity-75">
+              <CuteCloudSVG className="w-36 h-36 mx-auto animate-bounce" />
+              <h3 className="text-3xl font-black text-slate-800 dark:text-slate-200">Lớp học đang diễn ra sôi nổi</h3>
+              <p className="text-base font-bold text-slate-500">Màn hình tự động cập nhật hoạt động trực tiếp từ thầy/cô giáo</p>
             </div>
           )}
         </div>
 
         {/* RIGHT: GROUP SUMMARY OR SIDEBAR */}
         <div className="space-y-4">
-          <div className="p-5 rounded-3xl bg-white border-2 border-slate-100 shadow-sm space-y-3">
-            <h3 className="font-extrabold text-sm text-slate-700 uppercase tracking-wider flex items-center gap-2">
-              <CuteStarSVG className="w-5 h-5" />
+          <div className="p-6 rounded-3xl bg-white/95 dark:bg-slate-900/95 border-2 border-slate-200 dark:border-slate-800 shadow-lg space-y-4 backdrop-blur-md">
+            <h3 className="font-black text-sm text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <CuteStarSVG className="w-5 h-5 text-amber-500" />
               Danh sách nhóm học tập
             </h3>
             {groups.length === 0 ? (
-              <p className="text-xs text-slate-400 italic">Chưa chia nhóm trong tiết học này</p>
+              <p className="text-xs text-slate-400 italic py-4 text-center">Chưa chia nhóm trong tiết học này</p>
             ) : (
-              <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+              <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
                 {groups.map((grp) => (
-                  <div key={grp.id} className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div key={grp.id} className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-2xs">
                     <div>
-                      <p className="font-extrabold text-sm text-slate-800">{grp.name}</p>
-                      <p className="text-[11px] text-slate-500">{grp.members.length} thành viên</p>
+                      <p className="font-black text-sm text-slate-800 dark:text-slate-200">{grp.name}</p>
+                      <p className="text-xs text-slate-500">{grp.members.length} thành viên</p>
                     </div>
-                    <span className="font-mono text-sm font-extrabold text-blue-600">
+                    <span className="font-mono text-sm font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/70 px-2.5 py-1 rounded-xl border border-blue-200 dark:border-blue-800">
                       {(grp as any).points || 0} điểm
                     </span>
                   </div>
@@ -334,3 +334,4 @@ export const LiveClassroomPresentPage: React.FC = () => {
     </div>
   );
 };
+

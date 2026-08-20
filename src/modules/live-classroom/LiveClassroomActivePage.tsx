@@ -63,6 +63,7 @@ import {
   Settings,
   RefreshCw,
   Tv,
+  Sparkles,
 } from 'lucide-react';
 import { StudentCard } from './StudentCard';
 import { SessionSummaryModal } from './SessionSummaryModal';
@@ -841,67 +842,71 @@ export const LiveClassroomActivePage: React.FC = () => {
         <div>Phiên học không tồn tại</div>
       ) : (
         <>
-          {/* TOPBAR HEADER — RESPONSIVE & BALANCED LAYOUT */}
-          <div className="px-4 py-3 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-3 sticky top-2 z-30 transition-all">
-            {/* LEFT: SESSION IDENTITY & STATUS */}
-            <div className="flex items-center gap-3 min-w-0 flex-1">
-              <div className="w-11 h-11 rounded-xl bg-app-primary text-white flex items-center justify-center shadow-xs shrink-0">
-                <CuteCloudSVG className="w-6 h-6 md:w-7 md:h-7" />
+          {/* TOPBAR HERO COMMAND CENTER HEADER */}
+          <div className="px-4 sm:px-6 py-4 rounded-3xl bg-white/95 dark:bg-slate-900/95 border-2 border-slate-200/90 dark:border-slate-800 shadow-md backdrop-blur-md flex flex-col xl:flex-row xl:items-center justify-between gap-4 sticky top-2 z-30 transition-all">
+            {/* LEFT: SESSION IDENTITY & TELEMETRY */}
+            <div className="flex items-center gap-3.5 min-w-0 flex-1">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-md shrink-0 ring-2 ring-white/60">
+                <CuteCloudSVG className="w-7 h-7 md:w-8 md:h-8" />
               </div>
-              <div className="min-w-0 flex-1 space-y-0.5">
-                <div className="flex items-center gap-2 flex-wrap min-w-0">
-                  <h1 className="font-extrabold text-slate-800 text-base sm:text-lg tracking-tight truncate max-w-full sm:max-w-md" title={session.title}>
+              <div className="min-w-0 flex-1 space-y-1">
+                <div className="flex items-center gap-2.5 flex-wrap min-w-0">
+                  <h1 className="font-black text-slate-900 dark:text-slate-100 text-base sm:text-xl tracking-tight truncate max-w-full sm:max-w-md" title={session.title}>
                     {session.title}
                   </h1>
-                  <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200/80 whitespace-nowrap">
+                  <span className="shrink-0 inline-flex items-center px-3 py-0.5 rounded-full text-xs font-black bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 whitespace-nowrap shadow-2xs">
                     Lớp {classRoom?.name}
                   </span>
                   <span
-                    className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-bold whitespace-nowrap ${
+                    className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-black whitespace-nowrap shadow-2xs ${
                       session.status === 'active'
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        : 'bg-amber-50 text-amber-700 border border-amber-200'
+                        ? 'bg-emerald-100/90 text-emerald-900 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
+                        : 'bg-amber-100/90 text-amber-900 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
                     }`}
                   >
                     <span
-                      className={`w-2 h-2 rounded-full ${
-                        session.status === 'active' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                      className={`w-2.5 h-2.5 rounded-full ${
+                        session.status === 'active' ? 'bg-emerald-500 animate-ping' : 'bg-amber-500'
                       }`}
                     />
                     {session.status === 'active' ? 'Đang diễn ra' : 'Đã tạm dừng'}
                   </span>
                   {isPresentationMode && (
-                    <span className="shrink-0 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 animate-pulse whitespace-nowrap">
+                    <span className="shrink-0 inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-black bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-700 animate-pulse whitespace-nowrap shadow-2xs">
                       📺 Fullscreen
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-500 truncate">
+                <div className="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 truncate font-medium">
                   <span>
-                    Môn: <strong className="text-slate-700 font-semibold">{session.subject}</strong>
+                    Môn: <strong className="text-slate-800 dark:text-slate-200 font-bold">{session.subject}</strong>
                   </span>
                   <span>•</span>
                   <span>
                     Bắt đầu:{' '}
-                    <strong className="text-slate-700 font-medium">
+                    <strong className="text-slate-800 dark:text-slate-200 font-bold">
                       {session.startedAt
                         ? new Date(session.startedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
                         : 'Vừa xong'}
                     </strong>
                   </span>
+                  <span>•</span>
+                  <span>
+                    Sĩ số: <strong className="text-slate-800 dark:text-slate-200 font-bold">{participants.length} HS</strong>
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* RIGHT: TIMER & ACTION CONTROLS */}
-            <div className="flex items-center gap-2 flex-wrap xl:flex-nowrap justify-start xl:justify-end shrink-0 w-full xl:w-auto pt-2.5 xl:pt-0 border-t xl:border-t-0 border-slate-100">
-              {/* Elapsed Timer Pill */}
+            {/* RIGHT: LIVE TIMER & ACTION CONTROLS */}
+            <div className="flex items-center gap-2.5 flex-wrap xl:flex-nowrap justify-start xl:justify-end shrink-0 w-full xl:w-auto pt-3 xl:pt-0 border-t xl:border-t-0 border-slate-100 dark:border-slate-800">
+              {/* Glowing Live Digital Timer Pill */}
               <div
-                className="px-3 py-1.5 rounded-xl bg-slate-900 text-emerald-400 font-mono font-bold text-sm border border-slate-800 flex items-center gap-1.5 shadow-xs shrink-0"
+                className="px-4 py-2 rounded-2xl bg-slate-950 text-emerald-400 font-mono font-black text-sm sm:text-base border border-emerald-500/30 ring-1 ring-emerald-500/20 shadow-inner flex items-center gap-2 shrink-0 select-none"
                 title="Thời gian diễn ra phiên học"
               >
-                <Clock className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>{formatTime(elapsedSeconds)}</span>
+                <Clock className="w-4.5 h-4.5 text-emerald-400 animate-pulse shrink-0" />
+                <span className="tracking-wider">{formatTime(elapsedSeconds)}</span>
               </div>
 
               {/* Online Meeting Room */}
@@ -910,7 +915,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                   href={session.meetingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold inline-flex items-center gap-1.5 transition-colors shadow-xs shrink-0 min-h-[38px]"
+                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white text-xs font-black inline-flex items-center gap-1.5 transition-all shadow-xs shrink-0 min-h-[40px] active:scale-95"
                   title="Mở liên kết phòng họp trực tuyến"
                 >
                   <Video className="w-4 h-4" />
@@ -924,7 +929,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="min-h-[38px] border-emerald-600/60 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-600 font-semibold text-xs"
+                  className="min-h-[40px] border-2 border-emerald-600/50 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 hover:text-white font-bold text-xs rounded-xl shadow-2xs transition-all active:scale-95"
                   leftIcon={<RefreshCw className="w-4 h-4" />}
                   onClick={() => setAttendanceSyncModalOpen(true)}
                   title="Đồng bộ điểm danh vào sổ chính"
@@ -938,7 +943,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   variant="primary"
                   size="sm"
-                  className="min-h-[38px] bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs"
+                  className="min-h-[40px] bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-xs rounded-xl active:scale-95"
                   leftIcon={<Play className="w-4 h-4" />}
                   onClick={handleStartSession}
                 >
@@ -948,7 +953,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   variant="secondary"
                   size="sm"
-                  className="min-h-[38px] border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-xs"
+                  className="min-h-[40px] border-2 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-xs rounded-xl active:scale-95"
                   leftIcon={<Pause className="w-4 h-4" />}
                   onClick={handlePauseSession}
                 >
@@ -958,7 +963,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   variant="primary"
                   size="sm"
-                  className="min-h-[38px] bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs"
+                  className="min-h-[40px] bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-xs rounded-xl active:scale-95"
                   leftIcon={<Play className="w-4 h-4" />}
                   onClick={handleResumeSession}
                 >
@@ -966,28 +971,27 @@ export const LiveClassroomActivePage: React.FC = () => {
                 </Button>
               )}
 
-              {/* In-place Fullscreen Presentation Toggle */}
-              <Button
-                variant={isPresentationMode ? 'secondary' : 'primary'}
-                size="sm"
-                className={`min-h-[38px] font-bold text-xs transition-all shadow-xs ${
-                  isPresentationMode
-                    ? 'bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200'
-                    : 'bg-app-primary hover:bg-app-primary/90 text-white'
-                }`}
-                leftIcon={isPresentationMode ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              {/* Primary Hero CTA: In-place Fullscreen Presentation Toggle */}
+              <button
+                type="button"
                 onClick={togglePresentationMode}
+                className={`min-h-[40px] px-4 py-2 rounded-xl font-black text-xs transition-all flex items-center gap-2 shadow-md active:scale-95 ${
+                  isPresentationMode
+                    ? 'bg-amber-100 text-amber-950 border-2 border-amber-400 hover:bg-amber-200'
+                    : 'bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-600 hover:to-yellow-600 text-slate-950 hover:shadow-lg scale-[1.02]'
+                }`}
                 title={isPresentationMode ? 'Thu nhỏ về chế độ thường (Esc)' : 'Trình chiếu toàn màn hình (Phím F)'}
               >
-                {isPresentationMode ? 'Thoát Trình Chiếu' : 'Trình Chiếu (F)'}
-              </Button>
+                {isPresentationMode ? <Minimize2 className="w-4 h-4" /> : <Tv className="w-4 h-4" />}
+                <span>{isPresentationMode ? 'Thoát Trình Chiếu' : 'Trình Chiếu (F)'}</span>
+              </button>
 
               {/* Projector Tab */}
               {!isPresentationMode && (
                 <Button
                   variant="outline"
                   size="sm"
-                  className="min-h-[38px] border-slate-200 text-slate-700 hover:bg-slate-50 font-medium text-xs hidden md:inline-flex"
+                  className="min-h-[40px] border-2 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-xs hidden md:inline-flex rounded-xl"
                   leftIcon={<Tv className="w-4 h-4" />}
                   onClick={() => navigate(`/live-classroom/${session.id}/present`)}
                   title="Mở tab trình chiếu máy chiếu phụ"
@@ -1000,7 +1004,7 @@ export const LiveClassroomActivePage: React.FC = () => {
               <Button
                 variant="outline"
                 size="sm"
-                className="min-h-[38px] border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 font-semibold text-xs"
+                className="min-h-[40px] border-2 border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 hover:border-rose-300 font-bold text-xs rounded-xl active:scale-95"
                 leftIcon={<CheckCircle className="w-4 h-4" />}
                 onClick={handleCompleteSession}
                 title="Kết thúc và hoàn thành phiên học"
@@ -1013,7 +1017,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSettingsModalOpen(true)}
-                  className="p-2 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 min-h-[38px] min-w-[38px] flex items-center justify-center transition-colors shadow-xs"
+                  className="p-2.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 min-h-[40px] min-w-[40px] flex items-center justify-center transition-all shadow-2xs active:scale-95"
                   title="Cấu hình phiên học"
                   aria-label="Cài đặt phiên học"
                 >
@@ -1025,15 +1029,15 @@ export const LiveClassroomActivePage: React.FC = () => {
 
           {/* MULTI-SELECT BATCH ACTION BAR (Shown when 1 or more students checked) */}
           {selectedStudentIds.size > 0 && (
-            <Card className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl flex items-center justify-between gap-3 animate-fadeIn shadow-md">
+            <Card className="p-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-3xl flex flex-wrap items-center justify-between gap-3 animate-fadeIn shadow-xl border-2 border-blue-400/40 backdrop-blur-md">
               <div className="flex items-center gap-3">
-                <Badge variant="primary" className="bg-white text-blue-800 font-extrabold text-xs">
+                <Badge variant="primary" className="bg-white text-blue-900 font-black text-xs px-3 py-1 shadow-xs">
                   Đã chọn {selectedStudentIds.size} học sinh
                 </Badge>
-                <button onClick={handleSelectAllStudents} className="text-xs font-bold underline hover:text-blue-100">
+                <button onClick={handleSelectAllStudents} className="text-xs font-black underline hover:text-blue-100 transition-colors">
                   Chọn tất cả ({filteredParticipants.length})
                 </button>
-                <button onClick={handleDeselectAllStudents} className="text-xs font-bold underline hover:text-blue-100">
+                <button onClick={handleDeselectAllStudents} className="text-xs font-black underline hover:text-blue-100 transition-colors">
                   Bỏ chọn tất cả
                 </button>
               </div>
@@ -1042,7 +1046,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="bg-white text-blue-700 font-extrabold hover:bg-blue-50"
+                  className="bg-white text-blue-700 font-black hover:bg-blue-50 rounded-xl shadow-xs active:scale-95"
                   leftIcon={<Plus className="w-4 h-4" />}
                   onClick={() => handleBatchAwardPoints(1, 'Tích cực phát biểu cùng lúc')}
                 >
@@ -1051,11 +1055,20 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="bg-amber-300 text-amber-950 font-extrabold hover:bg-amber-400"
+                  className="bg-gradient-to-r from-amber-300 to-yellow-300 text-amber-950 font-black hover:from-amber-400 hover:to-yellow-400 rounded-xl shadow-xs active:scale-95"
                   leftIcon={<Award className="w-4 h-4" />}
                   onClick={() => handleBatchAwardPoints(2, 'Cùng hoàn thành xuất sắc bài tập')}
                 >
                   +2 Điểm tất cả
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="bg-gradient-to-r from-purple-300 to-fuchsia-300 text-purple-950 font-black hover:from-purple-400 hover:to-fuchsia-400 rounded-xl shadow-xs active:scale-95"
+                  leftIcon={<Sparkles className="w-4 h-4" />}
+                  onClick={() => handleBatchAwardPoints(5, 'Cùng đạt thành tích xuất sắc')}
+                >
+                  +5 Điểm tất cả
                 </Button>
               </div>
             </Card>
@@ -1063,10 +1076,10 @@ export const LiveClassroomActivePage: React.FC = () => {
 
           {/* MAIN LAYOUT: FULL-WIDTH STUDENT GRID */}
           <div className="w-full space-y-4">
-            {/* DENSITY & SEARCH TOOLBAR */}
-            <Card className="p-3 rounded-2xl border-2 border-slate-100">
+            {/* DENSITY & SEARCH COMMAND BAR */}
+            <Card className="p-3.5 sm:p-4 rounded-3xl border-2 border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shadow-xs backdrop-blur-md">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
                   <Input
                     placeholder="Tìm tên học sinh, STT..."
                     leftIcon={<Search className="w-4 h-4 text-slate-400" />}
@@ -1075,7 +1088,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                       setSearchQuery(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="w-full sm:w-64"
+                    className="w-full sm:w-64 rounded-xl"
                   />
 
                   <Select
@@ -1096,13 +1109,13 @@ export const LiveClassroomActivePage: React.FC = () => {
 
                 {/* DENSITY SWITCHER 4 MODES: Tự động | Lớn | Vừa | Gọn */}
                 <div className="flex items-center gap-3 justify-between w-full sm:w-auto">
-                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl text-xs font-bold shadow-2xs">
+                  <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl text-xs font-black shadow-inner border border-slate-200/80 dark:border-slate-700">
                     <button
                       onClick={() => setCardDensity('auto')}
                       className={`px-3 py-1.5 rounded-xl transition-all ${
                         cardDensity === 'auto'
-                          ? 'bg-white shadow-xs text-blue-600 font-black'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600 dark:text-blue-400 font-black'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                       }`}
                       title="Tự động co giãn theo kích thước màn hình"
                     >
@@ -1112,8 +1125,8 @@ export const LiveClassroomActivePage: React.FC = () => {
                       onClick={() => setCardDensity('large')}
                       className={`px-3 py-1.5 rounded-xl transition-all ${
                         cardDensity === 'large'
-                          ? 'bg-white shadow-xs text-blue-600 font-black'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600 dark:text-blue-400 font-black'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                       }`}
                       title="Hiển thị thẻ to, chữ to, avatar lớn"
                     >
@@ -1123,8 +1136,8 @@ export const LiveClassroomActivePage: React.FC = () => {
                       onClick={() => setCardDensity('medium')}
                       className={`px-3 py-1.5 rounded-xl transition-all ${
                         cardDensity === 'medium'
-                          ? 'bg-white shadow-xs text-blue-600 font-black'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600 dark:text-blue-400 font-black'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                       }`}
                       title="Cân bằng giữa kích thước và số lượng thẻ"
                     >
@@ -1134,8 +1147,8 @@ export const LiveClassroomActivePage: React.FC = () => {
                       onClick={() => setCardDensity('compact')}
                       className={`px-3 py-1.5 rounded-xl transition-all ${
                         cardDensity === 'compact'
-                          ? 'bg-white shadow-xs text-blue-600 font-black'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600 dark:text-blue-400 font-black'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
                       }`}
                       title="Hiển thị nhiều thẻ học sinh hơn"
                     >
@@ -1143,51 +1156,79 @@ export const LiveClassroomActivePage: React.FC = () => {
                     </button>
                   </div>
 
-                  <span className="text-xs font-bold text-slate-500 shrink-0">
+                  <span className="text-xs font-black text-slate-600 dark:text-slate-400 shrink-0 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700">
                     {filteredParticipants.length} học sinh
                   </span>
                 </div>
               </div>
             </Card>
 
+            {/* EMPTY SEARCH STATE */}
+            {filteredParticipants.length === 0 && (
+              <div className="py-16 px-4 text-center rounded-3xl bg-white/80 dark:bg-slate-900/80 border-2 border-dashed border-slate-200 dark:border-slate-800 space-y-3">
+                <div className="w-14 h-14 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                  <Search className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-black text-slate-800 dark:text-slate-200">
+                  Không tìm thấy học sinh nào
+                </h3>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                  Không có học sinh nào khớp với từ khóa tìm kiếm hoặc bộ lọc trạng thái hiện tại.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setAttendanceFilter('all');
+                  }}
+                  className="mt-2 font-bold"
+                >
+                  Xóa bộ lọc tìm kiếm
+                </Button>
+              </div>
+            )}
+
             {/* STUDENT CARDS GRID (Fluid Responsive Grid + Container Queries) */}
-            <div className={gridColClass}>
-              {paginatedParticipants.map((p, idx) => {
-                const st = studentMap.get(p.studentId);
-                if (!st) return null;
+            {filteredParticipants.length > 0 && (
+              <div className={gridColClass}>
+                {paginatedParticipants.map((p, idx) => {
+                  const st = studentMap.get(p.studentId);
+                  if (!st) return null;
 
-                const score = studentTotalPointsMap.get(p.studentId) || 0;
-                const presentation = avatarThemeRegistry.resolveStudentAvatarPresentation({
-                  student: st,
-                  score,
-                  globalSettings: globalAvatarSettings,
-                  uploadedAssetUrls,
-                });
+                  const score = studentTotalPointsMap.get(p.studentId) || 0;
+                  const presentation = avatarThemeRegistry.resolveStudentAvatarPresentation({
+                    student: st,
+                    score,
+                    globalSettings: globalAvatarSettings,
+                    uploadedAssetUrls,
+                  });
 
-                return (
-                  <StudentCard
-                    key={p.id}
-                    participant={p}
-                    student={st}
-                    rollNumber={idx + 1}
-                    points={score}
-                    presentation={presentation}
-                    globalActiveThemeId={globalAvatarThemeId}
-                    cardDensity={cardDensity}
-                    isSelected={focusStudent?.student.id === p.studentId}
-                    isChecked={selectedStudentIds.has(p.studentId)}
-                    isSubmitting={submittingStudentId === p.studentId}
-                    floatingBadge={floatingBadges.get(p.studentId)}
-                    onSelectCard={(student, participant) => setFocusStudent({ student, participant })}
-                    onToggleCheck={toggleSelectStudent}
-                    onQuickAward={handleQuickAwardPoints}
-                    onIncrementTalk={handleIncrementParticipation}
-                    onOpenDeduct={handleOpenDeductModal}
-                    onOpenCustomPoint={handleOpenCustomPointModal}
-                  />
-                );
-              })}
-            </div>
+                  return (
+                    <StudentCard
+                      key={p.id}
+                      participant={p}
+                      student={st}
+                      rollNumber={idx + 1}
+                      points={score}
+                      presentation={presentation}
+                      globalActiveThemeId={globalAvatarThemeId}
+                      cardDensity={cardDensity}
+                      isSelected={focusStudent?.student.id === p.studentId}
+                      isChecked={selectedStudentIds.has(p.studentId)}
+                      isSubmitting={submittingStudentId === p.studentId}
+                      floatingBadge={floatingBadges.get(p.studentId)}
+                      onSelectCard={(student, participant) => setFocusStudent({ student, participant })}
+                      onToggleCheck={toggleSelectStudent}
+                      onQuickAward={handleQuickAwardPoints}
+                      onIncrementTalk={handleIncrementParticipation}
+                      onOpenDeduct={handleOpenDeductModal}
+                      onOpenCustomPoint={handleOpenCustomPointModal}
+                    />
+                  );
+                })}
+              </div>
+            )}
 
             {/* PAGINATION CONTROLS */}
             {totalPages > 1 && (
