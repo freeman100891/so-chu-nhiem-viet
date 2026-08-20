@@ -496,6 +496,7 @@ export class AvatarThemeRegistry {
     avatarLevel?: AvatarProgressLevel | null;
     rankLevelOrOrder?: number | null;
   }): ResolvedStudentAvatar {
+    // 1. Explicit custom portrait photo (base64 / URL)
     if (options.customAvatar && options.customAvatar.trim().length > 0) {
       return {
         themeId: 'custom',
@@ -510,6 +511,54 @@ export class AvatarThemeRegistry {
       };
     }
 
+    // 2. 5-Level Avatar System (Central Theme & Progression)
+    const settings = options.globalSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
+    const activeThemeId = options.globalActiveThemeId || settings.presetThemeId || options.avatarThemeId || DEFAULT_AVATAR_THEME_ID;
+    const theme = this.getThemeById(activeThemeId) || this.themes.get(DEFAULT_AVATAR_THEME_ID)!;
+
+    let targetLevel: AvatarProgressLevel = 1;
+    if (options.avatarLevel && options.avatarLevel >= 1 && options.avatarLevel <= 5) {
+      targetLevel = options.avatarLevel;
+    } else if (options.score !== undefined && options.score !== null) {
+      const thresholds = settings.levels ? settings.levels.map((l) => ({ level: l.level, minPoints: l.minPoints })) : DEFAULT_AVATAR_LEVEL_THRESHOLDS;
+      targetLevel = resolveAvatarProgressLevelFromScore(options.score, thresholds);
+    }
+
+    const levelDef = settings.levels?.find((l) => l.level === targetLevel);
+    let assetUrl = '';
+    let assetKey = '';
+
+    // Check custom uploaded asset for this level
+    if (levelDef && levelDef.image.kind === 'UPLOADED') {
+      assetKey = levelDef.image.assetId;
+      assetUrl = options.uploadedAssetUrls?.get(levelDef.image.assetId) || '';
+    }
+
+    // Check built-in preset theme stage for this level
+    if (!assetUrl) {
+      const stage = theme.stages.find((s) => s.level === targetLevel) || theme.stages[0]!;
+      const key = (levelDef?.image.kind === 'BUILT_IN' && levelDef.image.assetKey) ? levelDef.image.assetKey : stage.assetKey;
+      assetKey = key;
+      const catalogItem = avatarCatalogService.getItemByKey(key);
+      assetUrl = catalogItem?.assetUrl || '';
+    }
+
+    if (assetUrl) {
+      const stageName = levelDef?.name || theme.stages.find((s) => s.level === targetLevel)?.name || `Cấp ${targetLevel}`;
+      return {
+        themeId: theme.id,
+        themeName: theme.name,
+        level: targetLevel,
+        stageName,
+        assetKey,
+        assetUrl,
+        altText: levelDef?.description || `Avatar Cấp ${targetLevel}`,
+        isFallback: false,
+        isLegacy: false,
+      };
+    }
+
+    // 3. Fallback to explicit avatarKey if 5-level did not resolve
     if (options.avatarKey && options.avatarKey.trim().length > 0) {
       const catalogItem = avatarCatalogService.getItemByKey(options.avatarKey);
       if (catalogItem) {
@@ -527,45 +576,17 @@ export class AvatarThemeRegistry {
       }
     }
 
-    const settings = options.globalSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
-    const activeThemeId = options.globalActiveThemeId || settings.presetThemeId || options.avatarThemeId || DEFAULT_AVATAR_THEME_ID;
-    const theme = this.getThemeById(activeThemeId) || this.themes.get(DEFAULT_AVATAR_THEME_ID)!;
-
-    let targetLevel: AvatarProgressLevel = 1;
-    if (options.avatarLevel && options.avatarLevel >= 1 && options.avatarLevel <= 5) {
-      targetLevel = options.avatarLevel;
-    } else if (options.score !== undefined && options.score !== null) {
-      const thresholds = settings.levels ? settings.levels.map((l) => ({ level: l.level, minPoints: l.minPoints })) : DEFAULT_AVATAR_LEVEL_THRESHOLDS;
-      targetLevel = resolveAvatarProgressLevelFromScore(options.score, thresholds);
-    }
-
-    const levelDef = settings.levels?.find((l) => l.level === targetLevel);
-    let assetUrl = '';
-    let assetKey = '';
-    if (levelDef && levelDef.image.kind === 'UPLOADED') {
-      assetKey = levelDef.image.assetId;
-      assetUrl = options.uploadedAssetUrls?.get(levelDef.image.assetId) || '';
-    }
-
-    if (!assetUrl) {
-      const stage = theme.stages.find((s) => s.level === targetLevel) || theme.stages[0]!;
-      const key = levelDef?.image.kind === 'BUILT_IN' ? levelDef.image.assetKey : stage.assetKey;
-      assetKey = key;
-      const catalogItem = avatarCatalogService.getItemByKey(key);
-      assetUrl = catalogItem?.assetUrl || avatarCatalogService.getDefaultAvatarUrl();
-    }
-
-    const stageName = levelDef?.name || theme.stages.find((s) => s.level === targetLevel)?.name || `Cấp ${targetLevel}`;
-
+    // 4. Default fallback
+    const defaultUrl = avatarCatalogService.getDefaultAvatarUrl();
     return {
       themeId: theme.id,
       themeName: theme.name,
       level: targetLevel,
-      stageName,
-      assetKey,
-      assetUrl,
-      altText: levelDef?.description || `Avatar Cấp ${targetLevel}`,
-      isFallback: !assetUrl,
+      stageName: `Cấp ${targetLevel}`,
+      assetKey: options.defaultAvatarKey || 'default/default-boy',
+      assetUrl: defaultUrl,
+      altText: 'Avatar học sinh',
+      isFallback: true,
       isLegacy: false,
     };
   }

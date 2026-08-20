@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { TopRankPodium } from './components/TopRankPodium';
@@ -15,9 +15,9 @@ const mockStudent1: Student = {
   normalizedName: 'pham hong anh',
   gender: 'Nữ',
   dateOfBirth: '2019-05-10',
-  avatar: null,
-  avatarKey: null,
-  avatarThemeId: null,
+  avatar: undefined,
+  avatarKey: undefined,
+  avatarThemeId: undefined,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   deletedAt: null,
@@ -30,9 +30,9 @@ const mockStudent2: Student = {
   normalizedName: 'vu duc nam',
   gender: 'Nam',
   dateOfBirth: '2019-07-20',
-  avatar: null,
-  avatarKey: null,
-  avatarThemeId: null,
+  avatar: undefined,
+  avatarKey: undefined,
+  avatarThemeId: undefined,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   deletedAt: null,
@@ -59,7 +59,7 @@ const mockTitle: HonorTitle = {
   code: 'top_rank',
   name: 'Dẫn đầu cấp bậc',
   description: 'Dành cho học sinh có cấp bậc cao nhất',
-  calculationType: 'rule_based',
+  calculationType: 'top_rank',
   iconKey: 'trophy',
   badgeKey: 'shield',
   colorToken: '#f59e0b',
@@ -163,6 +163,7 @@ describe('Honor Board Avatar Synchronization Tests', () => {
         rankLevel: 2,
         rankName: 'Cấp 2 - Hiệp sĩ',
         points: 100,
+        badgeKey: 'shield',
         reason: 'Đồng 100 điểm',
       },
       {
@@ -172,6 +173,7 @@ describe('Honor Board Avatar Synchronization Tests', () => {
         rankLevel: 2,
         rankName: 'Cấp 2 - Hiệp sĩ',
         points: 100,
+        badgeKey: 'shield',
         reason: 'Đồng 100 điểm',
       },
     ];
