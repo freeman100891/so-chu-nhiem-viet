@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { TopRankPodium } from './components/TopRankPodium';
@@ -265,5 +265,47 @@ describe('Honor Board Avatar Synchronization Tests', () => {
     expect(normalized.levels.length).toBe(5);
     expect(normalized.levels[0]?.image.assetKey).toBe('plant/plant-stage-1');
   });
+
+  it('6. TopRankPodium renders 3D stage elements, sound toggle, presentation button, and winner banner', () => {
+    const onOpenPresentationMock = vi.fn();
+
+    render(
+      <MemoryRouter>
+        <TopRankPodium
+          podiumRecipients={mockRecipients}
+          showPointValues={true}
+          globalActiveThemeId={mockCustomSettings.presetThemeId}
+          globalSettings={mockCustomSettings}
+          onOpenPresentation={onOpenPresentationMock}
+          periodContextTitle="Tuần 3 - Tháng 8"
+        />
+      </MemoryRouter>
+    );
+
+    // Header & context
+    expect(screen.getByText('Bục Vinh Danh Cấp Bậc')).toBeInTheDocument();
+    expect(screen.getByText('Tuần 3 - Tháng 8')).toBeInTheDocument();
+
+    // Sound toggle & Presentation CTA
+    expect(screen.getByText('Âm thanh: Bật')).toBeInTheDocument();
+    expect(screen.getByText('Trình Chiếu Sân Khấu')).toBeInTheDocument();
+
+    // Winner banner
+    expect(screen.getByText(/Xin chúc mừng/)).toBeInTheDocument();
+  });
+
+  it('7. TopRankPodium renders clean empty state when no recipients exist', () => {
+    render(
+      <MemoryRouter>
+        <TopRankPodium
+          podiumRecipients={[]}
+          showPointValues={true}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Chưa Có Dữ Liệu Bục Vinh Danh Top 3')).toBeInTheDocument();
+  });
 });
+
 

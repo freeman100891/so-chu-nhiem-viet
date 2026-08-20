@@ -227,6 +227,8 @@ export const HonorBoardDetailPage: React.FC = () => {
           globalActiveThemeId={globalAvatarSettings.presetThemeId}
           globalSettings={globalAvatarSettings}
           uploadedAssetUrls={uploadedAssetUrls}
+          onOpenPresentation={() => navigate(`/conduct/honor-board/${boardId}/present`)}
+          periodContextTitle={board.title}
         />
       )}
 
