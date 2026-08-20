@@ -482,10 +482,12 @@ export class AvatarThemeRegistry {
   }
 
   /**
-   * Legacy Helper ViewModel Resolver (Compatibility)
+   * Helper ViewModel Resolver (Unified & Synchronized with Settings)
    */
   resolveStudentAvatarViewModel(options: {
     globalActiveThemeId?: string | null;
+    globalSettings?: GlobalAvatarSystemSettings | null;
+    uploadedAssetUrls?: Map<string, string>;
     avatarThemeId?: string | null;
     avatarKey?: string | null;
     customAvatar?: string | null;
@@ -525,28 +527,45 @@ export class AvatarThemeRegistry {
       }
     }
 
-    const activeThemeId = options.globalActiveThemeId || options.avatarThemeId || DEFAULT_AVATAR_THEME_ID;
+    const settings = options.globalSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
+    const activeThemeId = options.globalActiveThemeId || settings.presetThemeId || options.avatarThemeId || DEFAULT_AVATAR_THEME_ID;
     const theme = this.getThemeById(activeThemeId) || this.themes.get(DEFAULT_AVATAR_THEME_ID)!;
 
     let targetLevel: AvatarProgressLevel = 1;
     if (options.avatarLevel && options.avatarLevel >= 1 && options.avatarLevel <= 5) {
       targetLevel = options.avatarLevel;
     } else if (options.score !== undefined && options.score !== null) {
-      targetLevel = resolveAvatarProgressLevelFromScore(options.score, DEFAULT_AVATAR_LEVEL_THRESHOLDS);
+      const thresholds = settings.levels ? settings.levels.map((l) => ({ level: l.level, minPoints: l.minPoints })) : DEFAULT_AVATAR_LEVEL_THRESHOLDS;
+      targetLevel = resolveAvatarProgressLevelFromScore(options.score, thresholds);
     }
 
-    const stage = theme.stages.find((s) => s.level === targetLevel) || theme.stages[0]!;
-    const catalogItem = avatarCatalogService.getItemByKey(stage.assetKey);
+    const levelDef = settings.levels?.find((l) => l.level === targetLevel);
+    let assetUrl = '';
+    let assetKey = '';
+    if (levelDef && levelDef.image.kind === 'UPLOADED') {
+      assetKey = levelDef.image.assetId;
+      assetUrl = options.uploadedAssetUrls?.get(levelDef.image.assetId) || '';
+    }
+
+    if (!assetUrl) {
+      const stage = theme.stages.find((s) => s.level === targetLevel) || theme.stages[0]!;
+      const key = levelDef?.image.kind === 'BUILT_IN' ? levelDef.image.assetKey : stage.assetKey;
+      assetKey = key;
+      const catalogItem = avatarCatalogService.getItemByKey(key);
+      assetUrl = catalogItem?.assetUrl || avatarCatalogService.getDefaultAvatarUrl();
+    }
+
+    const stageName = levelDef?.name || theme.stages.find((s) => s.level === targetLevel)?.name || `Cấp ${targetLevel}`;
 
     return {
       themeId: theme.id,
       themeName: theme.name,
       level: targetLevel,
-      stageName: stage.name,
-      assetKey: stage.assetKey,
-      assetUrl: catalogItem?.assetUrl || avatarCatalogService.getDefaultAvatarUrl(),
-      altText: stage.altText,
-      isFallback: !catalogItem,
+      stageName,
+      assetKey,
+      assetUrl,
+      altText: levelDef?.description || `Avatar Cấp ${targetLevel}`,
+      isFallback: !assetUrl,
       isLegacy: false,
     };
   }

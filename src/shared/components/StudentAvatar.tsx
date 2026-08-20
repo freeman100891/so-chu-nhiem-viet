@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { cn } from '../utilities/cn';
 import { avatarThemeRegistry } from '../../core/services/avatar-theme-registry';
 
+import type { GlobalAvatarSystemSettings } from '../../core/types/avatar-theme.types';
+
 export type StudentAvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'fluid' | number;
 
 export interface StudentAvatarProps {
   student?: {
+    id?: string;
     fullName?: string;
     avatar?: string | null;
     avatarKey?: string | null;
@@ -14,6 +17,8 @@ export interface StudentAvatarProps {
   avatarKey?: string | null;
   avatarThemeId?: string | null;
   globalActiveThemeId?: string | null;
+  globalSettings?: GlobalAvatarSystemSettings | null;
+  uploadedAssetUrls?: Map<string, string>;
   score?: number | null;
   avatarLevel?: 1 | 2 | 3 | 4 | 5 | null;
   rankLevelOrOrder?: number | null;
@@ -51,6 +56,8 @@ export const StudentAvatar: React.FC<StudentAvatarProps> = ({
   avatarKey,
   avatarThemeId,
   globalActiveThemeId,
+  globalSettings,
+  uploadedAssetUrls,
   score,
   avatarLevel,
   rankLevelOrOrder,
@@ -75,6 +82,8 @@ export const StudentAvatar: React.FC<StudentAvatarProps> = ({
 
   const resolved = avatarThemeRegistry.resolveStudentAvatarViewModel({
     globalActiveThemeId,
+    globalSettings,
+    uploadedAssetUrls,
     avatarThemeId: effectiveThemeId,
     avatarKey: effectiveAvatarKey,
     customAvatar: effectiveCustomAvatar,

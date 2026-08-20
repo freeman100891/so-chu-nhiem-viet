@@ -12,6 +12,10 @@ import { honorTitleSeedService } from '../../../core/services/honor-title-seed.s
 import { honorBoardService } from '../../../core/services/honor-board.service';
 import { honorRuleEngineService, type TitleEvaluationResult } from '../../../core/services/honor-rule-engine.service';
 import { rankSeedService } from '../../../core/services/rank-seed.service';
+import { avatarAssetService } from '../../../core/services/avatar-asset.service';
+import { DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS } from '../../../core/services/avatar-theme-registry';
+import type { GlobalAvatarSystemSettings } from '../../../core/types/avatar-theme.types';
+import { StudentAvatar } from '../../../shared/components/StudentAvatar';
 import { getTodayDateString } from '../../../shared/utilities/date';
 import { TieResolutionModal } from './components/TieResolutionModal';
 import type { ClassRoom, AcademicYear, HonorTitle, HonorBoardPeriodType } from '../../../core/database/types';
@@ -35,6 +39,8 @@ export const HonorBoardCreateWizard: React.FC = () => {
   const [classList, setClassList] = useState<ClassRoom[]>([]);
   const [selectedClassId, setSelectedClassId] = useState<string>('');
   const [activeYear, setActiveYear] = useState<AcademicYear | null>(null);
+  const [globalAvatarSettings, setGlobalAvatarSettings] = useState<GlobalAvatarSystemSettings>(DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS);
+  const [uploadedAssetUrls, setUploadedAssetUrls] = useState<Map<string, string>>(new Map());
 
   // Form State
   const [boardTitle, setBoardTitle] = useState<string>('');
@@ -66,6 +72,17 @@ export const HonorBoardCreateWizard: React.FC = () => {
       setSelectedTitleIds(uniqueTitles.filter((t) => t.isActive).map((t) => t.id));
 
       const settings = await settingsRepository.getSettings();
+      const activeSysSettings = settings.avatarSystemSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
+      setGlobalAvatarSettings(activeSysSettings);
+
+      const uploadedIds = activeSysSettings.levels
+        .filter((l) => l.image.kind === 'UPLOADED')
+        .map((l) => (l.image as { kind: 'UPLOADED'; assetId: string }).assetId);
+      if (uploadedIds.length > 0) {
+        const urlMap = await avatarAssetService.preloadAssetUrls(uploadedIds);
+        setUploadedAssetUrls(urlMap);
+      }
+
       let yearId = settings.activeAcademicYearId;
       if (!yearId) {
         const year = await academicYearRepository.getCurrentYear();
@@ -398,10 +415,21 @@ export const HonorBoardCreateWizard: React.FC = () => {
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                       {res.candidates.map((cand) => (
-                        <div key={cand.student.id} className="p-2 rounded-xl bg-white dark:bg-slate-700 border border-app flex items-center justify-between text-xs">
-                          <div className="min-w-0">
-                            <p className="font-bold text-app-main truncate">{cand.student.fullName}</p>
-                            <p className="text-[10px] text-emerald-600 font-bold">{cand.metricLabel}</p>
+                        <div key={cand.student.id} className="p-2 rounded-xl bg-white dark:bg-slate-700 border border-app flex items-center justify-between gap-2 text-xs shadow-2xs">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <StudentAvatar
+                              student={cand.student}
+                              score={cand.points ?? cand.metricValue}
+                              globalActiveThemeId={globalAvatarSettings.presetThemeId}
+                              globalSettings={globalAvatarSettings}
+                              uploadedAssetUrls={uploadedAssetUrls}
+                              size="xs"
+                              className="border border-app shrink-0 shadow-2xs"
+                            />
+                            <div className="min-w-0">
+                              <p className="font-bold text-app-main truncate">{cand.student.fullName}</p>
+                              <p className="text-[10px] text-emerald-600 font-bold">{cand.metricLabel}</p>
+                            </div>
                           </div>
                           <span className="text-[10px] font-bold text-app-primary shrink-0 font-mono ml-2">
                             {cand.rankName}
@@ -448,9 +476,9 @@ export const HonorBoardCreateWizard: React.FC = () => {
                   type="checkbox"
                   checked={showPointValues}
                   onChange={(e) => setShowPointValues(e.target.checked)}
-                  className="w-4 h-4 rounded text-app-primary"
+                  className="rounded text-app-primary"
                 />
-                <span className="font-bold text-app-main">Hiển thị điểm thi đua cụ thể trên Bảng vàng</span>
+                <span className="font-bold text-app-main">Hiển thị điểm số chi tiết trên Bảng vàng</span>
               </label>
 
               <label className="flex items-center gap-2 cursor-pointer">
@@ -458,15 +486,15 @@ export const HonorBoardCreateWizard: React.FC = () => {
                   type="checkbox"
                   checked={showRankProgress}
                   onChange={(e) => setShowRankProgress(e.target.checked)}
-                  className="w-4 h-4 rounded text-app-primary"
+                  className="rounded text-app-primary"
                 />
-                <span className="font-bold text-app-main">Hiển thị huy hiệu cấp bậc thi đua của học sinh</span>
+                <span className="font-bold text-app-main">Hiển thị cấp bậc quân hàm của học sinh</span>
               </label>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-app">
-              <Button variant="outline" size="md" onClick={() => setCurrentStep(3)}>
-                <ArrowLeft className="w-4 h-4 mr-1 inline" /> Quay lại
+            <div className="pt-4 border-t border-app flex flex-col sm:flex-row items-center justify-between gap-3">
+              <Button variant="outline" size="md" onClick={() => setCurrentStep(3)} className="w-full sm:w-auto">
+                <ArrowLeft className="w-4 h-4 mr-1 inline" /> Quay lại duyệt
               </Button>
 
               <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -503,6 +531,9 @@ export const HonorBoardCreateWizard: React.FC = () => {
           title={activeTieTitle.title}
           tiedCandidates={activeTieTitle.tiedCandidates}
           onResolve={handleResolveTie}
+          globalActiveThemeId={globalAvatarSettings.presetThemeId}
+          globalSettings={globalAvatarSettings}
+          uploadedAssetUrls={uploadedAssetUrls}
         />
       )}
     </div>

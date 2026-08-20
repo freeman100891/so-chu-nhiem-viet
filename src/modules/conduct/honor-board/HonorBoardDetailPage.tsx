@@ -4,6 +4,10 @@ import { Button } from '../../../shared/components/Button';
 import { Badge } from '../../../shared/components/Badge';
 import { LoadingSkeleton } from '../../../shared/components/LoadingSkeleton';
 import { honorBoardService, type HonorBoardDetailsResult } from '../../../core/services/honor-board.service';
+import { settingsRepository } from '../../../core/repositories/settings.repository';
+import { avatarAssetService } from '../../../core/services/avatar-asset.service';
+import type { GlobalAvatarSystemSettings } from '../../../core/types/avatar-theme.types';
+import { DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS } from '../../../core/services/avatar-theme-registry';
 import { formatDateVietnamese } from '../../../shared/utilities/date';
 import { TopRankPodium } from './components/TopRankPodium';
 import { HonorTitleCard } from './components/HonorTitleCard';
@@ -25,6 +29,8 @@ export const HonorBoardDetailPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [details, setDetails] = useState<HonorBoardDetailsResult | null>(null);
+  const [globalAvatarSettings, setGlobalAvatarSettings] = useState<GlobalAvatarSystemSettings>(DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS);
+  const [uploadedAssetUrls, setUploadedAssetUrls] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -32,8 +38,22 @@ export const HonorBoardDetailPage: React.FC = () => {
     if (!boardId) return;
     setLoading(true);
     try {
-      const data = await honorBoardService.getBoardDetails(boardId);
+      const [data, settings] = await Promise.all([
+        honorBoardService.getBoardDetails(boardId),
+        settingsRepository.getSettings(),
+      ]);
       setDetails(data);
+
+      const activeSysSettings = settings.avatarSystemSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
+      setGlobalAvatarSettings(activeSysSettings);
+
+      const uploadedIds = activeSysSettings.levels
+        .filter((l) => l.image.kind === 'UPLOADED')
+        .map((l) => (l.image as { kind: 'UPLOADED'; assetId: string }).assetId);
+      if (uploadedIds.length > 0) {
+        const urlMap = await avatarAssetService.preloadAssetUrls(uploadedIds);
+        setUploadedAssetUrls(urlMap);
+      }
     } catch (err) {
       console.error('Error loading honor board details:', err);
     } finally {
@@ -204,6 +224,9 @@ export const HonorBoardDetailPage: React.FC = () => {
         <TopRankPodium
           podiumRecipients={topRankPodium}
           showPointValues={board.showPointValues}
+          globalActiveThemeId={globalAvatarSettings.presetThemeId}
+          globalSettings={globalAvatarSettings}
+          uploadedAssetUrls={uploadedAssetUrls}
         />
       )}
 
@@ -221,6 +244,9 @@ export const HonorBoardDetailPage: React.FC = () => {
               title={grp.title}
               recipients={grp.recipients}
               showPointValues={board.showPointValues}
+              globalActiveThemeId={globalAvatarSettings.presetThemeId}
+              globalSettings={globalAvatarSettings}
+              uploadedAssetUrls={uploadedAssetUrls}
             />
           ))}
         </div>

@@ -1,17 +1,24 @@
 import React from 'react';
 import { StudentAvatar } from '../../../../shared/components/StudentAvatar';
 import type { HonorBoardRecipientDetail } from '../../../../core/services/honor-board.service';
+import type { GlobalAvatarSystemSettings } from '../../../../core/types/avatar-theme.types';
 import { Crown, Trophy, Medal, Sparkles } from 'lucide-react';
 import { cn } from '../../../../shared/utilities/cn';
 
 export interface TopRankPodiumProps {
   podiumRecipients: HonorBoardRecipientDetail[];
   showPointValues?: boolean;
+  globalActiveThemeId?: string | null;
+  globalSettings?: GlobalAvatarSystemSettings | null;
+  uploadedAssetUrls?: Map<string, string>;
 }
 
 export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
   podiumRecipients,
   showPointValues = false,
+  globalActiveThemeId,
+  globalSettings,
+  uploadedAssetUrls,
 }) => {
   // Find Rank 1, 2, 3
   const rank1 = podiumRecipients.find((r) => r.position === 1) || podiumRecipients[0];
@@ -75,6 +82,9 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
             <StudentAvatar
               student={recipient.student}
               score={recipient.pointsAtAward ?? recipient.metricValue}
+              globalActiveThemeId={globalActiveThemeId}
+              globalSettings={globalSettings}
+              uploadedAssetUrls={uploadedAssetUrls}
               size={isRank1 ? '2xl' : 'xl'}
               shape="circle"
               className={cn(
@@ -175,6 +185,15 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
                 )}>
                   {pos}
                 </span>
+                <StudentAvatar
+                  student={item!.student}
+                  score={item!.pointsAtAward ?? item!.metricValue}
+                  globalActiveThemeId={globalActiveThemeId}
+                  globalSettings={globalSettings}
+                  uploadedAssetUrls={uploadedAssetUrls}
+                  size="sm"
+                  className="border border-app shrink-0 shadow-2xs"
+                />
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-app-main truncate">{item!.student?.fullName}</p>
                   <p className="text-[11px] text-app-muted truncate">{item!.rankNameAtAward}</p>

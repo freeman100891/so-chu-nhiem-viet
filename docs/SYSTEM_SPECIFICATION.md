@@ -84,6 +84,6 @@ Tài liệu được cấu trúc phân tầng khoa học và phân bổ thành c
 | **Hệ thống Avatar Tiến hóa** | **5 Cấp** | Novice, Apprentice, Adept, Master, Grandmaster |
 | **Danh hiệu Bảng Vàng Chuẩn** | **8** | Dẫn đầu cấp bậc, Thăng cấp ấn tượng, Ngôi sao bứt phá... |
 | **Quy định Đánh giá Nhà nước** | **2** | Thông tư 22/2021/TT-BGDĐT & Thông tư 27/2020/TT-BGDĐT |
-| **Chỉ số Kiểm thử (Vitest Suites)** | **70 / 70** | **365 / 365 tests passed (100% Pass Rate)** |
+| **Chỉ số Kiểm thử (Vitest Suites)** | **71 / 71** | **368 / 368 tests passed (100% Pass Rate)** |
 | **Kiểm tra Kiểu dữ liệu (TypeScript)** | **0 Lỗi** | `npm run typecheck` (`tsc -b`) hoàn toàn sạch sẽ |
 

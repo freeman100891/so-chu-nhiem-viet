@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { StudentAvatar } from '../../../../shared/components/StudentAvatar';
 import type { HonorTitle } from '../../../../core/database/types';
 import type { HonorBoardRecipientDetail } from '../../../../core/services/honor-board.service';
+import type { GlobalAvatarSystemSettings } from '../../../../core/types/avatar-theme.types';
 import {
   Trophy,
   Sparkles,
@@ -18,12 +19,18 @@ export interface HonorTitleCardProps {
   title: HonorTitle;
   recipients: HonorBoardRecipientDetail[];
   showPointValues?: boolean;
+  globalActiveThemeId?: string | null;
+  globalSettings?: GlobalAvatarSystemSettings | null;
+  uploadedAssetUrls?: Map<string, string>;
 }
 
 export const HonorTitleCard: React.FC<HonorTitleCardProps> = ({
   title,
   recipients,
   showPointValues = false,
+  globalActiveThemeId,
+  globalSettings,
+  uploadedAssetUrls,
 }) => {
   const navigate = useNavigate();
 
@@ -86,8 +93,12 @@ export const HonorTitleCard: React.FC<HonorTitleCardProps> = ({
             <div className="flex items-center gap-2.5 min-w-0">
               <StudentAvatar
                 student={rec.student}
+                score={rec.pointsAtAward ?? rec.metricValue}
+                globalActiveThemeId={globalActiveThemeId}
+                globalSettings={globalSettings}
+                uploadedAssetUrls={uploadedAssetUrls}
                 size="sm"
-                className="border border-app shrink-0"
+                className="border border-app shrink-0 shadow-2xs"
               />
 
               <div className="min-w-0">

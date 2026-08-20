@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { honorBoardService, type HonorBoardDetailsResult } from '../../../core/services/honor-board.service';
+import { settingsRepository } from '../../../core/repositories/settings.repository';
+import { avatarAssetService } from '../../../core/services/avatar-asset.service';
+import { DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS } from '../../../core/services/avatar-theme-registry';
+import type { GlobalAvatarSystemSettings } from '../../../core/types/avatar-theme.types';
+import { StudentAvatar } from '../../../shared/components/StudentAvatar';
 import { formatDateVietnamese } from '../../../shared/utilities/date';
 import {
   Trophy,
@@ -18,6 +23,8 @@ export const HonorBoardPresentPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [details, setDetails] = useState<HonorBoardDetailsResult | null>(null);
+  const [globalAvatarSettings, setGlobalAvatarSettings] = useState<GlobalAvatarSystemSettings>(DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS);
+  const [uploadedAssetUrls, setUploadedAssetUrls] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -25,8 +32,22 @@ export const HonorBoardPresentPage: React.FC = () => {
     if (!boardId) return;
     setLoading(true);
     try {
-      const data = await honorBoardService.getBoardDetails(boardId);
+      const [data, settings] = await Promise.all([
+        honorBoardService.getBoardDetails(boardId),
+        settingsRepository.getSettings(),
+      ]);
       setDetails(data);
+
+      const activeSysSettings = settings.avatarSystemSettings || DEFAULT_GLOBAL_AVATAR_SYSTEM_SETTINGS;
+      setGlobalAvatarSettings(activeSysSettings);
+
+      const uploadedIds = activeSysSettings.levels
+        .filter((l) => l.image.kind === 'UPLOADED')
+        .map((l) => (l.image as { kind: 'UPLOADED'; assetId: string }).assetId);
+      if (uploadedIds.length > 0) {
+        const urlMap = await avatarAssetService.preloadAssetUrls(uploadedIds);
+        setUploadedAssetUrls(urlMap);
+      }
     } catch (err) {
       console.error('Error loading presentation data:', err);
     } finally {
@@ -182,15 +203,27 @@ export const HonorBoardPresentPage: React.FC = () => {
                   <div
                     key={rec.id}
                     className={cn(
-                      'flex flex-col items-center p-4 rounded-3xl border backdrop-blur-md transition-transform',
+                      'flex flex-col items-center p-5 rounded-3xl border backdrop-blur-md transition-transform',
                       is1
                         ? 'bg-amber-500/20 border-amber-400 text-amber-200 scale-110 shadow-2xl ring-4 ring-amber-400/30'
                         : 'bg-white/10 border-slate-400 text-white'
                     )}
                   >
                     {is1 && <Crown className="w-8 h-8 text-amber-400 fill-current mb-2 animate-bounce" />}
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-slate-800 border-2 border-white/40 flex items-center justify-center text-2xl font-black mb-3">
-                      {rec.student?.fullName.charAt(0)}
+                    <div className="relative mb-3">
+                      <StudentAvatar
+                        student={rec.student}
+                        score={rec.pointsAtAward ?? rec.metricValue}
+                        globalActiveThemeId={globalAvatarSettings.presetThemeId}
+                        globalSettings={globalAvatarSettings}
+                        uploadedAssetUrls={uploadedAssetUrls}
+                        size={is1 ? '2xl' : 'xl'}
+                        shape="circle"
+                        className={cn(
+                          'border-2 shadow-2xl transition-transform hover:scale-105',
+                          is1 ? 'border-amber-400 ring-4 ring-amber-400/40' : 'border-slate-300 ring-2 ring-white/20'
+                        )}
+                      />
                     </div>
                     <h3 className="text-base sm:text-xl font-black text-white">{rec.student?.fullName}</h3>
                     <p className="text-xs sm:text-sm font-bold text-amber-400 mt-0.5">{rec.rankNameAtAward}</p>
@@ -220,8 +253,17 @@ export const HonorBoardPresentPage: React.FC = () => {
                   key={rec.id}
                   className="p-5 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md text-center space-y-2"
                 >
-                  <div className="w-16 h-16 rounded-full bg-amber-400/20 border-2 border-amber-400/40 text-amber-300 font-black text-xl mx-auto flex items-center justify-center">
-                    {rec.student?.fullName?.charAt(0)}
+                  <div className="flex justify-center mb-2">
+                    <StudentAvatar
+                      student={rec.student}
+                      score={rec.pointsAtAward ?? rec.metricValue}
+                      globalActiveThemeId={globalAvatarSettings.presetThemeId}
+                      globalSettings={globalAvatarSettings}
+                      uploadedAssetUrls={uploadedAssetUrls}
+                      size="lg"
+                      shape="circle"
+                      className="border-2 border-amber-300/60 shadow-md ring-2 ring-amber-400/20"
+                    />
                   </div>
                   <h3 className="text-base font-black text-white">{rec.student?.fullName}</h3>
                   <p className="text-xs text-amber-300 font-bold">{rec.rankNameAtAward}</p>

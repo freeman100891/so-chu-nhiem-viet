@@ -52,3 +52,14 @@ Khi có nhiều hơn `maxRecipients` học sinh có cùng điểm số hoặc c�
 - Giao diện Fullscreen 16:9 với hiệu ứng ánh hào quang và pháo hoa nhẹ nhàng.
 - Bục vinh danh Top 1, Top 2, Top 3 và lưới danh hiệu từng hạng mục.
 - Tích hợp phát âm thanh vinh danh chúc mừng khi chuyển trang trình chiếu.
+
+---
+
+## 🎨 Đồng Bộ Hệ Thống 5 Cấp Bậc Avatar với Cài Đặt (Avatar System Synchronization)
+Toàn bộ các thành phần trong Phân hệ Bảng Vàng Danh Hiệu đều được đồng bộ chặt chẽ với Hệ thống Avatar 5 Cấp độ cấu hình tại Cài đặt (`/settings`):
+- **Bục Vinh Danh Top Rank Podium** (`TopRankPodium.tsx`): Hiển thị Avatar tiến hóa theo điểm số thực tế của Quán quân, Á quân 1, Á quân 2 trên cả Desktop và Mobile.
+- **Thẻ Danh Hiệu** (`HonorTitleCard.tsx`): Render `StudentAvatar` đồng bộ với theme toàn cục (Quân đội, Hoàng gia, Game thủ, Vũ trụ, Hoa sen...) và ảnh tải lên tùy chỉnh của từng cấp.
+- **Trình Chiếu 16:9** (`HonorBoardPresentPage.tsx`): Hiển thị Avatar kích thước lớn độ nét cao với vòng sáng hào quang tương ứng cấp bậc của học sinh.
+- **Wizard Tạo Bảng Vàng & Modal Xử Lý Đồng Hạng** (`HonorBoardCreateWizard.tsx`, `TieResolutionModal.tsx`): Tích hợp Avatar học sinh mini trực quan giúp giáo viên nhận diện học sinh dễ dàng.
+- **Widget Bảng Vàng Dashboard** (`DashboardHonorBoardWidget.tsx`): Hiển thị Avatar học sinh tiêu biểu đạt giải trong tuần.
+

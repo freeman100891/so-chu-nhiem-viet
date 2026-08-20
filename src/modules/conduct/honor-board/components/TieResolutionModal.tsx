@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Modal } from '../../../../shared/components/Modal';
 import { Button } from '../../../../shared/components/Button';
+import { StudentAvatar } from '../../../../shared/components/StudentAvatar';
 import type { CandidateProposal } from '../../../../core/services/honor-rule-engine.service';
 import type { HonorTitle } from '../../../../core/database/types';
+import type { GlobalAvatarSystemSettings } from '../../../../core/types/avatar-theme.types';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import { cn } from '../../../../shared/utilities/cn';
 
@@ -12,6 +14,9 @@ export interface TieResolutionModalProps {
   title: HonorTitle;
   tiedCandidates: CandidateProposal[];
   onResolve: (action: 'accept_all' | 'increase_limit' | 'select_manual', selectedIds: string[], customReason?: string) => void;
+  globalActiveThemeId?: string | null;
+  globalSettings?: GlobalAvatarSystemSettings | null;
+  uploadedAssetUrls?: Map<string, string>;
 }
 
 export const TieResolutionModal: React.FC<TieResolutionModalProps> = ({
@@ -20,6 +25,9 @@ export const TieResolutionModal: React.FC<TieResolutionModalProps> = ({
   title,
   tiedCandidates,
   onResolve,
+  globalActiveThemeId,
+  globalSettings,
+  uploadedAssetUrls,
 }) => {
   const [resolutionChoice, setResolutionChoice] = useState<'accept_all' | 'increase_limit' | 'select_manual'>('accept_all');
   const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>(tiedCandidates.map((c) => c.student.id));
@@ -65,16 +73,25 @@ export const TieResolutionModal: React.FC<TieResolutionModalProps> = ({
                 key={cand.student.id}
                 onClick={() => resolutionChoice === 'select_manual' && toggleStudent(cand.student.id)}
                 className={cn(
-                  'p-2.5 rounded-xl border flex items-center justify-between transition-all',
-                  resolutionChoice === 'select_manual' ? 'cursor-pointer hover:bg-slate-50' : '',
+                  'p-2.5 rounded-xl border flex items-center justify-between gap-2 transition-all',
+                  resolutionChoice === 'select_manual' ? 'cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60' : '',
                   selectedStudentIds.includes(cand.student.id)
                     ? 'bg-app-primary-light/20 border-app-primary/40'
                     : 'bg-slate-50 dark:bg-slate-800/40 border-app opacity-60'
                 )}
               >
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-xs text-app-main">{cand.student.fullName}</span>
-                  <span className="text-[11px] text-app-muted font-mono">{cand.metricLabel}</span>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <StudentAvatar
+                    student={cand.student}
+                    score={cand.points ?? cand.metricValue}
+                    globalActiveThemeId={globalActiveThemeId}
+                    globalSettings={globalSettings}
+                    uploadedAssetUrls={uploadedAssetUrls}
+                    size="xs"
+                    className="border border-app shrink-0 shadow-2xs"
+                  />
+                  <span className="font-bold text-xs text-app-main truncate">{cand.student.fullName}</span>
+                  <span className="text-[11px] text-app-muted font-mono shrink-0">{cand.metricLabel}</span>
                 </div>
                 {resolutionChoice === 'select_manual' && (
                   <input

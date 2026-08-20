@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../../../shared/components/Card';
 import { Button } from '../../../shared/components/Button';
+import { StudentAvatar } from '../../../shared/components/StudentAvatar';
 import { honorBoardRepository, honorRecipientRepository } from '../../../core/repositories/honor-board.repository';
 import { db } from '../../../core/database/db';
 import type { HonorBoard, HonorRecipient, Student } from '../../../core/database/types';
@@ -124,10 +125,16 @@ export const DashboardHonorBoardWidget: React.FC<DashboardHonorBoardWidgetProps>
                   onClick={() => navigate(`/students/${student.id}`)}
                   className="py-2 flex items-center justify-between text-xs hover:bg-slate-50 dark:hover:bg-slate-800/40 px-1 rounded-xl transition-colors cursor-pointer"
                 >
-                  <div className="flex items-center gap-2 min-w-0">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px] flex items-center justify-center shrink-0">
                       {idx + 1}
                     </span>
+                    <StudentAvatar
+                      student={student}
+                      score={recipient.pointsAtAward}
+                      size="xs"
+                      className="border border-app shrink-0 shadow-2xs"
+                    />
                     <span className="font-bold text-app-main truncate">{student.fullName}</span>
                   </div>
                   <span className="text-[10px] font-bold text-app-primary truncate ml-2">
