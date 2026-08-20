@@ -275,6 +275,7 @@ export type UserSettings = {
   activeAcademicYearId?: string | null;
   activeClassId?: string | null;
   sidebarCollapsed: boolean;
+  isOnboardingCompleted?: boolean;
   defaultStudentAvatarKey?: string | null;
   activeAvatarThemeId?: string | null;
   avatarProgressionEnabled?: boolean;
@@ -287,7 +288,7 @@ export type UserSettings = {
 };
 
 // 17. auditLogs
-export type AuditAction = 'CREATE' | 'UPDATE' | 'DELETE' | 'RESTORE' | 'BACKUP' | 'RESTORE_DB' | 'IMPORT_EXCEL' | 'REVERSE';
+export type AuditAction = 'CREATE' | 'UPDATE' | 'DELETE' | 'RESTORE' | 'BACKUP' | 'RESTORE_DB' | 'SYSTEM_RESTORE' | 'IMPORT_EXCEL' | 'REVERSE';
 export type AuditLog = {
   id: string;
   entityName: string;

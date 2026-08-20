@@ -9,6 +9,7 @@ import { academicYearService } from '../../core/services/academic-year.service';
 import { termService } from '../../core/services/term.service';
 import { teacherProfileRepository } from '../../core/repositories/teacher-profile.repository';
 import { settingsRepository } from '../../core/repositories/settings.repository';
+import { OnboardingRestoreModal } from './OnboardingRestoreModal';
 import {
   GraduationCap,
   ArrowRight,
@@ -24,6 +25,7 @@ import {
   Award,
   FileSpreadsheet,
   Sparkles,
+  DatabaseBackup,
 } from 'lucide-react';
 
 export const OnboardingWizard: React.FC = () => {
@@ -31,6 +33,9 @@ export const OnboardingWizard: React.FC = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 7;
+
+  // Restore Modal State (F-083)
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
 
   // Form State
   const [fullName, setFullName] = useState('');
@@ -200,7 +205,7 @@ export const OnboardingWizard: React.FC = () => {
   };
 
   const stepTitles = [
-    'Chào mừng',
+    'Bắt đầu',
     'Giáo viên',
     'Trường học',
     'Năm học',
@@ -211,6 +216,12 @@ export const OnboardingWizard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-app-base text-app-main flex flex-col items-center justify-center p-4 sm:p-6 transition-colors duration-300">
+      {/* Restore Modal */}
+      <OnboardingRestoreModal
+        isOpen={showRestoreModal}
+        onClose={() => setShowRestoreModal(false)}
+      />
+
       <div className="max-w-2xl w-full space-y-6 my-auto animate-fadeIn">
         {/* App Header Branding */}
         <div className="text-center space-y-2">
@@ -224,8 +235,10 @@ export const OnboardingWizard: React.FC = () => {
         {/* Multi-step Visual Stepper */}
         <div className="bg-app-surface border border-app rounded-2xl p-4 shadow-xs space-y-3">
           <div className="flex items-center justify-between text-xs font-bold text-app-muted">
-            <span className="uppercase tracking-wider">Thiết Lập Ban Đầu (Bước {currentStep}/{totalSteps})</span>
-            <span className="font-mono text-app-primary">{Math.round((currentStep / totalSteps) * 100)}% Hoàn thành</span>
+            <span className="uppercase tracking-wider">
+              {currentStep === 1 ? 'Khởi Tạo Hệ Thống' : `Thiết Lập Ban Đầu (Bước ${currentStep}/${totalSteps})`}
+            </span>
+            <span className="font-mono text-app-primary">{Math.round((currentStep / totalSteps) * 100)}%</span>
           </div>
 
           {/* Stepper Dots & Labels */}
@@ -265,60 +278,108 @@ export const OnboardingWizard: React.FC = () => {
           </div>
         </div>
 
-        {/* Step 1: Welcome */}
+        {/* Step 1: Welcome & Setup Choice (F-083) */}
         {currentStep === 1 && (
           <Card className="p-6 sm:p-8 space-y-6 text-center">
-            <div className="inline-flex p-4 bg-app-primary-light text-app-primary rounded-2xl shadow-xs">
-              <GraduationCap className="w-12 h-12" />
-            </div>
-
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-app-main tracking-tight">
+              <h2 className="text-2xl font-black text-app-main tracking-tight">
                 Chào mừng Thầy/Cô Giáo Chủ Nhiệm
               </h2>
               <p className="text-sm text-app-muted max-w-lg mx-auto leading-relaxed">
-                Ứng dụng <strong>Sổ Chủ Nhiệm Việt Offline</strong> hỗ trợ Thầy/Cô quản lý lớp học, điểm danh, thi đua nề nếp và sổ liên lạc phụ huynh <strong>100% Offline</strong> bảo mật trên thiết bị cá nhân.
+                Ứng dụng <strong>Sổ Chủ Nhiệm Việt Offline</strong> hoạt động <strong>100% bảo mật Offline</strong> trên máy tính. Thầy/Cô muốn bắt đầu bằng cách nào?
               </p>
             </div>
 
-            {/* Feature Highlights Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left pt-2">
-              <div className="p-3.5 rounded-xl border border-app bg-app-surface-hover/50 space-y-1">
-                <div className="flex items-center gap-2 text-app-primary font-bold text-xs">
-                  <ShieldCheck className="w-4 h-4 shrink-0" />
-                  <span>100% Offline</span>
+            {/* DUAL CHOICES GRID (F-083) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left pt-1">
+              {/* Choice 1: New Setup */}
+              <div
+                onClick={handleNextStep}
+                className="p-5 rounded-2xl border-2 border-app hover:border-app-primary bg-app-surface hover:bg-app-surface-hover/50 cursor-pointer transition-all flex flex-col justify-between space-y-4 group shadow-xs hover:shadow-md"
+              >
+                <div className="space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-app-primary-light text-app-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-app-main group-hover:text-app-primary transition-colors">
+                      Thiết lập mới từ đầu
+                    </h3>
+                    <p className="text-xs text-app-muted mt-1 leading-relaxed">
+                      Dành cho Thầy/Cô lần đầu sử dụng. Khởi tạo hồ sơ giáo viên, năm học và lớp chủ nhiệm.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-[11px] text-app-muted">Lưu trữ IndexedDB trực tiếp trên máy, không truyền dữ liệu ra ngoài.</p>
+
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="w-full justify-between"
+                  rightIcon={<ArrowRight className="w-4 h-4" />}
+                >
+                  Tạo hồ sơ mới
+                </Button>
               </div>
 
-              <div className="p-3.5 rounded-xl border border-app bg-app-surface-hover/50 space-y-1">
-                <div className="flex items-center gap-2 text-app-primary font-bold text-xs">
-                  <Award className="w-4 h-4 shrink-0" />
-                  <span>Nề Nếp Thi Đua</span>
+              {/* Choice 2: Restore from Backup */}
+              <div
+                onClick={() => setShowRestoreModal(true)}
+                className="p-5 rounded-2xl border-2 border-app hover:border-emerald-500 bg-app-surface hover:bg-app-surface-hover/50 cursor-pointer transition-all flex flex-col justify-between space-y-4 group shadow-xs hover:shadow-md"
+              >
+                <div className="space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <DatabaseBackup className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-app-main group-hover:text-emerald-600 transition-colors">
+                      Khôi phục từ bản sao lưu
+                    </h3>
+                    <p className="text-xs text-app-muted mt-1 leading-relaxed">
+                      Đã có file sao lưu <strong className="font-mono text-emerald-600">.gvcn-backup</strong>? Khôi phục toàn bộ dữ liệu chỉ trong vài giây.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-[11px] text-app-muted">Ghi nhận điểm thi đua tích cực, danh hiệu tiến bộ & biểu đồ lớp.</p>
-              </div>
 
-              <div className="p-3.5 rounded-xl border border-app bg-app-surface-hover/50 space-y-1">
-                <div className="flex items-center gap-2 text-app-primary font-bold text-xs">
-                  <FileSpreadsheet className="w-4 h-4 shrink-0" />
-                  <span>Nhập/Xuất Excel</span>
-                </div>
-                <p className="text-[11px] text-app-muted">Nhập danh sách học sinh từ Excel, xuất báo cáo PDF A4 chuẩn in ấn.</p>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="w-full justify-between hover:border-emerald-500 hover:text-emerald-600"
+                  rightIcon={<Upload className="w-4 h-4 text-emerald-600" />}
+                >
+                  Chọn file sao lưu
+                </Button>
               </div>
             </div>
 
-            <Button
-              variant="primary"
-              size="lg"
-              className="w-full mt-4"
-              rightIcon={<ArrowRight className="w-5 h-5" />}
-              onClick={handleNextStep}
-            >
-              Bắt đầu Cấu hình Lần đầu
-            </Button>
+            {/* Feature Highlights Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left pt-2 border-t border-app">
+              <div className="p-3 rounded-xl border border-app bg-app-surface-hover/30 space-y-1">
+                <div className="flex items-center gap-1.5 text-app-primary font-bold text-xs">
+                  <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                  <span>100% Offline</span>
+                </div>
+                <p className="text-[10px] text-app-muted">Lưu IndexedDB cục bộ trên máy, bảo mật tuyệt đối.</p>
+              </div>
+
+              <div className="p-3 rounded-xl border border-app bg-app-surface-hover/30 space-y-1">
+                <div className="flex items-center gap-1.5 text-app-primary font-bold text-xs">
+                  <Award className="w-3.5 h-3.5 shrink-0" />
+                  <span>Nề Nếp Thi Đua</span>
+                </div>
+                <p className="text-[10px] text-app-muted">17 cấp bậc quân hàm, 5 cấp avatar và bảng vàng.</p>
+              </div>
+
+              <div className="p-3 rounded-xl border border-app bg-app-surface-hover/30 space-y-1">
+                <div className="flex items-center gap-1.5 text-app-primary font-bold text-xs">
+                  <FileSpreadsheet className="w-3.5 h-3.5 shrink-0" />
+                  <span>Nhập/Xuất Excel</span>
+                </div>
+                <p className="text-[10px] text-app-muted">Nhập danh sách từ Excel, xuất báo cáo PDF A4.</p>
+              </div>
+            </div>
           </Card>
         )}
+
 
         {/* Step 2: Teacher Info */}
         {currentStep === 2 && (

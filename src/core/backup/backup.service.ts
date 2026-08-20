@@ -4,6 +4,8 @@ import { BackupFileContentSchema } from './backup.schemas';
 import { getTodayDateString, formatDateVietnamese } from '../../shared/utilities/date';
 import { rankSeedService } from '../services/rank-seed.service';
 import { evaluationTemplateSeedService } from '../services/evaluation-template-seed.service';
+import { honorTitleSeedService } from '../services/honor-title-seed.service';
+import { themeService } from '../services/theme.service';
 import type { BackupHistory } from '../database/types';
 
 export interface BackupManifest {
@@ -14,6 +16,10 @@ export interface BackupManifest {
   isEncrypted: boolean;
   tables: string[];
   counts: Record<string, number>;
+  teacherName?: string;
+  academicYearName?: string;
+  classCount?: number;
+  studentCount?: number;
 }
 
 export interface BackupFilePayload {
@@ -37,13 +43,17 @@ export interface BackupPreviewData {
   createdAtFormatted: string;
   appVersion: string;
   schemaVersion: number;
+  teacherName: string;
+  academicYearName: string;
   classCount: number;
   studentCount: number;
   totalRecords: number;
   isCompatible: boolean;
+  fileSizeBytes?: number;
   warning?: string;
   payload: BackupFilePayload;
 }
+
 
 async function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -162,6 +172,14 @@ export class BackupService {
     const nowISO = new Date().toISOString();
 
     const tableNames = db.tables.map((t) => t.name);
+    const teacherProfiles = (data.teacherProfiles || []) as any[];
+    const teacherName = teacherProfiles[0]?.fullName || '';
+    const academicYears = (data.academicYears || []) as any[];
+    const activeYear = academicYears.find((y: any) => y.isActive) || academicYears[0];
+    const academicYearName = activeYear?.name || '';
+    const classCount = counts.classes || 0;
+    const studentCount = counts.students || 0;
+
     const manifest: BackupManifest = {
       appName: 'Sổ Chủ Nhiệm Việt Offline',
       appVersion: '1.0.0',
@@ -170,6 +188,10 @@ export class BackupService {
       isEncrypted: !!password && password.trim().length > 0,
       tables: tableNames,
       counts,
+      teacherName,
+      academicYearName,
+      classCount,
+      studentCount,
     };
 
     // Calculate SHA-256 checksum over manifest + data JSON payload
@@ -346,8 +368,11 @@ export class BackupService {
     }
 
     // Metrics for Preview
-    const classCount = payload.data.classes ? payload.data.classes.length : 0;
-    const studentCount = payload.data.students ? payload.data.students.length : 0;
+    const classCount = payload.data.classes ? payload.data.classes.length : ((payload.manifest as any).classCount || 0);
+    const studentCount = payload.data.students ? payload.data.students.length : ((payload.manifest as any).studentCount || 0);
+    const teacherName = (payload.data.teacherProfiles?.[0] as any)?.fullName || (payload.manifest as any).teacherName || 'Chưa đặt tên';
+    const academicYearName = (payload.data.academicYears?.[0] as any)?.name || (payload.manifest as any).academicYearName || '2026 - 2027';
+
     let totalRecords = 0;
     Object.values(payload.data).forEach((arr) => {
       if (Array.isArray(arr)) totalRecords += arr.length;
@@ -359,13 +384,15 @@ export class BackupService {
 
     let warning: string | undefined;
     if (payload.manifest.schemaVersion > db.verno) {
-      warning = `Phiên bản schema file sao lưu (v${payload.manifest.schemaVersion}) cao hơn phiên bản ứng dụng hiện tại (v${db.verno}).`;
+      warning = `Phiên bản schema file sao lưu (v${payload.manifest.schemaVersion}) cao hơn phiên bản ứng dụng hiện tại (v${db.verno}). Vui lòng cập nhật ứng dụng trước khi khôi phục.`;
     }
 
     return {
       createdAtFormatted,
       appVersion: payload.manifest.appVersion,
       schemaVersion: payload.manifest.schemaVersion,
+      teacherName,
+      academicYearName,
       classCount,
       studentCount,
       totalRecords,
@@ -394,7 +421,7 @@ export class BackupService {
     try {
       // 2. Execute restore inside Dexie Transaction
       await db.runTransaction('rw', targetTables, async () => {
-        // Clear all 18 tables
+        // Clear all tables
         for (const table of targetTables) {
           await table.clear();
         }
@@ -438,12 +465,14 @@ export class BackupService {
             }
           }
           if (onProgress) {
-            onProgress(30 + Math.round(((i + 1) / targetTables.length) * 60));
+            onProgress(30 + Math.round(((i + 1) / targetTables.length) * 50));
           }
         }
       });
 
-      // 3. Backward compatibility check for older backup files:
+      if (onProgress) onProgress(85);
+
+      // 3. Backward compatibility check & Post-restore normalization:
       // Ensure default rank system is seeded if missing
       const rankSystemsCount = await db.rankSystems.count();
       if (rankSystemsCount === 0) {
@@ -461,8 +490,44 @@ export class BackupService {
         }
       }
 
+      // Ensure honor titles are seeded & clean
+      await honorTitleSeedService.seedDefaultTitles();
+
       // Ensure evaluation comment templates are seeded
       await evaluationTemplateSeedService.seedTemplates();
+
+      // Ensure settings has active year, class & isOnboardingCompleted = true
+      let settings = await db.settings.get('default-settings');
+      const allYears = await db.academicYears.toArray();
+      const activeYear = allYears.find((y) => y.isActive) || allYears[0];
+      const allClasses = await db.classes.toArray();
+      const activeClass = allClasses.find((c) => !c.deletedAt) || allClasses[0];
+
+      if (!settings) {
+        await db.settings.put({
+          id: 'default-settings',
+          theme: 'military',
+          activeAcademicYearId: activeYear?.id || '',
+          activeClassId: activeClass?.id || '',
+          sidebarCollapsed: false,
+          isOnboardingCompleted: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+      } else {
+        await db.settings.update('default-settings', {
+          isOnboardingCompleted: true,
+          activeAcademicYearId: settings.activeAcademicYearId || activeYear?.id || '',
+          activeClassId: settings.activeClassId || activeClass?.id || '',
+          updatedAt: new Date().toISOString(),
+        });
+      }
+
+      // Apply restored theme
+      const updatedSettings = await db.settings.get('default-settings');
+      if (updatedSettings?.theme) {
+        themeService.applyTheme(updatedSettings.theme as any);
+      }
 
       // 4. Verify record counts & health
       const health = await db.checkDatabaseHealth();
@@ -475,7 +540,7 @@ export class BackupService {
         id: crypto.randomUUID(),
         entityName: 'Restore',
         recordId: 'default',
-        action: 'RESTORE_DB',
+        action: 'SYSTEM_RESTORE',
         timestamp: new Date().toISOString(),
         details: `Khôi phục thành công ${previewData.totalRecords} bản ghi từ file sao lưu ngày ${previewData.createdAtFormatted}`,
       });
@@ -505,3 +570,4 @@ export class BackupService {
 }
 
 export const backupService = new BackupService();
+
