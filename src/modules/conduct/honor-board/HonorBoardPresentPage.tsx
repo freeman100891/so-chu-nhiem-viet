@@ -312,41 +312,41 @@ export const HonorBoardPresentPage: React.FC = () => {
     return (
       <div
         className={cn(
-          'flex-1 flex flex-col items-center justify-end transition-all duration-700 max-w-[280px]',
-          is1 ? 'z-20 -mt-10' : 'z-10',
+          'flex-1 min-w-0 flex flex-col items-center justify-end transition-all duration-700 max-w-[220px] sm:max-w-[280px] md:max-w-[340px]',
+          is1 ? 'z-20 -mt-6 sm:-mt-10' : 'z-10',
           isVisible
             ? 'opacity-100 translate-y-0 scale-100'
             : 'opacity-0 translate-y-20 scale-90 pointer-events-none'
         )}
       >
         {/* CHARACTER STAGE DISPLAY (AVATAR + NAME + RANK + CROWN) */}
-        <div className="relative flex flex-col items-center text-center mb-4 w-full px-2">
+        <div className="relative flex flex-col items-center text-center mb-2 sm:mb-4 w-full px-1 sm:px-2">
           {/* RADIANT AURA FOR RANK 1 */}
           {is1 && (
             <div
-              className="absolute -top-16 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-gradient-to-tr from-amber-400/45 via-yellow-300/40 to-amber-500/30 blur-3xl pointer-events-none animate-aura-pulse"
+              className="absolute -top-16 left-1/2 -translate-x-1/2 w-48 sm:w-64 h-48 sm:h-64 rounded-full bg-gradient-to-tr from-amber-400/45 via-yellow-300/40 to-amber-500/30 blur-3xl pointer-events-none animate-aura-pulse"
               aria-hidden="true"
             />
           )}
 
           {/* CROWN / MEDAL BADGE */}
           {is1 && (
-            <div className="relative mb-2 flex items-center justify-center">
-              <div className="p-3 rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 text-amber-950 shadow-2xl ring-4 ring-white/90 animate-crown-float">
-                <Crown className="w-8 h-8 fill-amber-100 stroke-amber-950" />
+            <div className="relative mb-1.5 sm:mb-2 flex items-center justify-center">
+              <div className="p-2 sm:p-3 rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 text-amber-950 shadow-2xl ring-4 ring-white/90 animate-crown-float">
+                <Crown className="w-6 h-6 sm:w-8 sm:h-8 fill-amber-100 stroke-amber-950" />
               </div>
             </div>
           )}
 
           {is2 && (
-            <div className="mb-2 p-2 rounded-xl bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 text-slate-800 shadow-xl ring-2 ring-white/80">
-              <Medal className="w-6 h-6 text-slate-700" />
+            <div className="mb-1.5 sm:mb-2 p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 text-slate-800 shadow-xl ring-2 ring-white/80">
+              <Medal className="w-5 h-5 sm:w-6 sm:h-6 text-slate-700" />
             </div>
           )}
 
           {is3 && (
-            <div className="mb-2 p-2 rounded-xl bg-gradient-to-br from-amber-600 via-orange-600 to-amber-800 text-amber-100 shadow-xl ring-2 ring-white/70">
-              <Trophy className="w-6 h-6 text-amber-100" />
+            <div className="mb-1.5 sm:mb-2 p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-amber-600 via-orange-600 to-amber-800 text-amber-100 shadow-xl ring-2 ring-white/70">
+              <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-amber-100" />
             </div>
           )}
 
@@ -365,17 +365,17 @@ export const HonorBoardPresentPage: React.FC = () => {
               className={cn(
                 'border-4 transition-all duration-300',
                 is1
-                  ? 'border-amber-300 ring-8 ring-amber-400/40 shadow-2xl scale-110'
+                  ? 'border-amber-300 ring-4 sm:ring-8 ring-amber-400/40 shadow-2xl scale-105 sm:scale-110'
                   : is2
-                  ? 'border-slate-200 ring-4 ring-slate-300/40 shadow-xl'
-                  : 'border-amber-600 ring-4 ring-amber-600/30 shadow-lg'
+                  ? 'border-slate-200 ring-2 sm:ring-4 ring-slate-300/40 shadow-xl'
+                  : 'border-amber-600 ring-2 sm:ring-4 ring-amber-600/30 shadow-lg'
               )}
             />
 
             {/* POSITION BADGE */}
             <span
               className={cn(
-                'absolute -bottom-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider text-white shadow-xl whitespace-nowrap flex items-center gap-1.5',
+                'absolute -bottom-2.5 sm:-bottom-3 left-1/2 -translate-x-1/2 px-2.5 sm:px-3.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider text-white shadow-xl whitespace-nowrap flex items-center gap-1 sm:gap-1.5',
                 is1
                   ? 'bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 ring-2 ring-white'
                   : is2
@@ -383,24 +383,24 @@ export const HonorBoardPresentPage: React.FC = () => {
                   : 'bg-gradient-to-r from-amber-700 to-orange-800 ring-1 ring-white/80'
               )}
             >
-              {is1 && <Sparkles className="w-3.5 h-3.5 text-yellow-200" />}
+              {is1 && <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-yellow-200" />}
               Hạng {position}
             </span>
           </div>
 
           {/* STUDENT NAME (SUPPORTS 2 LINES, LARGE FOR PROJECTOR) */}
-          <div className="mt-5 px-1 w-full max-w-[200px] flex flex-col items-center">
+          <div className="mt-3.5 sm:mt-5 px-1 w-full max-w-[180px] sm:max-w-[240px] md:max-w-[300px] flex flex-col items-center">
             <h3
               className={cn(
                 'font-black text-white tracking-tight leading-tight line-clamp-2 drop-shadow-md',
-                is1 ? 'text-lg sm:text-2xl text-amber-200' : 'text-base sm:text-xl'
+                is1 ? 'text-base sm:text-xl md:text-2xl text-amber-200' : 'text-sm sm:text-lg md:text-xl'
               )}
             >
               {recipient.student?.fullName || 'Học sinh'}
             </h3>
 
             {/* RANK & SCORE */}
-            <div className="mt-1.5 flex items-center justify-center gap-2 flex-wrap">
+            <div className="mt-1 sm:mt-1.5 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
               <span className={cn(
                 'text-xs sm:text-sm font-bold',
                 is1 ? 'text-amber-400 font-extrabold' : 'text-slate-300'
@@ -425,7 +425,7 @@ export const HonorBoardPresentPage: React.FC = () => {
           {/* PODIUM STEP PLATFORM */}
           <div
             className={cn(
-              'w-full h-4 rounded-t-3xl border-t-2 border-x shadow-md',
+              'w-full h-3 sm:h-4 rounded-t-3xl border-t-2 border-x shadow-md',
               is1
                 ? 'bg-gradient-to-b from-amber-200 via-amber-300 to-amber-400 border-amber-100 shadow-[0_-6px_20px_rgba(245,158,11,0.6)]'
                 : is2
@@ -437,12 +437,12 @@ export const HonorBoardPresentPage: React.FC = () => {
           {/* PODIUM PILLAR MAIN BODY */}
           <div
             className={cn(
-              'w-full border-x border-b-0 flex flex-col items-center justify-between p-4 text-center relative overflow-hidden shadow-2xl',
+              'w-full border-x border-b-0 flex flex-col items-center justify-between p-3 sm:p-4 text-center relative overflow-hidden shadow-2xl transition-all',
               is1
-                ? 'h-64 sm:h-72 bg-gradient-to-b from-amber-400 via-amber-500 to-yellow-700 border-amber-300/80 text-amber-950'
+                ? 'h-[24vh] sm:h-[28vh] min-h-[140px] max-h-[340px] bg-gradient-to-b from-amber-400 via-amber-500 to-yellow-700 border-amber-300/80 text-amber-950'
                 : is2
-                ? 'h-48 sm:h-54 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-500 border-slate-300/80 text-slate-900'
-                : 'h-36 sm:h-40 bg-gradient-to-b from-amber-700 via-orange-800 to-amber-950 border-amber-600/70 text-amber-100'
+                ? 'h-[18vh] sm:h-[21vh] min-h-[110px] max-h-[260px] bg-gradient-to-b from-slate-200 via-slate-300 to-slate-500 border-slate-300/80 text-slate-900'
+                : 'h-[13vh] sm:h-[16vh] min-h-[85px] max-h-[200px] bg-gradient-to-b from-amber-700 via-orange-800 to-amber-950 border-amber-600/70 text-amber-100'
             )}
           >
             {/* SHIMMER LIGHT EFFECT */}
@@ -453,14 +453,18 @@ export const HonorBoardPresentPage: React.FC = () => {
               <span
                 className={cn(
                   'font-black font-mono leading-none tracking-tighter drop-shadow-xl select-none',
-                  is1 ? 'text-6xl sm:text-7xl text-amber-950' : is2 ? 'text-5xl sm:text-6xl text-slate-800' : 'text-5xl sm:text-6xl text-amber-100'
+                  is1
+                    ? 'text-4xl sm:text-6xl md:text-7xl text-amber-950'
+                    : is2
+                    ? 'text-3xl sm:text-5xl md:text-6xl text-slate-800'
+                    : 'text-3xl sm:text-5xl md:text-6xl text-amber-100'
                 )}
               >
                 {position}
               </span>
               <span
                 className={cn(
-                  'text-xs font-black uppercase tracking-widest mt-2 px-3 py-1 rounded-full',
+                  'text-[10px] sm:text-xs font-black uppercase tracking-widest mt-1 sm:mt-2 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full',
                   is1
                     ? 'bg-amber-300/70 text-amber-950'
                     : is2
@@ -474,7 +478,7 @@ export const HonorBoardPresentPage: React.FC = () => {
 
             {/* PODIUM BASE TRIM */}
             <div className={cn(
-              'w-full h-2 rounded-full opacity-70',
+              'w-full h-1.5 sm:h-2 rounded-full opacity-70',
               is1 ? 'bg-amber-200' : is2 ? 'bg-slate-100' : 'bg-amber-400'
             )} />
           </div>
@@ -484,7 +488,7 @@ export const HonorBoardPresentPage: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 text-white select-none flex flex-col justify-between p-6 sm:p-10 overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 text-white select-none flex flex-col justify-between p-4 sm:p-6 md:p-10 overflow-hidden">
       {/* CONFETTI CANVAS OVERLAY */}
       <canvas
         ref={confettiCanvasRef}
@@ -548,25 +552,25 @@ export const HonorBoardPresentPage: React.FC = () => {
       </div>
 
       {/* MAIN 16:9 SLIDE STAGE CONTENT */}
-      <div className="flex-1 flex flex-col items-center justify-center text-center my-auto z-10 max-w-6xl mx-auto w-full py-4">
+      <div className="flex-1 min-h-0 flex flex-col items-center justify-center text-center my-auto z-10 w-full max-w-7xl mx-auto px-2 sm:px-6 md:px-8 py-2 sm:py-4 overflow-hidden">
         {/* SLIDE 1: WELCOME */}
         {slide?.type === 'welcome' && (
-          <div className="space-y-6 animate-fadeIn max-w-3xl mx-auto">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-amber-400 to-amber-600 text-amber-950 mx-auto flex items-center justify-center shadow-2xl ring-4 ring-amber-300/40 animate-crown-float">
-              <Trophy className="w-14 h-14 sm:w-16 sm:h-16" />
+          <div className="space-y-4 sm:space-y-6 animate-fadeIn w-full max-w-4xl mx-auto">
+            <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-amber-400 to-amber-600 text-amber-950 mx-auto flex items-center justify-center shadow-2xl ring-4 ring-amber-300/40 animate-crown-float">
+              <Trophy className="w-12 h-12 sm:w-16 sm:h-16" />
             </div>
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/40 text-xs sm:text-sm font-black uppercase tracking-wider">
                 <Sparkles className="w-4 h-4" /> Lễ Vinh Danh Khen Thưởng
               </div>
-              <h1 className="text-4xl sm:text-6xl font-black text-amber-300 tracking-tight uppercase drop-shadow-lg">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-amber-300 tracking-tight uppercase drop-shadow-lg">
                 BẢNG VÀNG THI ĐUA
               </h1>
-              <p className="text-2xl sm:text-4xl font-black text-white">
+              <p className="text-xl sm:text-3xl md:text-4xl font-black text-white">
                 {details.board.title}
               </p>
             </div>
-            <p className="text-sm sm:text-base text-amber-200/80 font-bold max-w-xl mx-auto">
+            <p className="text-xs sm:text-sm md:text-base text-amber-200/80 font-bold max-w-xl mx-auto">
               Thời gian xét: {formatDateVietnamese(details.board.startDate)} — {formatDateVietnamese(details.board.endDate)}
             </p>
           </div>
@@ -574,18 +578,18 @@ export const HonorBoardPresentPage: React.FC = () => {
 
         {/* SLIDE 2: TOP RANK GRAND CEREMONIAL PODIUM */}
         {slide?.type === 'podium' && (
-          <div className="space-y-6 w-full animate-fadeIn flex flex-col items-center">
+          <div className="space-y-3 sm:space-y-6 w-full animate-fadeIn flex flex-col items-center">
             <div className="space-y-1">
-              <h2 className="text-3xl sm:text-5xl font-black text-amber-300 tracking-tight drop-shadow-md">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-amber-300 tracking-tight drop-shadow-md">
                 {slide.title}
               </h2>
-              <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto font-semibold">
+              <p className="text-xs sm:text-sm md:text-base text-slate-300 max-w-2xl mx-auto font-semibold">
                 {slide.subtitle}
               </p>
             </div>
 
             {/* 3D CEREMONIAL PODIUM STAGE (ORDER: 2 - 1 - 3) */}
-            <div className="flex items-end justify-center gap-4 sm:gap-10 w-full max-w-4xl pt-4 min-h-[380px]">
+            <div className="flex items-end justify-center gap-2 sm:gap-6 md:gap-10 w-full max-w-5xl mx-auto pt-2 pb-1 min-h-[240px] sm:min-h-[320px] md:min-h-[380px]">
               {renderPresentPillar(rank2, 2)}
               {renderPresentPillar(rank1, 1)}
               {renderPresentPillar(rank3, 3)}
@@ -594,8 +598,8 @@ export const HonorBoardPresentPage: React.FC = () => {
             {/* WINNER CONGRATULATION BANNER (APPEARS AFTER RANK 1) */}
             {podiumRevealStep >= 4 && rank1?.student && (
               <div className="animate-podium-reveal w-full max-w-3xl pt-2">
-                <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-yellow-400/30 to-amber-500/20 border border-amber-400/60 backdrop-blur-md flex items-center justify-center gap-2.5 text-sm sm:text-base font-black text-amber-200 shadow-2xl">
-                  <Award className="w-5 h-5 text-amber-400 animate-spin" style={{ animationDuration: '4s' }} />
+                <div className="p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-yellow-400/30 to-amber-500/20 border border-amber-400/60 backdrop-blur-md flex items-center justify-center gap-2.5 text-xs sm:text-sm md:text-base font-black text-amber-200 shadow-2xl">
+                  <Award className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 animate-spin" style={{ animationDuration: '4s' }} />
                   <span>
                     🎉 Xin chúc mừng <span className="text-white underline underline-offset-4">{rank1.student.fullName}</span> — Quán quân dẫn đầu bảng vàng tuần này!
                   </span>
@@ -607,21 +611,21 @@ export const HonorBoardPresentPage: React.FC = () => {
 
         {/* SLIDE: TITLE GROUP */}
         {slide?.type === 'title_group' && (
-          <div className="space-y-6 animate-fadeIn w-full">
+          <div className="space-y-4 sm:space-y-6 animate-fadeIn w-full">
             <div className="space-y-1">
-              <h2 className="text-3xl sm:text-5xl font-black text-amber-300 tracking-tight drop-shadow-md">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-amber-300 tracking-tight drop-shadow-md">
                 {slide.title}
               </h2>
-              <p className="text-sm sm:text-base text-slate-300 font-semibold">{slide.subtitle}</p>
+              <p className="text-xs sm:text-sm md:text-base text-slate-300 font-semibold">{slide.subtitle}</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 pt-4 max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 pt-2 sm:pt-4 w-full max-h-[60vh] sm:max-h-[65vh] overflow-y-auto px-2">
               {(slide.data as HonorBoardRecipientDetail[]).map((rec) => (
                 <div
                   key={rec.id}
-                  className="p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md text-center space-y-2.5 shadow-xl hover:bg-white/15 transition-all"
+                  className="p-4 sm:p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md text-center space-y-2.5 shadow-xl hover:bg-white/15 transition-all"
                 >
-                  <div className="flex justify-center mb-3">
+                  <div className="flex justify-center mb-2 sm:mb-3">
                     <StudentAvatar
                       student={rec.student}
                       score={rec.pointsAtAward}
@@ -635,7 +639,7 @@ export const HonorBoardPresentPage: React.FC = () => {
                       className="border-3 border-amber-300/80 shadow-lg ring-4 ring-amber-400/20"
                     />
                   </div>
-                  <h3 className="text-base sm:text-lg font-black text-white">{rec.student?.fullName}</h3>
+                  <h3 className="text-sm sm:text-base md:text-lg font-black text-white">{rec.student?.fullName}</h3>
                   <p className="text-xs sm:text-sm text-amber-300 font-bold">{rec.rankNameAtAward}</p>
                   <p className="text-xs text-slate-300 italic line-clamp-2">{rec.reason}</p>
                 </div>
@@ -646,30 +650,30 @@ export const HonorBoardPresentPage: React.FC = () => {
 
         {/* SLIDE: COLLECTIVE */}
         {slide?.type === 'collective' && (
-          <div className="space-y-6 animate-fadeIn w-full">
+          <div className="space-y-4 sm:space-y-6 animate-fadeIn w-full max-w-5xl mx-auto">
             <div className="space-y-1">
-              <h2 className="text-3xl sm:text-5xl font-black text-amber-300 tracking-tight">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-amber-300 tracking-tight">
                 {slide.title}
               </h2>
-              <p className="text-sm sm:text-base text-slate-300 font-semibold">{slide.subtitle}</p>
+              <p className="text-xs sm:text-sm md:text-base text-slate-300 font-semibold">{slide.subtitle}</p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto pt-4">
-              <div className="p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 w-full pt-2 sm:pt-4">
+              <div className="p-4 sm:p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl">
                 <span className="text-xs font-bold text-slate-300 block">Chuyên cần lớp</span>
-                <p className="text-3xl sm:text-4xl font-black text-emerald-400 font-mono mt-2">{details.collectiveMetrics.attendanceRate}%</p>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-400 font-mono mt-2">{details.collectiveMetrics.attendanceRate}%</p>
               </div>
-              <div className="p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl">
+              <div className="p-4 sm:p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl">
                 <span className="text-xs font-bold text-slate-300 block">Lượt thăng cấp</span>
-                <p className="text-3xl sm:text-4xl font-black text-purple-400 font-mono mt-2">{details.collectiveMetrics.totalPromotionsInPeriod}</p>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-black text-purple-400 font-mono mt-2">{details.collectiveMetrics.totalPromotionsInPeriod}</p>
               </div>
-              <div className="p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl">
+              <div className="p-4 sm:p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl">
                 <span className="text-xs font-bold text-slate-300 block">Điểm tích cực</span>
-                <p className="text-3xl sm:text-4xl font-black text-amber-400 font-mono mt-2">+{details.collectiveMetrics.totalMeritPointsInPeriod}</p>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-black text-amber-400 font-mono mt-2">+{details.collectiveMetrics.totalMeritPointsInPeriod}</p>
               </div>
-              <div className="p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl">
+              <div className="p-4 sm:p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-md shadow-xl">
                 <span className="text-xs font-bold text-slate-300 block">Danh hiệu đã trao</span>
-                <p className="text-3xl sm:text-4xl font-black text-blue-400 font-mono mt-2">{details.collectiveMetrics.totalHonors}</p>
+                <p className="text-2xl sm:text-3xl md:text-4xl font-black text-blue-400 font-mono mt-2">{details.collectiveMetrics.totalHonors}</p>
               </div>
             </div>
           </div>
@@ -677,14 +681,14 @@ export const HonorBoardPresentPage: React.FC = () => {
 
         {/* SLIDE: CONGRATS */}
         {slide?.type === 'congrats' && (
-          <div className="space-y-6 animate-fadeIn max-w-2xl mx-auto">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-pink-500 text-white mx-auto flex items-center justify-center shadow-2xl animate-crown-float">
-              <PartyPopper className="w-14 h-14" />
+          <div className="space-y-4 sm:space-y-6 animate-fadeIn w-full max-w-3xl mx-auto">
+            <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-pink-500 text-white mx-auto flex items-center justify-center shadow-2xl animate-crown-float">
+              <PartyPopper className="w-12 h-12 sm:w-16 sm:h-16" />
             </div>
-            <h1 className="text-4xl sm:text-6xl font-black text-amber-300 tracking-tight drop-shadow-md">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-amber-300 tracking-tight drop-shadow-md">
               CHÚC MỪNG CẢ LỚP!
             </h1>
-            <p className="text-lg sm:text-2xl font-extrabold text-white leading-relaxed">
+            <p className="text-base sm:text-xl md:text-2xl font-extrabold text-white leading-relaxed">
               Mỗi ngày đến trường là một ngày vui và thêm nhiều điều tiến bộ!
             </p>
           </div>

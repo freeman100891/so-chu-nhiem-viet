@@ -61,15 +61,19 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
   ) => {
     if (!recipient) {
       return (
-        <div className="flex-1 flex flex-col items-center justify-end opacity-35 max-w-[190px]">
-          <div className="w-16 h-16 rounded-full border-2 border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center text-xs font-bold text-slate-400">
+        <div className="flex-1 min-w-0 flex flex-col items-center justify-end opacity-35 max-w-[220px] sm:max-w-[260px] md:max-w-[300px] lg:max-w-[340px]">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center text-xs font-bold text-slate-400">
             Trống
           </div>
           <div className={cn(
             'w-full mt-4 rounded-t-3xl border-t-2 border-x border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-800/40 flex flex-col items-center justify-center text-xs font-bold text-slate-400 shadow-inner',
-            position === 1 ? 'h-52' : position === 2 ? 'h-38' : 'h-28'
+            position === 1
+              ? 'h-44 sm:h-52 md:h-60 lg:h-68'
+              : position === 2
+              ? 'h-32 sm:h-38 md:h-44 lg:h-50'
+              : 'h-24 sm:h-28 md:h-32 lg:h-38'
           )}>
-            <span className="text-xl font-black font-mono">{position}</span>
+            <span className="text-xl sm:text-2xl font-black font-mono">{position}</span>
             <span className="text-[10px] uppercase font-bold tracking-wider">Hạng {position}</span>
           </div>
         </div>
@@ -83,7 +87,7 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
     return (
       <div
         className={cn(
-          'flex-1 flex flex-col items-center justify-end transition-all max-w-[210px] group select-none',
+          'flex-1 min-w-0 flex flex-col items-center justify-end transition-all max-w-[220px] sm:max-w-[260px] md:max-w-[300px] lg:max-w-[340px] group select-none',
           isRank1 ? 'z-20 -mt-6' : 'z-10'
         )}
       >
@@ -92,7 +96,7 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
           {/* RADIANT AURA FOR RANK 1 */}
           {isRank1 && (
             <div
-              className="absolute -top-10 left-1/2 -translate-x-1/2 w-36 h-36 rounded-full bg-gradient-to-tr from-amber-400/35 via-yellow-300/30 to-amber-500/20 blur-xl pointer-events-none animate-aura-pulse"
+              className="absolute -top-10 left-1/2 -translate-x-1/2 w-36 sm:w-44 h-36 sm:h-44 rounded-full bg-gradient-to-tr from-amber-400/35 via-yellow-300/30 to-amber-500/20 blur-xl pointer-events-none animate-aura-pulse"
               aria-hidden="true"
             />
           )}
@@ -100,24 +104,24 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
           {/* CROWN / TROPHY / MEDAL BADGE ON TOP */}
           {isRank1 && (
             <div className="relative mb-1.5 flex items-center justify-center">
-              <div className="p-2 rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 text-amber-950 shadow-lg ring-2 ring-white/80 animate-crown-float cursor-pointer"
+              <div className="p-2 sm:p-2.5 rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 text-amber-950 shadow-lg ring-2 ring-white/80 animate-crown-float cursor-pointer"
                 title="Quán quân thi đua"
                 onClick={handleSoundCelebrate}
               >
-                <Crown className="w-6 h-6 fill-amber-100 stroke-amber-950" />
+                <Crown className="w-6 h-6 sm:w-7 sm:h-7 fill-amber-100 stroke-amber-950" />
               </div>
             </div>
           )}
 
           {isRank2 && (
-            <div className="mb-1.5 p-1.5 rounded-xl bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 text-slate-800 shadow-md ring-1 ring-white/80">
-              <Medal className="w-4 h-4 text-slate-700" />
+            <div className="mb-1.5 p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 text-slate-800 shadow-md ring-1 ring-white/80">
+              <Medal className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700" />
             </div>
           )}
 
           {isRank3 && (
-            <div className="mb-1.5 p-1.5 rounded-xl bg-gradient-to-br from-amber-600 via-orange-600 to-amber-800 text-amber-100 shadow-md ring-1 ring-white/60">
-              <Trophy className="w-4 h-4 text-amber-100" />
+            <div className="mb-1.5 p-1.5 sm:p-2 rounded-xl bg-gradient-to-br from-amber-600 via-orange-600 to-amber-800 text-amber-100 shadow-md ring-1 ring-white/60">
+              <Trophy className="w-4 h-4 sm:w-5 sm:h-5 text-amber-100" />
             </div>
           )}
 
@@ -160,11 +164,11 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
           </div>
 
           {/* STUDENT NAME (SUPPORTS 2 LINES, NEVER TRUNCATE EARLY) */}
-          <div className="mt-3.5 px-1 w-full max-w-[150px] flex flex-col items-center">
+          <div className="mt-3.5 px-1 w-full max-w-[170px] sm:max-w-[210px] md:max-w-[260px] flex flex-col items-center">
             <h4
               className={cn(
                 'font-extrabold text-app-main tracking-tight leading-snug line-clamp-2',
-                isRank1 ? 'text-xs sm:text-sm font-black' : 'text-xs'
+                isRank1 ? 'text-xs sm:text-sm md:text-base font-black' : 'text-xs sm:text-sm'
               )}
               title={recipient.student?.fullName || 'Học sinh'}
             >
@@ -174,7 +178,7 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
             {/* RANK & SCORE PILL */}
             <div className="mt-1 flex items-center justify-center gap-1 flex-wrap">
               <span className={cn(
-                'text-[11px] font-bold truncate max-w-[110px]',
+                'text-[11px] sm:text-xs font-bold truncate max-w-[140px]',
                 isRank1 ? 'text-amber-700 dark:text-amber-300' : 'text-app-primary'
               )}>
                 {recipient.rankNameAtAward}
@@ -183,7 +187,7 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
               {showPointValues && recipient.pointsAtAward !== null && recipient.pointsAtAward !== undefined && (
                 <>
                   <span className="text-[10px] text-app-muted opacity-60">•</span>
-                  <span className="font-mono text-[10px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-1.5 py-0.2 rounded-md shadow-2xs">
+                  <span className="font-mono text-[10px] sm:text-[11px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-1.5 py-0.2 rounded-md shadow-2xs">
                     {recipient.pointsAtAward} đ
                   </span>
                 </>
@@ -197,7 +201,7 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
           {/* PODIUM STEP PLATFORM (LANDING SURFACE) */}
           <div
             className={cn(
-              'w-full h-3 rounded-t-2xl border-t-2 border-x shadow-xs transition-colors',
+              'w-full h-3 sm:h-3.5 rounded-t-2xl border-t-2 border-x shadow-xs transition-colors',
               isRank1
                 ? 'bg-gradient-to-b from-amber-200 via-amber-300 to-amber-400 border-amber-100 shadow-[0_-3px_12px_rgba(245,158,11,0.45)]'
                 : isRank2
@@ -209,12 +213,12 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
           {/* PODIUM PILLAR MAIN BODY */}
           <div
             className={cn(
-              'w-full border-x border-b-0 flex flex-col items-center justify-between p-3 text-center transition-all relative overflow-hidden shadow-lg',
+              'w-full border-x border-b-0 flex flex-col items-center justify-between p-3 sm:p-4 text-center transition-all relative overflow-hidden shadow-lg',
               isRank1
-                ? 'h-52 bg-gradient-to-b from-amber-400 via-amber-500 to-yellow-600 border-amber-300/80 text-amber-950 dark:from-amber-600 dark:via-amber-700 dark:to-yellow-800 dark:text-amber-50'
+                ? 'h-44 sm:h-52 md:h-60 lg:h-68 bg-gradient-to-b from-amber-400 via-amber-500 to-yellow-600 border-amber-300/80 text-amber-950 dark:from-amber-600 dark:via-amber-700 dark:to-yellow-800 dark:text-amber-50'
                 : isRank2
-                ? 'h-38 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-400 border-slate-300/80 text-slate-800 dark:from-slate-700 dark:via-slate-800 dark:to-slate-900 dark:text-slate-100'
-                : 'h-28 bg-gradient-to-b from-amber-700 via-orange-800 to-amber-950 border-amber-600/70 text-amber-50 dark:from-amber-900 dark:via-orange-950 dark:to-slate-950 dark:text-amber-100'
+                ? 'h-32 sm:h-38 md:h-44 lg:h-50 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-400 border-slate-300/80 text-slate-800 dark:from-slate-700 dark:via-slate-800 dark:to-slate-900 dark:text-slate-100'
+                : 'h-24 sm:h-28 md:h-32 lg:h-38 bg-gradient-to-b from-amber-700 via-orange-800 to-amber-950 border-amber-600/70 text-amber-50 dark:from-amber-900 dark:via-orange-950 dark:to-slate-950 dark:text-amber-100'
             )}
           >
             {/* SHIMMER LIGHT EFFECT */}
@@ -225,14 +229,18 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
               <span
                 className={cn(
                   'font-black font-mono leading-none tracking-tighter drop-shadow-md select-none',
-                  isRank1 ? 'text-4xl sm:text-5xl text-amber-950/90 dark:text-amber-100' : isRank2 ? 'text-3xl sm:text-4xl text-slate-700 dark:text-slate-200' : 'text-3xl sm:text-4xl text-amber-100'
+                  isRank1
+                    ? 'text-4xl sm:text-5xl md:text-6xl text-amber-950/90 dark:text-amber-100'
+                    : isRank2
+                    ? 'text-3xl sm:text-4xl md:text-5xl text-slate-700 dark:text-slate-200'
+                    : 'text-3xl sm:text-4xl md:text-5xl text-amber-100'
                 )}
               >
                 {position}
               </span>
               <span
                 className={cn(
-                  'text-[10px] font-black uppercase tracking-widest mt-1 opacity-90 px-2 py-0.5 rounded-full',
+                  'text-[10px] sm:text-xs font-black uppercase tracking-widest mt-1 opacity-90 px-2 py-0.5 rounded-full',
                   isRank1
                     ? 'bg-amber-300/60 dark:bg-amber-900/60 text-amber-950 dark:text-amber-100'
                     : isRank2
@@ -246,7 +254,7 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
 
             {/* PODIUM BASE TRIM */}
             <div className={cn(
-              'w-full h-1.5 rounded-full opacity-60',
+              'w-full h-1.5 sm:h-2 rounded-full opacity-60',
               isRank1 ? 'bg-amber-200' : isRank2 ? 'bg-slate-100' : 'bg-amber-400'
             )} />
           </div>
@@ -256,7 +264,7 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
   };
 
   return (
-    <div className="relative overflow-hidden p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-amber-100/40 via-app-surface to-app-surface border border-amber-200/80 dark:border-amber-900/40 shadow-sm space-y-6">
+    <div className="relative overflow-hidden p-4 sm:p-6 md:p-8 rounded-3xl bg-gradient-to-b from-amber-100/40 via-app-surface to-app-surface border border-amber-200/80 dark:border-amber-900/40 shadow-sm space-y-6 w-full">
       {/* AMBIENT SPOTLIGHT GLOW AT THE TOP */}
       <div
         className="absolute -top-24 left-1/2 -translate-x-1/2 w-[480px] h-48 bg-gradient-to-b from-amber-300/30 via-yellow-200/20 to-transparent blur-3xl pointer-events-none animate-spotlight-glow"
@@ -312,7 +320,7 @@ export const TopRankPodium: React.FC<TopRankPodiumProps> = ({
       </div>
 
       {/* DESKTOP 3D PODIUM (ORDER: 2 - 1 - 3) */}
-      <div className="hidden sm:flex items-end justify-center gap-4 md:gap-8 max-w-3xl mx-auto pt-4 pb-2 min-h-[360px]">
+      <div className="hidden sm:flex items-end justify-center gap-3 sm:gap-6 md:gap-8 lg:gap-10 w-full max-w-4xl lg:max-w-5xl mx-auto pt-4 pb-2 min-h-[320px] sm:min-h-[380px] md:min-h-[420px]">
         {renderPodiumPillar(rank2, 2)}
         {renderPodiumPillar(rank1, 1)}
         {renderPodiumPillar(rank3, 3)}

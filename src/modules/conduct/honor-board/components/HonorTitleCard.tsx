@@ -60,7 +60,7 @@ export const HonorTitleCard: React.FC<HonorTitleCardProps> = ({
   }
 
   return (
-    <div className="p-5 rounded-3xl bg-app-surface border border-app shadow-xs hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
+    <div className="w-full h-full p-4 sm:p-5 rounded-3xl bg-app-surface border border-app shadow-xs hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
       {/* TITLE HEADER */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
@@ -69,7 +69,7 @@ export const HonorTitleCard: React.FC<HonorTitleCardProps> = ({
               {getTitleIcon(title.iconKey)}
             </div>
             <div>
-              <h4 className="text-sm font-black text-app-main leading-tight">{title.name}</h4>
+              <h4 className="text-xs sm:text-sm font-black text-app-main leading-tight">{title.name}</h4>
               <span className="text-[10px] font-bold text-app-muted">{recipients.length} học sinh</span>
             </div>
           </div>
@@ -83,14 +83,14 @@ export const HonorTitleCard: React.FC<HonorTitleCardProps> = ({
       </div>
 
       {/* RECIPIENTS LIST */}
-      <div className="divide-y divide-app/60 max-h-56 overflow-y-auto pr-1">
+      <div className="divide-y divide-app/60 max-h-60 sm:max-h-72 overflow-y-auto pr-1">
         {recipients.map((rec) => (
           <div
             key={rec.id}
             onClick={() => rec.student && navigate(`/students/${rec.student.id}`)}
-            className="py-2.5 flex items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 px-1 rounded-xl transition-colors cursor-pointer"
+            className="py-2 sm:py-2.5 flex items-center justify-between gap-2.5 sm:gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 px-1 rounded-xl transition-colors cursor-pointer"
           >
-            <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
               <StudentAvatar
                 student={rec.student}
                 score={rec.pointsAtAward}

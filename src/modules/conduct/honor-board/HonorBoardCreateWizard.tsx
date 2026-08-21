@@ -205,7 +205,7 @@ export const HonorBoardCreateWizard: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-fadeIn pb-12">
+    <div className="w-full max-w-5xl mx-auto space-y-6 animate-fadeIn pb-12">
       <PageHeader
         title="Thiết Lập Bảng Vàng Danh Hiệu"
         description="Quy trình 4 bước tạo và đề xuất danh hiệu sư phạm công bằng cho học sinh"
@@ -213,7 +213,7 @@ export const HonorBoardCreateWizard: React.FC = () => {
       />
 
       {/* STEP PROGRESS INDICATOR */}
-      <div className="grid grid-cols-4 gap-2 sm:gap-4 select-none">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 select-none">
         {[
           { step: 1, label: 'Kỳ xét & Lớp', icon: Calendar },
           { step: 2, label: 'Chọn danh hiệu', icon: Sliders },
@@ -319,7 +319,7 @@ export const HonorBoardCreateWizard: React.FC = () => {
               Thầy/Cô có thể bật/tắt từng danh hiệu để phù hợp với kế hoạch thi đua của lớp trong kỳ này.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {availableTitles.map((title) => {
                 const isSelected = selectedTitleIds.includes(title.id);
                 return (
@@ -413,7 +413,7 @@ export const HonorBoardCreateWizard: React.FC = () => {
                   {res.candidates.length === 0 ? (
                     <p className="text-xs text-app-muted italic">Chưa có ứng viên đạt tiêu chí tự động. Thầy/Cô có thể đề cử thủ công.</p>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2">
                       {res.candidates.map((cand) => (
                         <div key={cand.student.id} className="p-2 rounded-xl bg-white dark:bg-slate-700 border border-app flex items-center justify-between gap-2 text-xs shadow-2xs">
                           <div className="flex items-center gap-2 min-w-0">

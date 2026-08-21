@@ -71,7 +71,7 @@ export const HonorBoardHistoryPage: React.FC = () => {
   }, [loadData]);
 
   return (
-    <div className="space-y-6 animate-fadeIn max-w-5xl mx-auto">
+    <div className="w-full space-y-6 animate-fadeIn">
       <PageHeader
         title="Lịch Sử Vinh Danh Bảng Vàng"
         description="Tổng hợp các đợt vinh danh và snapshot danh hiệu đã công bố trong năm học"

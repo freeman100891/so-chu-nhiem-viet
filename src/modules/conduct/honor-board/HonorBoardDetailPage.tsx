@@ -100,7 +100,7 @@ export const HonorBoardDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6 animate-fadeIn max-w-5xl mx-auto">
+      <div className="w-full space-y-6 animate-fadeIn">
         <LoadingSkeleton type="card" count={3} />
       </div>
     );
@@ -122,7 +122,7 @@ export const HonorBoardDetailPage: React.FC = () => {
   const isPublished = board.status === 'published';
 
   return (
-    <div className="space-y-8 animate-fadeIn max-w-5xl mx-auto print:max-w-none print:m-0 print:p-0">
+    <div className="w-full space-y-6 sm:space-y-8 animate-fadeIn print:max-w-none print:m-0 print:p-0">
       {/* TOP CONTROLS (HIDDEN ON PRINT) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 print:hidden">
         <div className="flex items-center gap-2">
@@ -199,22 +199,22 @@ export const HonorBoardDetailPage: React.FC = () => {
       </div>
 
       {/* GOLDEN HERO BANNER */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/25 border-2 border-amber-300 dark:border-amber-700 shadow-sm p-6 sm:p-8 text-center space-y-3">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-500/20 via-yellow-500/15 to-amber-500/25 border-2 border-amber-300 dark:border-amber-700 shadow-sm p-5 sm:p-7 md:p-8 text-center space-y-3 sm:space-y-4">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-200/80 dark:bg-amber-950/80 border border-amber-400 text-amber-950 dark:text-amber-200 text-xs font-black uppercase tracking-wider shadow-2xs">
           <Sparkles className="w-4 h-4 text-amber-600 fill-current animate-spin" style={{ animationDuration: '6s' }} />
           Bảng Vàng Danh Hiệu Thi Đua
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-black text-amber-950 dark:text-amber-100 tracking-tight uppercase">
+        <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-amber-950 dark:text-amber-100 tracking-tight uppercase">
           {board.title}
         </h1>
 
-        <p className="text-sm sm:text-base font-bold text-amber-900/90 dark:text-amber-200/90 max-w-xl mx-auto">
+        <p className="text-xs sm:text-sm md:text-base font-bold text-amber-900/90 dark:text-amber-200/90 max-w-3xl mx-auto">
           “Chúc mừng những chiến sĩ nhỏ đã nỗ lực vượt bậc, rèn luyện nề nếp và gặt hái thành tích xuất sắc!”
         </p>
 
-        <div className="flex items-center justify-center gap-2 text-xs font-bold text-amber-800 dark:text-amber-300 pt-1">
-          <Calendar className="w-3.5 h-3.5" />
+        <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-bold text-amber-800 dark:text-amber-300 pt-1">
+          <Calendar className="w-4 h-4" />
           <span>Thời gian xét: {formatDateVietnamese(board.startDate)} - {formatDateVietnamese(board.endDate)}</span>
         </div>
       </div>
@@ -236,10 +236,10 @@ export const HonorBoardDetailPage: React.FC = () => {
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <Trophy className="w-5 h-5 text-amber-600" />
-          <h2 className="text-lg font-black text-app-main">Danh Hiệu Vinh Danh Trong Kỳ</h2>
+          <h2 className="text-base sm:text-lg md:text-xl font-black text-app-main">Danh Hiệu Vinh Danh Trong Kỳ</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
           {groupedByTitle.map((grp) => (
             <HonorTitleCard
               key={grp.title.id}
