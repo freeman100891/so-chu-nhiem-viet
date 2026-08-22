@@ -8,19 +8,31 @@ import { StatCard } from '../../shared/components/StatCard';
 import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton';
 import { EmptyState } from '../../shared/components/EmptyState';
 import { liveClassSessionService } from '../../core/services/live-classroom/live-session.service';
+import { liveClassParticipantService } from '../../core/services/live-classroom/live-participant.service';
 import { classRepository } from '../../core/repositories/class.repository';
+import { studentRepository } from '../../core/repositories/student.repository';
+import { enrollmentRepository } from '../../core/repositories/enrollment.repository';
 import type { LiveClassSession, ClassRoom } from '../../core/database/types';
 import { formatDateVietnamese } from '../../shared/utilities/date';
+import { playPositiveChime, playStarChime } from '../../shared/utilities/sound';
+
+// New Classroom Adventure Hub Components
+import { ClassHero } from './components/ClassHero';
+import { JourneyProgressBar } from './components/JourneyProgressBar';
+import { TodayMissionsPanel } from './components/TodayMissionsPanel';
+import { ClassroomToolkitGrid } from './components/ClassroomToolkitGrid';
+import { StudentSpotlightCarousel, type SpotlightStudent } from './components/StudentSpotlightCarousel';
+import { ClassAchievementsCard } from './components/ClassAchievementsCard';
+
 import {
   Monitor,
   Plus,
   History,
-  Play,
-  ExternalLink,
   Users,
-  Video,
   Clock,
   CheckCircle,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 
 export const LiveClassroomDashboard: React.FC = () => {
@@ -30,7 +42,11 @@ export const LiveClassroomDashboard: React.FC = () => {
   const [activeClass, setActiveClass] = useState<ClassRoom | null>(null);
   const [sessions, setSessions] = useState<LiveClassSession[]>([]);
   const [classList, setClassList] = useState<ClassRoom[]>([]);
+  const [spotlightStudents, setSpotlightStudents] = useState<SpotlightStudent[]>([]);
+  const [participantCount, setParticipantCount] = useState<number>(0);
+  const [handRaisedCount, setHandRaisedCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
   const loadData = async () => {
     setLoading(true);
@@ -41,13 +57,39 @@ export const LiveClassroomDashboard: React.FC = () => {
       const ongoing = allSessions.find((s) => s.status === 'active' || s.status === 'paused');
       setActiveSession(ongoing || null);
 
+      const classes = await classRepository.findAll();
+      setClassList(classes);
+
+      const targetClassId = ongoing ? ongoing.classId : classes[0]?.id;
+
       if (ongoing) {
         const cls = await classRepository.findById(ongoing.classId);
         setActiveClass(cls || null);
+
+        // Load participants
+        const participants = await liveClassParticipantService.getParticipants(ongoing.id);
+        setParticipantCount(participants.length);
+        const handRaised = participants.filter((p) => p.handRaised).length;
+        setHandRaisedCount(handRaised);
+      } else if (classes.length > 0) {
+        setActiveClass(classes[0] ?? null);
       }
 
-      const classes = await classRepository.findAll();
-      setClassList(classes);
+      // Load standout students for spotlight
+      if (targetClassId) {
+        const enrollments = await enrollmentRepository.findByClassId(targetClassId);
+        const studentIds = enrollments.map((e) => e.studentId);
+        const allStudents = await studentRepository.findAll();
+        const allClassStudents = allStudents.filter((s) => studentIds.includes(s.id));
+        const topStudents: SpotlightStudent[] = allClassStudents.slice(0, 6).map((st, idx) => ({
+          student: st,
+          streakDays: 3 + (idx % 4),
+          bonusPoints: 10 + idx * 2,
+          levelNumber: 2 + (idx % 3),
+          highlightReason: idx === 0 ? 'Phát biểu nhiều nhất' : 'Học tập chăm chỉ',
+        }));
+        setSpotlightStudents(topStudents);
+      }
     } catch (err) {
       console.error('Error loading live classroom dashboard:', err);
     } finally {
@@ -64,29 +106,48 @@ export const LiveClassroomDashboard: React.FC = () => {
     return cls ? cls.name : 'Lớp học';
   };
 
-  const getPlatformLabel = (platform: string) => {
-    switch (platform) {
-      case 'meet':
-        return 'Google Meet';
-      case 'zoom':
-        return 'Zoom Workplace';
-      case 'teams':
-        return 'Microsoft Teams';
-      case 'other':
-        return 'Nền tảng khác';
-      default:
-        return 'Không có';
+  // Quick Point Award from Spotlight
+  const handleAwardQuickPoint = (_studentId: string, points: number) => {
+    if (soundEnabled) {
+      if (points >= 2) playStarChime(true);
+      else playPositiveChime(true);
+    }
+  };
+
+  // Tool selected handler
+  const handleToolSelect = (toolId: string) => {
+    if (activeSession) {
+      navigate(`/live-classroom/${activeSession.id}`);
+    } else if (toolId === 'podium') {
+      navigate('/conduct/honor-board');
+    } else {
+      navigate('/live-classroom/new');
     }
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn pb-12">
+      {/* 1. GLOBAL HEADER */}
       <PageHeader
         title="Lớp Học Trực Tuyến"
-        description="Bảng điều khiển hỗ trợ giáo viên điều hành tiết học qua Google Meet, Zoom, MS Teams"
+        description="Không gian lớp học số — Trung tâm điều hành tiết học sinh động, truyền cảm hứng & gamified"
         badgeText="100% Cục bộ & Bảo mật"
         action={
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {/* Sound Toggle */}
+            <button
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all ${
+                soundEnabled
+                  ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700'
+              }`}
+              title={soundEnabled ? 'Tắt âm hiệu ứng' : 'Bật âm hiệu ứng'}
+            >
+              {soundEnabled ? <Volume2 className="w-4 h-4 text-sky-500" /> : <VolumeX className="w-4 h-4" />}
+              <span>{soundEnabled ? 'Âm thanh: Bật' : 'Âm thanh: Tắt'}</span>
+            </button>
+
             <Button
               variant="outline"
               size="sm"
@@ -99,6 +160,7 @@ export const LiveClassroomDashboard: React.FC = () => {
               variant="primary"
               size="sm"
               leftIcon={<Plus className="w-4 h-4" />}
+              className="bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 shadow-md font-bold"
               onClick={() => navigate('/live-classroom/new')}
             >
               Tạo phiên học mới
@@ -111,166 +173,156 @@ export const LiveClassroomDashboard: React.FC = () => {
         <LoadingSkeleton type="card" count={3} />
       ) : (
         <>
-          {/* ONGOING ACTIVE / PAUSED SESSION BANNER */}
-          {activeSession ? (
-            <Card className="border-2 border-emerald-500 bg-emerald-50/40 p-5 shadow-md animate-pulse-subtle">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Badge variant="success" className="animate-pulse">
-                      ● PHIÊN ĐANG HOẠT ĐỘNG
-                    </Badge>
-                    <Badge variant="neutral">Lớp {activeClass?.name || getClassName(activeSession.classId)}</Badge>
-                    <Badge variant="primary">{getPlatformLabel(activeSession.meetingPlatform)}</Badge>
-                  </div>
-                  <h2 className="text-xl font-extrabold text-app-main leading-snug">
-                    {activeSession.title}
-                  </h2>
-                  <p className="text-xs text-app-muted flex items-center gap-3 flex-wrap">
-                    <span>Môn học: <strong>{activeSession.subject}</strong></span>
-                    <span>•</span>
-                    <span>Ngày dạy: {formatDateVietnamese(activeSession.sessionDate)}</span>
-                  </p>
-                </div>
+          {/* 2. ACTIVE CLASS HERO (TÂM ĐIỂM CHÍNH - WOW FACTOR) */}
+          <ClassHero
+            activeSession={activeSession}
+            activeClass={activeClass}
+            participantCount={participantCount}
+            onStartNewSession={() => navigate('/live-classroom/new')}
+            onContinueSession={(sessionId) => navigate(`/live-classroom/${sessionId}`)}
+            onPresentSession={(sessionId) => navigate(`/live-classroom/${sessionId}/present`)}
+            onOpenHonorBoard={() => navigate('/conduct/honor-board')}
+            onCompleteSession={async (sessionId) => {
+              await liveClassSessionService.completeSession(sessionId);
+              loadData();
+            }}
+          />
 
-                <div className="flex items-center gap-2 flex-wrap">
-                  {activeSession.meetingUrl && (
-                    <a
-                      href={activeSession.meetingUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold inline-flex items-center gap-1.5 hover:bg-blue-700 transition-colors shadow-xs"
-                    >
-                      <Video className="w-4 h-4" />
-                      Mở phòng học ({getPlatformLabel(activeSession.meetingPlatform)})
-                      <ExternalLink className="w-3.5 h-3.5 ml-0.5" />
-                    </a>
-                  )}
+          {/* 3. CLASS JOURNEY PROGRESS BAR */}
+          <JourneyProgressBar
+            currentStepId={activeSession ? 'challenge' : 'start'}
+            onStepClick={(_stepId) => {
+              if (activeSession) navigate(`/live-classroom/${activeSession.id}`);
+            }}
+          />
 
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => navigate(`/live-classroom/${activeSession.id}/present`)}
-                  >
-                    Màn hình chiếu
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={async () => {
-                      if (window.confirm('Bạn có chắc chắn muốn hoàn thành phiên học này?')) {
-                        await liveClassSessionService.completeSession(activeSession.id);
-                        loadData();
-                      }
-                    }}
-                  >
-                    Hoàn thành phiên
-                  </Button>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    leftIcon={<Play className="w-4 h-4" />}
-                    onClick={() => navigate(`/live-classroom/${activeSession.id}`)}
-                  >
-                    Tiếp Tục Phiên
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ) : (
-            <div className="p-4 rounded-2xl bg-app-primary-light/30 border border-app flex items-center justify-between flex-wrap gap-3">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-app-primary text-app-primary-fg rounded-xl">
-                  <Monitor className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-app-main">Chưa có phiên học nào đang chạy</h3>
-                  <p className="text-xs text-app-muted">Hãy tạo một phiên học mới để điểm danh, phát biểu và gọi tên ngẫu nhiên.</p>
-                </div>
-              </div>
-              <Button size="sm" variant="primary" leftIcon={<Plus className="w-4 h-4" />} onClick={() => navigate('/live-classroom/new')}>
-                Bắt đầu phiên học ngay
-              </Button>
+          {/* 4. TWO-COLUMN SPLIT: MISSIONS & TOOLKIT */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left: Today Missions & Surprise Card */}
+            <div className="lg:col-span-5 space-y-4">
+              <TodayMissionsPanel />
             </div>
-          )}
 
-          {/* STATS OVERVIEW */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <StatCard
-              title="Phiên học đang mở"
-              value={activeSession ? '1 phiên' : '0 phiên'}
-              icon={<Monitor className="w-5 h-5 text-emerald-600" />}
-            />
-            <StatCard
-              title="Tổng phiên đã tổ chức"
-              value={`${sessions.length} phiên`}
-              icon={<CheckCircle className="w-5 h-5 text-blue-600" />}
-            />
-            <StatCard
-              title="Lớp học sẵn sàng"
-              value={`${classList.length} lớp`}
-              icon={<Users className="w-5 h-5 text-purple-600" />}
-            />
+            {/* Right: Interactive Classroom Toolkit Grid */}
+            <div className="lg:col-span-7">
+              <ClassroomToolkitGrid
+                onSelectTool={handleToolSelect}
+                handRaisedCount={handRaisedCount}
+              />
+            </div>
           </div>
 
-          {/* RECENT SESSIONS LIST */}
-          <Card title="Các phiên học gần đây">
-            {sessions.length === 0 ? (
-              <EmptyState
-                title="Chưa có phiên học nào"
-                description="Bắt đầu tạo phiên học trực tuyến đầu tiên của bạn để hỗ trợ giảng dạy từ xa."
-                actionText="Tạo phiên học mới"
-                onAction={() => navigate('/live-classroom/new')}
-                icon={<Monitor className="w-8 h-8" />}
+          {/* 5. STUDENT SPOTLIGHT & CLASS ACHIEVEMENTS */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left: Standout Students Spotlight */}
+            <div className="lg:col-span-8">
+              <StudentSpotlightCarousel
+                students={spotlightStudents}
+                onAwardQuickPoint={handleAwardQuickPoint}
+                onStudentClick={() => {
+                  if (activeSession) navigate(`/live-classroom/${activeSession.id}`);
+                }}
               />
-            ) : (
-              <div className="divide-y divide-app">
-                {sessions.slice(0, 5).map((session) => (
-                  <div key={session.id} className="py-3 flex items-center justify-between gap-3">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-bold text-sm text-app-main">{session.title}</span>
-                        <Badge variant="neutral">Lớp {getClassName(session.classId)}</Badge>
-                        <Badge
-                          variant={
-                            session.status === 'active' || session.status === 'paused'
-                              ? 'success'
-                              : session.status === 'completed'
-                              ? 'neutral'
-                              : 'warning'
-                          }
-                        >
-                          {session.status === 'active'
-                            ? 'Đang hoạt động'
-                            : session.status === 'paused'
-                            ? 'Tạm dừng'
-                            : session.status === 'completed'
-                            ? 'Hoàn thành'
-                            : 'Bản nháp'}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-app-muted flex items-center gap-2">
-                        <span>Môn: {session.subject}</span>
-                        <span>•</span>
-                        <Clock className="w-3.5 h-3.5 text-app-muted inline" />
-                        <span>{formatDateVietnamese(session.sessionDate)}</span>
-                      </p>
-                    </div>
+            </div>
 
-                    <div className="flex items-center gap-2">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => navigate(`/live-classroom/${session.id}`)}
-                      >
-                        {session.status === 'completed' ? 'Xem lại' : 'Điều hành'}
-                      </Button>
+            {/* Right: Class Achievements */}
+            <div className="lg:col-span-4">
+              <ClassAchievementsCard
+                streakDays={4}
+                totalPositivePoints={126}
+                honoredCount={3}
+              />
+            </div>
+          </div>
+
+          {/* 6. TEACHER OVERVIEW & RECENT SESSIONS (QUẢN TRỊ GỌN GÀNG) */}
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Tổng Quan & Lịch Sử Quản Trị
+              </h3>
+            </div>
+
+            {/* Compact Stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <StatCard
+                title="Phiên học đang mở"
+                value={activeSession ? '1 phiên' : '0 phiên'}
+                icon={<Monitor className="w-5 h-5 text-emerald-600" />}
+              />
+              <StatCard
+                title="Tổng phiên đã tổ chức"
+                value={`${sessions.length} phiên`}
+                icon={<CheckCircle className="w-5 h-5 text-blue-600" />}
+              />
+              <StatCard
+                title="Lớp học sẵn sàng"
+                value={`${classList.length} lớp`}
+                icon={<Users className="w-5 h-5 text-purple-600" />}
+              />
+            </div>
+
+            {/* Recent Sessions Card */}
+            <Card title="Các phiên học gần đây">
+              {sessions.length === 0 ? (
+                <EmptyState
+                  title="Chưa có phiên học nào"
+                  description="Bắt đầu tạo phiên học trực tuyến đầu tiên của bạn để hỗ trợ giảng dạy từ xa."
+                  actionText="Tạo phiên học mới"
+                  onAction={() => navigate('/live-classroom/new')}
+                  icon={<Monitor className="w-8 h-8" />}
+                />
+              ) : (
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {sessions.slice(0, 5).map((session) => (
+                    <div key={session.id} className="py-3 flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-sm text-slate-900 dark:text-slate-100">
+                            {session.title}
+                          </span>
+                          <Badge variant="neutral">Lớp {getClassName(session.classId)}</Badge>
+                          <Badge
+                            variant={
+                              session.status === 'active' || session.status === 'paused'
+                                ? 'success'
+                                : session.status === 'completed'
+                                ? 'neutral'
+                                : 'warning'
+                            }
+                          >
+                            {session.status === 'active'
+                              ? 'Đang hoạt động'
+                              : session.status === 'paused'
+                              ? 'Tạm dừng'
+                              : session.status === 'completed'
+                              ? 'Hoàn thành'
+                              : 'Bản nháp'}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                          <span>Môn: <strong>{session.subject}</strong></span>
+                          <span>•</span>
+                          <Clock className="w-3.5 h-3.5 inline" />
+                          <span>{formatDateVietnamese(session.sessionDate)}</span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => navigate(`/live-classroom/${session.id}`)}
+                        >
+                          {session.status === 'completed' ? 'Xem lại' : 'Điều hành'}
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </Card>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </div>
         </>
       )}
     </div>

@@ -221,38 +221,43 @@ export const FloatingClassroomToolbox: React.FC<FloatingClassroomToolboxProps> =
   }, [selectTool, isToolbarOpen, toggleToolbar, modalTool]);
 
   const toolItems = [
-    { id: 'random' as ClassroomToolId, name: 'Gọi tên ngẫu nhiên', shortcut: 'R', icon: Sparkles, color: 'text-amber-500 bg-amber-50 border-amber-200' },
-    { id: 'timer' as ClassroomToolId, name: 'Đồng hồ đếm giờ', shortcut: 'T', icon: Clock, color: 'text-blue-500 bg-blue-50 border-blue-200' },
-    { id: 'groups' as ClassroomToolId, name: 'Chia nhóm học sinh', shortcut: 'G', icon: Users, color: 'text-teal-500 bg-teal-50 border-teal-200' },
-    { id: 'handQueue' as ClassroomToolId, name: 'Hàng đợi giơ tay', shortcut: '', icon: Hand, color: 'text-amber-600 bg-amber-50 border-amber-200', badge: handQueueCount },
-    { id: 'quickPoll' as ClassroomToolId, name: 'Câu hỏi A/B/C/D', shortcut: '', icon: HelpCircle, color: 'text-purple-500 bg-purple-50 border-purple-200' },
-    { id: 'whiteboard' as ClassroomToolId, name: 'Bảng viết nhanh', shortcut: '', icon: Edit3, color: 'text-emerald-500 bg-emerald-50 border-emerald-200' },
-    { id: 'qrCode' as ClassroomToolId, name: 'Mã QR tài liệu', shortcut: '', icon: QrCode, color: 'text-indigo-500 bg-indigo-50 border-indigo-200' },
-    { id: 'breakScreen' as ClassroomToolId, name: 'Màn hình giải lao', shortcut: '', icon: Coffee, color: 'text-orange-500 bg-orange-50 border-orange-200' },
-    { id: 'events' as ClassroomToolId, name: 'Nhật ký tiết học', shortcut: '', icon: Activity, color: 'text-slate-600 bg-slate-50 border-slate-200' },
+    { id: 'random' as ClassroomToolId, name: 'Gọi tên ngẫu nhiên', shortcut: 'R', icon: Sparkles, color: 'text-amber-500 bg-amber-50 dark:bg-amber-950/60 border-amber-300 dark:border-amber-700' },
+    { id: 'timer' as ClassroomToolId, name: 'Đồng hồ đếm giờ', shortcut: 'T', icon: Clock, color: 'text-sky-600 bg-sky-50 dark:bg-sky-950/60 border-sky-300 dark:border-sky-700' },
+    { id: 'groups' as ClassroomToolId, name: 'Chia nhóm học sinh', shortcut: 'G', icon: Users, color: 'text-teal-600 bg-teal-50 dark:bg-teal-950/60 border-teal-300 dark:border-teal-700' },
+    { id: 'handQueue' as ClassroomToolId, name: 'Hàng đợi giơ tay', shortcut: '', icon: Hand, color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/60 border-amber-300 dark:border-amber-700', badge: handQueueCount },
+    { id: 'quickPoll' as ClassroomToolId, name: 'Hỏi đáp & Trắc nghiệm', shortcut: '', icon: HelpCircle, color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/60 border-purple-300 dark:border-purple-700' },
+    { id: 'whiteboard' as ClassroomToolId, name: 'Bảng viết nhanh', shortcut: '', icon: Edit3, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-700' },
+    { id: 'qrCode' as ClassroomToolId, name: 'Mã QR tài liệu', shortcut: '', icon: QrCode, color: 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/60 border-indigo-300 dark:border-indigo-700' },
+    { id: 'breakScreen' as ClassroomToolId, name: 'Nghỉ giải lao', shortcut: '', icon: Coffee, color: 'text-orange-500 bg-orange-50 dark:bg-orange-950/60 border-orange-300 dark:border-orange-700' },
+    { id: 'events' as ClassroomToolId, name: 'Nhật ký tiết học', shortcut: '', icon: Activity, color: 'text-slate-600 bg-slate-50 dark:bg-slate-800 border-slate-300 dark:border-slate-700' },
   ];
 
   const currentToolMeta = toolItems.find((t) => t.id === activeTool) || toolItems[0]!;
 
   return (
     <>
-      {/* WHEN ENTIRE TOOLBAR IS CLOSED: SHOW COMPACT SINGLE TRIGGER BUTTON IN BOTTOM RIGHT CORNER */}
+      {/* WHEN ENTIRE TOOLBAR IS CLOSED: SHOW COMPACT FLOATING DOCK LAUNCHER */}
       {!isToolbarOpen && (
         <button
           onClick={() => toggleToolbar(true)}
           className={cn(
-            'fixed right-4 bottom-6 z-40 select-none',
-            'px-4 py-2.5 rounded-2xl bg-app-surface border-2 border-app shadow-2xl',
-            'text-app-main hover:bg-app-primary hover:text-app-primary-fg font-extrabold text-xs',
-            'flex items-center gap-2 transition-all duration-200 hover:scale-105 active:scale-95 animate-fadeIn'
+            'fixed right-5 bottom-6 z-40 select-none',
+            'px-4 py-3 rounded-2xl bg-white/95 dark:bg-slate-900/95 border-2 border-sky-300 dark:border-slate-700 shadow-2xl backdrop-blur-md',
+            'text-slate-800 dark:text-slate-100 hover:text-sky-600 dark:hover:text-sky-400 font-black text-xs',
+            'flex items-center gap-2.5 transition-all duration-200 hover:scale-105 active:scale-95 shadow-sky-500/10 cursor-pointer animate-fadeIn'
           )}
           aria-label="Mở toàn bộ thanh công cụ lớp học"
           title="Mở toàn bộ thanh công cụ lớp học"
         >
-          <Sliders className="w-5 h-5 text-amber-500 shrink-0" />
-          <span className="font-extrabold">Bảng công cụ</span>
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-400 to-yellow-400 text-amber-950 flex items-center justify-center font-black shadow-xs">
+            <Sliders className="w-4.5 h-4.5" />
+          </div>
+          <div className="text-left">
+            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-extrabold">Bàn Giáo Viên</p>
+            <p className="font-black text-xs text-slate-900 dark:text-slate-100">Bảng Công Cụ</p>
+          </div>
           {handQueueCount > 0 && (
-            <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-[10px] flex items-center justify-center animate-bounce">
+            <span className="w-5 h-5 rounded-full bg-amber-500 text-white font-black text-[10px] flex items-center justify-center animate-bounce shadow-xs">
               {handQueueCount}
             </span>
           )}
@@ -263,46 +268,46 @@ export const FloatingClassroomToolbox: React.FC<FloatingClassroomToolboxProps> =
       {isToolbarOpen && (
         <div
           onClick={() => toggleToolbar(false)}
-          className="xl:hidden fixed inset-0 bg-black/20 backdrop-blur-xs z-30 animate-fadeIn"
+          className="xl:hidden fixed inset-0 bg-black/25 backdrop-blur-xs z-30 animate-fadeIn"
           aria-hidden="true"
         />
       )}
 
-      {/* FLOATING CLASSROOM TOOLBOX ASIDE CONTAINER (ANCHORED BOTTOM RIGHT) */}
+      {/* FLOATING CLASSROOM TOOL DOCK ASIDE CONTAINER (ANCHORED BOTTOM RIGHT) */}
       {isToolbarOpen && (
         <aside
           aria-label="Bảng công cụ lớp học"
           className={cn(
-            'fixed z-40 transition-all duration-200 ease-out select-none',
-            'right-4 bottom-6',
+            'fixed z-40 transition-all duration-300 ease-out select-none',
+            'right-4 sm:right-6 bottom-6',
             'max-h-[calc(100dvh-32px)] flex items-end'
           )}
         >
-          <div className="flex items-start gap-2 h-full">
-            {/* TOOL CONTENT PANEL */}
+          <div className="flex items-start gap-2.5 h-full">
+            {/* TOOL CONTENT SIDE DRAWER (PRESERVES STUDENT GRID VISIBILITY) */}
             <div
               className={cn(
-                'bg-app-surface border-2 border-app shadow-2xl rounded-3xl p-4 flex flex-col',
-                'w-[calc(100vw-80px)] sm:w-96 md:w-[420px] max-h-[calc(100dvh-48px)] overflow-hidden animate-slideLeft'
+                'bg-white/95 dark:bg-slate-900/95 border-2 border-sky-200/90 dark:border-slate-700 shadow-2xl rounded-3xl p-4 flex flex-col backdrop-blur-md',
+                'w-[calc(100vw-76px)] sm:w-96 md:w-[430px] max-h-[calc(100dvh-56px)] overflow-hidden animate-slideLeft'
               )}
             >
               {/* TOOL HEADER */}
-              <div className="flex items-center justify-between pb-3 border-b border-app mb-3 shrink-0">
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className={cn('p-2 rounded-xl border shrink-0', currentToolMeta.color)}>
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3 shrink-0">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className={cn('p-2 rounded-2xl border-2 shrink-0 shadow-2xs', currentToolMeta.color)}>
                     <currentToolMeta.icon className="w-5 h-5" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-extrabold text-sm text-app-main truncate">{currentToolMeta.name}</h3>
-                    <p className="text-[10px] text-app-muted font-medium truncate">
-                      {currentToolMeta.shortcut ? `Phím tắt [${currentToolMeta.shortcut}]` : 'Công cụ giảng dạy trực quan'}
+                    <h3 className="font-black text-sm text-slate-900 dark:text-slate-100 truncate">{currentToolMeta.name}</h3>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold truncate">
+                      {currentToolMeta.shortcut ? `Phím tắt [${currentToolMeta.shortcut}]` : 'Công cụ tương tác trực quan'}
                     </p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => toggleToolbar(false)}
-                  className="p-1.5 rounded-xl text-app-muted hover:text-app-main hover:bg-app-surface-hover transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                  className="p-2 rounded-2xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer"
                   aria-label="Đóng toàn bộ thanh công cụ"
                   title="Đóng toàn bộ thanh công cụ (Escape)"
                 >
@@ -544,24 +549,24 @@ export const FloatingClassroomToolbox: React.FC<FloatingClassroomToolboxProps> =
               </div>
             </div>
 
-            {/* TOOL RAIL VERTICAL ICON BAR */}
+            {/* CLASSROOM TOOL DOCK VERTICAL ICON BAR */}
             <div
               className={cn(
-                'bg-app-surface border-2 border-app shadow-xl rounded-3xl p-1.5 flex flex-col items-center gap-1.5',
+                'bg-white/95 dark:bg-slate-900/95 border-2 border-sky-200/90 dark:border-slate-700 shadow-2xl rounded-3xl p-1.5 flex flex-col items-center gap-1.5 backdrop-blur-md',
                 'w-14 sm:w-16 shrink-0'
               )}
             >
               {/* TOGGLE CLOSE ENTIRE TOOLBAR BUTTON */}
               <button
                 onClick={() => toggleToolbar(false)}
-                className="p-2.5 rounded-2xl bg-app-surface-hover text-app-main hover:bg-red-50 hover:text-red-600 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/60 dark:hover:text-red-400 transition-all min-h-[42px] min-w-[42px] flex items-center justify-center cursor-pointer shadow-2xs active:scale-95"
                 aria-label="Đóng toàn bộ thanh công cụ"
                 title="Đóng toàn bộ thanh công cụ (Escape)"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
 
-              <div className="w-8 h-px bg-app my-0.5" />
+              <div className="w-8 h-px bg-slate-200 dark:bg-slate-800 my-0.5" />
 
               {/* TOOL ICON BUTTONS */}
               {toolItems.map((item) => {
@@ -575,10 +580,10 @@ export const FloatingClassroomToolbox: React.FC<FloatingClassroomToolboxProps> =
                     aria-label={item.name}
                     aria-pressed={isActive}
                     className={cn(
-                      'relative p-2.5 rounded-2xl transition-all min-h-[44px] min-w-[44px] flex items-center justify-center',
+                      'relative p-2.5 rounded-2xl transition-all min-h-[42px] min-w-[42px] flex items-center justify-center cursor-pointer',
                       isActive
-                        ? 'bg-app-primary text-app-primary-fg font-extrabold shadow-md scale-105 ring-2 ring-blue-400'
-                        : 'text-app-main hover:bg-app-surface-hover hover:text-app-primary'
+                        ? 'bg-gradient-to-tr from-sky-500 to-blue-600 text-white font-black shadow-md shadow-sky-500/25 scale-105 ring-2 ring-sky-300'
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 hover:scale-105 active:scale-95'
                     )}
                     title={`${item.name}${item.shortcut ? ` [${item.shortcut}]` : ''}`}
                   >
@@ -586,7 +591,7 @@ export const FloatingClassroomToolbox: React.FC<FloatingClassroomToolboxProps> =
 
                     {/* BADGE COUNT IF ANY */}
                     {item.badge !== undefined && item.badge > 0 && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-[10px] flex items-center justify-center animate-bounce shadow-xs">
+                      <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-white font-black text-[10px] flex items-center justify-center animate-bounce shadow-xs ring-2 ring-white dark:ring-slate-900">
                         {item.badge}
                       </span>
                     )}
@@ -594,7 +599,7 @@ export const FloatingClassroomToolbox: React.FC<FloatingClassroomToolboxProps> =
                 );
               })}
 
-              <div className="w-8 h-px bg-app my-0.5" />
+              <div className="w-8 h-px bg-slate-200 dark:bg-slate-800 my-0.5" />
 
               {/* FULLSCREEN BUTTON */}
               <button
@@ -605,7 +610,7 @@ export const FloatingClassroomToolbox: React.FC<FloatingClassroomToolboxProps> =
                     document.exitFullscreen().catch(() => {});
                   }
                 }}
-                className="p-2.5 rounded-2xl text-app-main hover:bg-app-surface-hover hover:text-app-primary transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-all min-h-[42px] min-w-[42px] flex items-center justify-center cursor-pointer active:scale-95"
                 aria-label="Toàn màn hình [F]"
                 title="Toàn màn hình [F]"
               >

@@ -191,6 +191,10 @@ class LiveBroadcastService {
     };
   }
 
+  subscribe(callback: (message: BroadcastMessageType) => void): () => void {
+    return this.onMessage(callback);
+  }
+
   close(): void {
     if (this.channel) {
       this.channel.close();

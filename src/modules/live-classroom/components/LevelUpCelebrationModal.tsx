@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { playPromotionFanfare } from '../../../shared/utilities/sound';
-import { Sparkles, Trophy, X, ChevronRight, Award, TrendingDown } from 'lucide-react';
+import { Sparkles, Trophy, X, TrendingDown, Crown, Star, ArrowRight, ShieldCheck, HeartHandshake } from 'lucide-react';
 import type { DirectLevelChangeNotification } from '../../../core/types/avatar-theme.types';
 import {
   buildLevelChangeModalViewModel,
@@ -9,6 +9,7 @@ import {
   type BatchLevelChangeModalViewModel,
   type ViewModelOptions,
 } from '../../../core/services/level-up-celebration/level-change-modal-view-model';
+import { CuteStarSVG } from '../../../shared/components/CuteDecorations';
 
 export interface LevelUpCelebrationModalProps extends ViewModelOptions {
   isOpen: boolean;
@@ -48,7 +49,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
   const [avatarError, setAvatarError] = useState(false);
   const activeModalIdRef = useRef<string>('');
 
-  // 1. Chuẩn hóa View Model qua Pure Mapper (Single hoặc Batch)
+  // 1. Normalize View Model via pure mapper (Single or Batch)
   const normalizedViewModel = useMemo(() => {
     if (viewModel) return viewModel;
 
@@ -95,6 +96,8 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
 
   const currentModalId = normalizedViewModel?.id || '';
   const isLevelDown = singleVM?.variant === 'LEVEL_DOWN' || batchVM?.isAllDown;
+  const isMaxLevel = singleVM?.variant === 'MAX_LEVEL' || singleVM?.currentLevel.id === 5;
+  const isMultiJump = (singleVM?.levelsChanged ?? 1) > 1;
 
   // 2. Reduced Motion Detector
   useEffect(() => {
@@ -116,7 +119,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
   useEffect(() => {
     if (!isOpen || isPresentationMode) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' || e.key === 'Enter') {
         handleClose();
       }
     };
@@ -124,7 +127,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isOpen, isPresentationMode, handleClose]);
 
-  // 4. Motion Phase Timeline (Phase 1 -> Phase 7) với Scoped Timer Guard
+  // 4. Motion Phase Timeline with Scoped Timer Guard
   useEffect(() => {
     if (!isOpen || !normalizedViewModel) {
       setPhase('ENTER');
@@ -202,7 +205,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
     };
   }, [isOpen, normalizedViewModel, currentModalId, durationMs, enableSound, isLevelDown, reducedMotion, onComplete, onClose]);
 
-  // 5. One-Shot Confetti Particles (Canvas Rendered, Limited Budget: 24-36 Desktop / 10-18 Mobile)
+  // 5. One-Shot Canvas Confetti (Active strictly on Level-Up, 24-36 particles, auto cleanup)
   useEffect(() => {
     if (!isOpen || !normalizedViewModel || isLevelDown || !confettiEnabled || reducedMotion || intensity === 'MINIMAL') {
       return;
@@ -236,8 +239,8 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
     const colorPalette = [baseAccent, '#3b82f6', '#10b981', '#ec4899', '#8b5cf6', '#fbbf24', '#ffffff'];
 
     const particles = Array.from({ length: particleBudget }, (_, i) => ({
-      x: width / 2 + (Math.random() - 0.5) * 60,
-      y: height / 2 - 20,
+      x: width / 2 + (Math.random() - 0.5) * 80,
+      y: height / 2 - 30,
       vx: (Math.random() - 0.5) * (isMobile ? 8 : 12),
       vy: (Math.random() - 0.75) * (isMobile ? 10 : 15),
       size: Math.random() * 6 + 4,
@@ -256,7 +259,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
       particles.forEach((p) => {
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.24; // subtle gravity
+        p.vy += 0.24;
         p.rotation += p.rotationSpeed;
         p.alpha = Math.max(0, 1 - elapsed / 2600);
 
@@ -286,7 +289,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
   const isUpgraded = phase === 'REVEAL' || phase === 'SETTLE' || phase === 'HOLD' || phase === 'EXIT';
   const isExit = phase === 'EXIT';
 
-  const defaultAccentColor = singleVM?.currentLevel.cardBaseColor || (isLevelDown ? '#64748b' : '#f59e0b');
+  const defaultAccentColor = singleVM?.currentLevel.cardBaseColor || (isLevelDown ? '#d97706' : '#f59e0b');
   const cardTheme = singleVM?.currentLevel.cardTheme;
 
   return (
@@ -295,7 +298,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
       aria-modal="true"
       aria-labelledby="level-change-modal-title"
       aria-describedby="level-change-modal-desc"
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 select-none transition-all duration-300 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 select-none transition-all duration-300 ${
         isExit ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'
       }`}
       style={{
@@ -305,7 +308,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
         ['--level-foreground' as any]: cardTheme?.textPrimary || '#0f172a',
       }}
     >
-      {/* 1. SCREEN READER LIVE ANNOUNCEMENT (Triggered exactly once) */}
+      {/* 1. SCREEN READER LIVE ANNOUNCEMENT */}
       <div className="sr-only" aria-live="polite">
         {singleVM ? singleVM.content.ariaAnnouncement : batchVM?.header.ariaAnnouncement}
       </div>
@@ -316,7 +319,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
         onClick={!isPresentationMode ? handleClose : undefined}
       />
 
-      {/* 3. CONFETTI PARTICLES CANVAS (ARIA Hidden) */}
+      {/* 3. CONFETTI PARTICLES CANVAS (Level Up Only) */}
       {!isLevelDown && (
         <canvas
           ref={canvasRef}
@@ -328,25 +331,30 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
       {/* 4. MODAL MAIN CONTAINER */}
       <div
         className={`relative z-30 w-full mx-auto flex flex-col items-center ${
-          singleVM ? 'max-w-lg sm:max-w-xl' : 'max-w-4xl'
+          singleVM ? 'max-w-md sm:max-w-lg' : 'max-w-4xl'
         }`}
       >
-        {/* AMBIENT LIGHTING GLOW ORBS (ARIA Hidden) */}
-        {!isLevelDown && (
+        {/* AMBIENT LIGHTING GLOW ORBS */}
+        {!isLevelDown ? (
           <>
             <div
               aria-hidden="true"
-              className="absolute -top-24 -left-16 w-80 sm:w-96 h-80 sm:h-96 rounded-full blur-[100px] opacity-40 pointer-events-none transition-all duration-700 animate-pulse-slow"
+              className="absolute -top-20 -left-12 w-72 sm:w-96 h-72 sm:h-96 rounded-full blur-[100px] opacity-45 pointer-events-none transition-all duration-700 animate-level-glow"
               style={{ backgroundColor: defaultAccentColor }}
             />
             <div
               aria-hidden="true"
-              className="absolute -bottom-20 -right-16 w-72 sm:w-80 h-72 sm:h-80 rounded-full blur-[90px] opacity-25 pointer-events-none transition-all duration-700 bg-indigo-500"
+              className="absolute -bottom-16 -right-12 w-64 sm:w-80 h-64 sm:h-80 rounded-full blur-[90px] opacity-30 pointer-events-none transition-all duration-700 bg-indigo-500"
             />
           </>
+        ) : (
+          <div
+            aria-hidden="true"
+            className="absolute -top-16 inset-x-0 mx-auto w-72 sm:w-80 h-72 sm:h-80 rounded-full blur-[90px] opacity-25 pointer-events-none bg-amber-400 animate-warm-glow"
+          />
         )}
 
-        {/* CLOSE BUTTON (Teacher console only) */}
+        {/* CLOSE BUTTON (Teacher console mode only) */}
         {!isPresentationMode && (
           <button
             type="button"
@@ -363,24 +371,33 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
         {/* SINGLE STUDENT HERO MODAL */}
         {/* ========================================================================= */}
         {singleVM && (
-          <div className="w-full flex flex-col items-center">
-            {/* EYEBROW BADGE */}
-            {singleVM.content.eyebrow && (
-              <div className="mb-3 text-center">
-                <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 text-amber-950 font-black text-xs sm:text-sm uppercase tracking-widest shadow-xl shadow-amber-500/20 border border-yellow-200/80 animate-bounce">
-                  <Sparkles className="w-4 h-4 text-amber-900" />
-                  <span>{singleVM.content.eyebrow}</span>
-                  <Sparkles className="w-4 h-4 text-amber-900" />
+          <div className="w-full flex flex-col items-center animate-fadeIn">
+            {/* 1. CELEBRATION EYEBROW HEADLINE */}
+            <div className="mb-2.5 text-center">
+              {!isLevelDown ? (
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 text-amber-950 font-black text-xs sm:text-sm uppercase tracking-widest shadow-xl shadow-amber-500/20 border-2 border-yellow-200/90 animate-bounce">
+                  <Sparkles className="w-4 h-4 text-amber-900 fill-amber-900" />
+                  <span>{singleVM.content.eyebrow || 'Chúc mừng!'}</span>
+                  <CuteStarSVG className="w-4 h-4 text-amber-900 animate-spin" />
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-200 font-extrabold text-xs tracking-wider border border-amber-300 dark:border-amber-700 shadow-2xs">
+                  <HeartHandshake className="w-3.5 h-3.5 text-amber-600" />
+                  <span>💪 Cố Gắng Thêm Nhé!</span>
+                </div>
+              )}
+            </div>
 
-            {/* MAIN HERO CARD */}
+            {/* 2. MAIN HERO CARD */}
             <div
               id="level-change-modal-title"
-              className="w-full rounded-3xl p-6 sm:p-8 text-center shadow-[0_25px_70px_-15px_rgba(0,0,0,0.35)] border border-white/80 transition-all duration-500 relative overflow-hidden bg-gradient-to-b from-white via-slate-50/95 to-slate-100/90 backdrop-blur-2xl"
+              className={`w-full rounded-3xl p-5 sm:p-7 text-center shadow-[0_25px_70px_-15px_rgba(0,0,0,0.35)] border border-white/80 transition-all duration-500 relative overflow-hidden bg-gradient-to-b from-white via-slate-50/95 to-slate-100/90 backdrop-blur-2xl ${
+                !isLevelDown ? 'border-amber-200/80' : 'border-slate-200'
+              }`}
               style={{
-                boxShadow: `0 25px 60px -12px ${defaultAccentColor}30, 0 0 0 1px ${defaultAccentColor}25, 0 0 40px -5px ${defaultAccentColor}15`,
+                boxShadow: !isLevelDown
+                  ? `0 25px 60px -12px ${defaultAccentColor}30, 0 0 0 1px ${defaultAccentColor}25, 0 0 40px -5px ${defaultAccentColor}15`
+                  : '0 20px 50px -12px rgba(100, 116, 139, 0.25)',
               }}
             >
               {/* TOP CARD SUBTLE ACCENT RADIAL SHINE */}
@@ -389,7 +406,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
                 className="absolute inset-0 pointer-events-none"
                 style={{
                   background: isLevelDown
-                    ? 'radial-gradient(circle at 50% 0%, rgba(100, 116, 139, 0.12) 0%, transparent 65%)'
+                    ? 'radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.08) 0%, transparent 65%)'
                     : `radial-gradient(circle at 50% 0%, ${defaultAccentColor}22 0%, ${defaultAccentColor}06 45%, transparent 70%)`,
                 }}
               />
@@ -400,16 +417,16 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
                 className="absolute top-0 inset-x-0 h-1.5 opacity-90"
                 style={{
                   background: isLevelDown
-                    ? 'linear-gradient(90deg, transparent, #64748b, transparent)'
+                    ? 'linear-gradient(90deg, transparent, #d97706, transparent)'
                     : `linear-gradient(90deg, transparent, ${defaultAccentColor}, transparent)`,
                 }}
               />
 
-              {/* ENERGY RINGS (Only for UP full intensity) */}
+              {/* ENERGY RINGS FOR UPGRADES */}
               {!reducedMotion && !isLevelDown && intensity === 'FULL' && isUpgraded && (
                 <div aria-hidden="true" className="absolute inset-0 pointer-events-none flex items-center justify-center">
                   <div
-                    className="w-48 h-48 rounded-full border-2 border-dashed opacity-35 animate-spin-slow"
+                    className="w-48 h-48 rounded-full border-2 border-dashed opacity-30 animate-spin-slow"
                     style={{ borderColor: defaultAccentColor }}
                   />
                   <div
@@ -419,17 +436,28 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
                 </div>
               )}
 
-              {/* 1. AVATAR HERO PRESENTATION */}
-              <div className="relative flex flex-col items-center justify-center my-2">
+              {/* 3. AVATAR STAGE (120-150px Focal Point) */}
+              <div className="relative flex flex-col items-center justify-center mt-1 mb-3">
+                {/* Crown for Max Level Cấp 5 */}
+                {isMaxLevel && !isLevelDown && (
+                  <div className="absolute -top-6 z-20 animate-bounce">
+                    <div className="p-2 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 shadow-lg border-2 border-white">
+                      <Crown className="w-6 h-6 fill-current" />
+                    </div>
+                  </div>
+                )}
+
                 <div
-                  className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full p-1.5 shadow-2xl transition-transform duration-500 hover:scale-105"
+                  className={`relative ${
+                    isPresentationMode ? 'w-36 h-36 sm:w-44 sm:h-44' : 'w-28 h-28 sm:w-36 sm:h-36'
+                  } rounded-full p-1.5 shadow-2xl transition-transform duration-500 animate-avatar-spring`}
                   style={{
                     background: isLevelDown
-                      ? 'linear-gradient(135deg, #64748b, #94a3b8)'
+                      ? 'linear-gradient(135deg, #d97706, #fde68a, #cbd5e1)'
                       : `linear-gradient(135deg, ${defaultAccentColor}, #ffffff, ${defaultAccentColor}88)`,
                     boxShadow: isLevelDown
-                      ? '0 12px 28px -6px rgba(100, 116, 139, 0.4)'
-                      : `0 14px 35px -6px ${defaultAccentColor}55`,
+                      ? '0 12px 28px -6px rgba(217, 119, 6, 0.35)'
+                      : `0 16px 38px -6px ${defaultAccentColor}55`,
                   }}
                 >
                   <div className="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center border-2 border-white shadow-inner">
@@ -443,7 +471,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
                       />
                     ) : (
                       <div
-                        className="w-full h-full flex items-center justify-center font-black text-xl sm:text-2xl text-white select-none"
+                        className="w-full h-full flex items-center justify-center font-black text-xl sm:text-3xl text-white select-none"
                         style={{ backgroundColor: defaultAccentColor }}
                       >
                         {singleVM.student.initials || <Trophy className="w-12 h-12 text-white" />}
@@ -453,9 +481,9 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
                 </div>
 
                 {/* LEVEL BADGE CHIP */}
-                <div className="mt-3.5">
+                <div className="mt-3">
                   <span
-                    className="px-4 py-1 rounded-full text-xs sm:text-sm font-black shadow-md inline-flex items-center gap-1.5 border border-white/40"
+                    className="px-4 py-1 rounded-full text-xs sm:text-sm font-black shadow-md inline-flex items-center gap-1.5 border border-white/50 relative overflow-hidden animate-badge-shine"
                     style={{
                       backgroundColor: defaultAccentColor,
                       color: '#ffffff',
@@ -464,6 +492,8 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
                   >
                     {isLevelDown ? (
                       <TrendingDown className="w-3.5 h-3.5" />
+                    ) : isMaxLevel ? (
+                      <Crown className="w-3.5 h-3.5" />
                     ) : (
                       <Sparkles className="w-3.5 h-3.5" />
                     )}
@@ -472,8 +502,8 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
                 </div>
               </div>
 
-              {/* 2. STUDENT NAME & CELEBRATION HEADLINE */}
-              <div className="space-y-1.5 mt-3 relative z-10">
+              {/* 4. STUDENT NAME & CELEBRATION HEADLINE */}
+              <div className="space-y-1.5 relative z-10">
                 <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight line-clamp-2 px-2">
                   {singleVM.student.displayName}
                 </h2>
@@ -482,70 +512,91 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
                   {singleVM.content.headline}
                 </p>
 
-                {/* CONFIGURED LEVEL NAME */}
-                <div className="inline-block px-4 py-1.5 rounded-2xl bg-white/80 border border-slate-200/80 text-slate-900 font-extrabold text-sm sm:text-base mt-1 shadow-2xs backdrop-blur-xs">
+                {/* CONFIGURED LEVEL NAME PILL */}
+                <div className="inline-block px-4 py-1.5 rounded-2xl bg-white/90 border border-slate-200 text-slate-900 font-black text-sm sm:text-base mt-1 shadow-2xs backdrop-blur-xs">
                   {singleVM.currentLevel.shortLabel} •{' '}
                   <span style={{ color: defaultAccentColor }}>{singleVM.currentLevel.name}</span>
                 </div>
 
-                {/* 3. PREVIOUS -> CURRENT TRANSITION CHIP */}
-                <div className="flex items-center justify-center gap-2 pt-2.5 text-xs sm:text-sm font-bold text-slate-600">
-                  <span className="px-3 py-1 rounded-xl bg-slate-100/90 border border-slate-200/80 shadow-2xs">
-                    {singleVM.previousLevel.shortLabel} ({singleVM.previousLevel.name})
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
-                  <span
-                    className="px-3.5 py-1 rounded-xl font-black shadow-xs border"
+                {/* 5. VISUAL LEVEL TRANSITION BLOCK */}
+                <div className="my-3 p-3 rounded-2xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center gap-2 sm:gap-3 max-w-sm mx-auto shadow-2xs">
+                  {/* Previous Level Card (Muted / Low Opacity) */}
+                  <div className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 opacity-70 shadow-2xs">
+                    <span>{singleVM.previousLevel.shortLabel} ({singleVM.previousLevel.name})</span>
+                  </div>
+
+                  {/* Animated Transition Arrow */}
+                  <div className="p-1 rounded-full bg-slate-200/70 dark:bg-slate-700 text-slate-600 dark:text-slate-300 animate-arrow-bounce">
+                    <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                  </div>
+
+                  {/* Current Level Card (Vibrant / Elevated / Glowing) */}
+                  <div
+                    className="px-3.5 py-1.5 rounded-xl font-black text-xs sm:text-sm shadow-sm border transition-all transform scale-105"
                     style={{
-                      backgroundColor: `${defaultAccentColor}18`,
-                      borderColor: `${defaultAccentColor}60`,
+                      backgroundColor: `${defaultAccentColor}15`,
+                      borderColor: `${defaultAccentColor}70`,
                       color: defaultAccentColor,
                     }}
                   >
-                    {singleVM.currentLevel.shortLabel} ({singleVM.currentLevel.name})
-                  </span>
+                    <span>{singleVM.currentLevel.shortLabel} ({singleVM.currentLevel.name})</span>
+                  </div>
                 </div>
 
-                {/* OPTIONAL SUPPORTING TEXT */}
+                {/* OPTIONAL SUPPORTING TEXT (Multi-jump / Max-level) */}
                 {singleVM.content.supportingText && (
-                  <p className="text-xs font-extrabold text-emerald-700 pt-1">
+                  <p className="text-xs font-black text-emerald-700 dark:text-emerald-400 pt-0.5">
                     {singleVM.content.supportingText}
                   </p>
                 )}
 
-                {/* 4. OPTIONAL SCORE SUMMARY ROW */}
+                {/* 6. REAL SCORE REWARD ROW (No Fake Data) */}
                 {singleVM.score?.formattedSummary && (
-                  <div className="pt-2 text-xs sm:text-sm font-extrabold text-indigo-700">
-                    {singleVM.score.formattedSummary}
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-xs sm:text-sm font-black text-indigo-700 dark:text-indigo-300 shadow-2xs">
+                    <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                    <span>{singleVM.score.formattedSummary}</span>
                   </div>
                 )}
               </div>
 
-              {/* 5. INSPIRATIONAL / NEUTRAL SUBTEXT */}
+              {/* 7. AGE-APPROPRIATE ENCOURAGEMENT MESSAGE */}
               <p
                 id="level-change-modal-desc"
-                className="text-xs sm:text-sm text-slate-600 italic max-w-md mx-auto mt-4 pt-3.5 border-t border-slate-200/70 leading-relaxed relative z-10"
+                className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 italic max-w-md mx-auto mt-3.5 pt-3 border-t border-slate-200/70 dark:border-slate-700/70 leading-relaxed relative z-10"
               >
                 {isLevelDown
-                  ? 'Thông tin cấp bậc của học sinh đã được đồng bộ chính xác theo kết quả điểm số mới.'
-                  : 'Thành tích xuất sắc! Sự nỗ lực và chăm chỉ của em đã mở khóa thành công cấp bậc mới!'}
+                  ? '🌱 Em hoàn toàn có thể thăng cấp trở lại bằng sự tích cực và cố gắng trong các tiết học tới!'
+                  : isMaxLevel
+                  ? '👑 Xuất sắc phi thường! Em đã chinh phục đỉnh cao cấp bậc với nỗ lực bền bỉ!'
+                  : isMultiJump
+                  ? '🚀 Thật ấn tượng! Sự bứt phá mạnh mẽ đã giúp em vượt qua nhiều chặng cấp bậc!'
+                  : 'Sự nỗ lực và chăm chỉ của em đã mở khóa thành công một cấp bậc mới! Tiếp tục phát huy nhé!'}
               </p>
 
-              {/* 6. ACTION BUTTON (Single-screen teacher controller only) */}
+              {/* 8. TACTILE 3D ACTION CTA BUTTON */}
               {!isPresentationMode && (
-                <div className="mt-5 flex justify-center relative z-10">
+                <div className="mt-4.5 flex justify-center relative z-10">
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="px-8 py-2.5 rounded-2xl font-black text-xs sm:text-sm shadow-lg hover:shadow-xl transition-all transform active:scale-95 flex items-center gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 border border-white/20"
+                    className="px-8 py-2.5 rounded-2xl font-black text-xs sm:text-sm shadow-lg hover:shadow-xl transition-all transform active:scale-95 flex items-center gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 border border-white/25"
                     style={{
                       backgroundColor: defaultAccentColor,
                       color: '#ffffff',
                       boxShadow: `0 8px 24px -4px ${defaultAccentColor}70`,
                     }}
                   >
-                    {isLevelDown ? <Award className="w-4 h-4" /> : <Trophy className="w-4 h-4" />}
-                    {isLevelDown ? 'Đã hiểu' : 'Tuyệt vời!'}
+                    {isLevelDown ? (
+                      <>
+                        <ShieldCheck className="w-4 h-4" />
+                        <span>Đã hiểu</span>
+                      </>
+                    ) : (
+                      <>
+                        <Trophy className="w-4 h-4" />
+                        <span>Tuyệt vời!</span>
+                      </>
+                    )}
                   </button>
                 </div>
               )}
@@ -557,7 +608,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
         {/* BATCH GRID MODAL (2+ STUDENTS) */}
         {/* ========================================================================= */}
         {batchVM && (
-          <div className="w-full bg-gradient-to-b from-white via-slate-50/95 to-slate-100/90 rounded-3xl p-6 sm:p-8 shadow-[0_25px_70px_-15px_rgba(0,0,0,0.35)] border border-white/80 backdrop-blur-2xl text-center relative overflow-hidden">
+          <div className="w-full bg-gradient-to-b from-white via-slate-50/95 to-slate-100/90 rounded-3xl p-5 sm:p-7 shadow-[0_25px_70px_-15px_rgba(0,0,0,0.35)] border border-white/80 backdrop-blur-2xl text-center relative overflow-hidden animate-fadeIn">
             {/* TOP SHINE */}
             <div
               aria-hidden="true"
@@ -565,7 +616,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
             />
 
             {batchVM.header.eyebrow && (
-              <div className="mb-2.5 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-200/80 text-amber-950 font-black text-xs shadow-xs relative z-10">
+              <div className="mb-2.5 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100/90 border border-amber-200/80 text-amber-950 font-black text-xs shadow-2xs relative z-10">
                 <Sparkles className="w-3.5 h-3.5 text-amber-700" />
                 <span>{batchVM.header.eyebrow}</span>
               </div>
@@ -576,7 +627,7 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
             </h2>
 
             <div
-              className={`grid gap-4 relative z-10 ${
+              className={`grid gap-3.5 relative z-10 ${
                 batchVM.items.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
               }`}
             >
@@ -585,12 +636,12 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
                 return (
                   <div
                     key={item.id}
-                    className="p-4 rounded-2xl border bg-white/80 backdrop-blur-xs flex flex-col items-center text-center shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden"
+                    className="p-4 rounded-2xl border-2 bg-white/90 backdrop-blur-xs flex flex-col items-center text-center shadow-xs hover:shadow-md transition-all duration-300 relative overflow-hidden"
                     style={{ borderColor: `${itemAccent}60` }}
                   >
                     {/* Top border accent line */}
                     <div
-                      className="absolute top-0 inset-x-0 h-1"
+                      className="absolute top-0 inset-x-0 h-1.5"
                       style={{ backgroundColor: itemAccent }}
                     />
 
@@ -614,13 +665,13 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
                       </div>
                     </div>
 
-                    <h3 className="font-extrabold text-sm text-slate-900 truncate max-w-full">
+                    <h3 className="font-black text-sm text-slate-900 truncate max-w-full">
                       {item.student.displayName}
                     </h3>
                     <p className="text-xs font-black mt-0.5" style={{ color: itemAccent }}>
                       {item.currentLevel.shortLabel} • {item.currentLevel.name}
                     </p>
-                    <span className="mt-1.5 px-2.5 py-0.5 rounded-lg bg-slate-100 border border-slate-200/70 text-[11px] font-bold text-slate-600">
+                    <span className="mt-1.5 px-2.5 py-0.5 rounded-lg bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-600">
                       {item.previousLevel.shortLabel} ➔ {item.currentLevel.shortLabel}
                     </span>
                   </div>
@@ -630,17 +681,17 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
 
             {/* OVERFLOW SUMMARY BADGE (>4 STUDENTS) */}
             {batchVM.overflowCount > 0 && (
-              <div className="mt-4 p-2.5 rounded-xl bg-slate-100/90 border border-slate-200/70 text-slate-700 text-xs font-bold relative z-10">
+              <div className="mt-4 p-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-slate-700 text-xs font-bold relative z-10">
                 +{batchVM.overflowCount} học sinh khác cũng đã được cập nhật cấp bậc thành công!
               </div>
             )}
 
             {!isPresentationMode && (
-              <div className="mt-6 flex justify-center relative z-10">
+              <div className="mt-5 flex justify-center relative z-10">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-8 py-2.5 rounded-2xl bg-slate-900 text-white font-black text-xs sm:text-sm shadow-lg hover:bg-slate-800 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 active:scale-95"
+                  className="px-8 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs sm:text-sm shadow-lg transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 active:scale-95"
                 >
                   Hoàn tất
                 </button>
@@ -652,3 +703,4 @@ export const LevelUpCelebrationModal: React.FC<LevelUpCelebrationModalProps> = (
     </div>
   );
 };
+

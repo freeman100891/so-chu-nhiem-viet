@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card } from '../../shared/components/Card';
 import { Button } from '../../shared/components/Button';
 import { Input } from '../../shared/components/Input';
 import { Badge } from '../../shared/components/Badge';
@@ -42,7 +41,6 @@ import type {
 } from '../../core/database/types';
 import type { GroupWithMembers } from '../../core/services/live-classroom';
 import { playPositiveChime, playStarChime } from '../../shared/utilities/sound';
-import { CuteCloudSVG } from '../../shared/components/CuteDecorations';
 import {
   Play,
   Pause,
@@ -70,6 +68,8 @@ import { FloatingClassroomToolbox } from './FloatingClassroomToolbox';
 import { useLevelChangeOverlay } from './hooks/useLevelChangeOverlay';
 import { LevelUpCelebrationModal } from './components/LevelUpCelebrationModal';
 import { LevelUpCelebrationSettingsModal } from './components/LevelUpCelebrationSettingsModal';
+import { ClassMascot, type MascotState } from './components/ClassMascot';
+import { JourneyProgressBar } from './components/JourneyProgressBar';
 import { levelUpCelebrationService } from '../../core/services/level-up-celebration/level-up-celebration.service';
 import {
   type LevelUpCelebrationSettings,
@@ -119,6 +119,21 @@ export const LiveClassroomActivePage: React.FC = () => {
     levelUpCelebrationService.getSettings().then(setLevelUpSettings);
   }, []);
 
+  // Active Journey Progress & Live Mascot State
+  const [currentJourneyStep, setCurrentJourneyStep] = useState<string>('challenge');
+  const [mascotReactionState, setMascotReactionState] = useState<MascotState>('learning');
+
+  // Helper for dynamic subject theme
+  const getSubjectTheme = (subject: string = '') => {
+    const s = subject.toLowerCase();
+    if (s.includes('toán')) return { icon: '📐', label: 'Toán Học', badgeBg: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border-emerald-300' };
+    if (s.includes('tiếng việt') || s.includes('văn') || s.includes('tập đọc')) return { icon: '📖', label: 'Tiếng Việt', badgeBg: 'bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-200 border-rose-300' };
+    if (s.includes('tự nhiên') || s.includes('xã hội') || s.includes('khoa học')) return { icon: '🔬', label: 'Tự Nhiên', badgeBg: 'bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-200 border-teal-300' };
+    if (s.includes('âm nhạc') || s.includes('hát')) return { icon: '🎵', label: 'Âm Nhạc', badgeBg: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' };
+    if (s.includes('mỹ thuật') || s.includes('vẽ')) return { icon: '🎨', label: 'Mỹ Thuật', badgeBg: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300' };
+    return { icon: '🌟', label: subject || 'Bài Học', badgeBg: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' };
+  };
+
   // Sync & Points Tracking State
   const [attendanceSynced, setAttendanceSynced] = useState(false);
   const [pointEntries, setPointEntries] = useState<PointEntry[]>([]);
@@ -131,6 +146,26 @@ export const LiveClassroomActivePage: React.FC = () => {
     togglePresentationMode,
     exitPresentationMode,
   } = useUiScale();
+
+  // Broadcast Listener for Live Tool & Mascot Synchronization
+  useEffect(() => {
+    const unsubscribe = liveBroadcastService.onMessage((msg) => {
+      if (msg.type === 'BREAK_SCREEN_STATE') {
+        if (msg.payload?.active) {
+          setMascotReactionState('break');
+        } else {
+          setMascotReactionState('learning');
+        }
+      } else if (msg.type === 'STUDENT_SELECTED') {
+        setMascotReactionState('random_call');
+        setTimeout(() => setMascotReactionState('learning'), 4000);
+      } else if (msg.type === 'POINT_AWARDED') {
+        setMascotReactionState('point_awarded');
+        setTimeout(() => setMascotReactionState('learning'), 3500);
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   // Keyboard Shortcuts Listener (F, R, T, G, Escape)
   useEffect(() => {
@@ -467,6 +502,8 @@ export const LiveClassroomActivePage: React.FC = () => {
       // Play star sound & trigger floating animation
       playStarChime(enableSound);
       triggerFloatingBadge(studentId, '+1 ⭐', 'star');
+      setMascotReactionState('point_awarded');
+      setTimeout(() => setMascotReactionState('learning'), 3500);
 
       // Update participants state locally
       setParticipants((prev) => prev.map((p) => (p.studentId === studentId ? updatedPart : p)));
@@ -530,6 +567,8 @@ export const LiveClassroomActivePage: React.FC = () => {
       if (points > 0) {
         playPositiveChime(enableSound);
         triggerFloatingBadge(studentId, `+${points}đ`, 'point');
+        setMascotReactionState('point_awarded');
+        setTimeout(() => setMascotReactionState('learning'), 3500);
 
         // Broadcast point award to presentation view
         if (st) {
@@ -834,53 +873,59 @@ export const LiveClassroomActivePage: React.FC = () => {
       : 'grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-[var(--space-2)]';
 
   return (
-    <div className="space-y-4 animate-fadeIn min-h-screen bg-live-bg p-[var(--space-2)] sm:p-[var(--space-3)] md:p-[var(--space-4)] pb-36 text-live-text rounded-3xl relative">
+    <div className="space-y-5 animate-fadeIn min-h-screen bg-gradient-to-br from-slate-100 via-sky-50/50 to-indigo-50/40 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/40 p-3 sm:p-5 pb-36 text-slate-900 dark:text-slate-100 rounded-3xl relative">
       {loading ? (
         <LoadingSkeleton type="card" count={3} />
       ) : !session ? (
-        <div>Phiên học không tồn tại</div>
+        <div className="p-8 text-center font-bold text-slate-600">Phiên học không tồn tại</div>
       ) : (
         <>
-          {/* TOPBAR HERO COMMAND CENTER HEADER */}
-          <div className="px-4 sm:px-6 py-4 rounded-3xl bg-white/95 dark:bg-slate-900/95 border-2 border-slate-200/90 dark:border-slate-800 shadow-md backdrop-blur-md flex flex-col xl:flex-row xl:items-center justify-between gap-4 sticky top-2 z-30 transition-all">
+          {/* TOPBAR DIGITAL CLASSROOM LIVE COMMAND CENTER */}
+          <header className="px-4 sm:px-6 py-3.5 sm:py-4 rounded-3xl bg-white/95 dark:bg-slate-900/95 border-2 border-sky-200/90 dark:border-slate-800 shadow-xl backdrop-blur-md flex flex-col xl:flex-row xl:items-center justify-between gap-4 sticky top-2 z-30 transition-all">
             {/* LEFT: SESSION IDENTITY & TELEMETRY */}
             <div className="flex items-center gap-3.5 min-w-0 flex-1">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 text-white flex items-center justify-center shadow-md shrink-0 ring-2 ring-white/60">
-                <CuteCloudSVG className="w-7 h-7 md:w-8 md:h-8" />
+              <div className="shrink-0 flex items-center justify-center">
+                <ClassMascot state={mascotReactionState} size="md" showSpeechBubble={false} />
               </div>
               <div className="min-w-0 flex-1 space-y-1">
-                <div className="flex items-center gap-2.5 flex-wrap min-w-0">
-                  <h1 className="font-black text-slate-900 dark:text-slate-100 text-base sm:text-xl tracking-tight truncate max-w-full sm:max-w-md" title={session.title}>
+                <div className="flex items-center gap-2 flex-wrap min-w-0">
+                  <h1 className="font-black text-slate-900 dark:text-slate-100 text-lg sm:text-2xl tracking-tight truncate max-w-full sm:max-w-md" title={session.title}>
                     {session.title}
                   </h1>
-                  <span className="shrink-0 inline-flex items-center px-3 py-0.5 rounded-full text-xs font-black bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 whitespace-nowrap shadow-2xs">
+                  <span className="shrink-0 inline-flex items-center px-3 py-0.5 rounded-full text-xs font-black bg-blue-100 dark:bg-blue-950 text-blue-900 dark:text-blue-200 border border-blue-300 dark:border-blue-700 whitespace-nowrap shadow-2xs">
                     Lớp {classRoom?.name}
                   </span>
+                  {/* Dynamic Subject Theme Badge */}
+                  {(() => {
+                    const st = getSubjectTheme(session.subject);
+                    return (
+                      <span className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-black border shadow-2xs ${st.badgeBg}`}>
+                        <span>{st.icon}</span>
+                        <span>{st.label}</span>
+                      </span>
+                    );
+                  })()}
                   <span
                     className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-black whitespace-nowrap shadow-2xs ${
                       session.status === 'active'
-                        ? 'bg-emerald-100/90 text-emerald-900 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
-                        : 'bg-amber-100/90 text-amber-900 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
+                        ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-400 dark:border-emerald-700'
+                        : 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 border border-amber-400 dark:border-amber-700'
                     }`}
                   >
                     <span
-                      className={`w-2.5 h-2.5 rounded-full ${
-                        session.status === 'active' ? 'bg-emerald-500 animate-ping' : 'bg-amber-500'
+                      className={`w-2 h-2 rounded-full ${
+                        session.status === 'active' ? 'bg-emerald-500 animate-live-dot' : 'bg-amber-500'
                       }`}
                     />
                     {session.status === 'active' ? 'Đang diễn ra' : 'Đã tạm dừng'}
                   </span>
                   {isPresentationMode && (
-                    <span className="shrink-0 inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-black bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-700 animate-pulse whitespace-nowrap shadow-2xs">
-                      📺 Fullscreen
+                    <span className="shrink-0 inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-black bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-xs animate-pulse whitespace-nowrap">
+                      📺 Trình Chiếu Đang Bật
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 truncate font-medium">
-                  <span>
-                    Môn: <strong className="text-slate-800 dark:text-slate-200 font-bold">{session.subject}</strong>
-                  </span>
-                  <span>•</span>
+                <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 truncate font-semibold">
                   <span>
                     Bắt đầu:{' '}
                     <strong className="text-slate-800 dark:text-slate-200 font-bold">
@@ -891,17 +936,17 @@ export const LiveClassroomActivePage: React.FC = () => {
                   </span>
                   <span>•</span>
                   <span>
-                    Sĩ số: <strong className="text-slate-800 dark:text-slate-200 font-bold">{participants.length} HS</strong>
+                    Sĩ số tham gia: <strong className="text-slate-800 dark:text-slate-200 font-black text-sm">{participants.length} học sinh</strong>
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* RIGHT: LIVE TIMER & ACTION CONTROLS */}
-            <div className="flex items-center gap-2.5 flex-wrap xl:flex-nowrap justify-start xl:justify-end shrink-0 w-full xl:w-auto pt-3 xl:pt-0 border-t xl:border-t-0 border-slate-100 dark:border-slate-800">
+            {/* RIGHT: LIVE TIMER & HIERARCHICAL ACTION CONTROLS */}
+            <div className="flex items-center gap-2 flex-wrap xl:flex-nowrap justify-start xl:justify-end shrink-0 w-full xl:w-auto pt-2.5 xl:pt-0 border-t xl:border-t-0 border-slate-100 dark:border-slate-800">
               {/* Glowing Live Digital Timer Pill */}
               <div
-                className="px-4 py-2 rounded-2xl bg-slate-950 text-emerald-400 font-mono font-black text-sm sm:text-base border border-emerald-500/30 ring-1 ring-emerald-500/20 shadow-inner flex items-center gap-2 shrink-0 select-none"
+                className="px-3.5 py-2 rounded-2xl bg-slate-950 text-emerald-400 font-mono font-black text-sm sm:text-base border border-emerald-500/30 ring-1 ring-emerald-500/20 shadow-inner flex items-center gap-2 shrink-0 select-none"
                 title="Thời gian diễn ra phiên học"
               >
                 <Clock className="w-4.5 h-4.5 text-emerald-400 animate-pulse shrink-0" />
@@ -914,7 +959,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                   href={session.meetingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white text-xs font-black inline-flex items-center gap-1.5 transition-all shadow-xs shrink-0 min-h-[40px] active:scale-95"
+                  className="px-3 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white text-xs font-bold inline-flex items-center gap-1.5 transition-all shadow-xs shrink-0 min-h-[38px] active:scale-95"
                   title="Mở liên kết phòng họp trực tuyến"
                 >
                   <Video className="w-4 h-4" />
@@ -928,7 +973,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="min-h-[40px] border-2 border-emerald-600/50 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 hover:text-white font-bold text-xs rounded-xl shadow-2xs transition-all active:scale-95"
+                  className="min-h-[38px] border border-emerald-600/40 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 hover:text-white font-bold text-xs rounded-xl shadow-2xs transition-all active:scale-95 cursor-pointer"
                   leftIcon={<RefreshCw className="w-4 h-4" />}
                   onClick={() => setAttendanceSyncModalOpen(true)}
                   title="Đồng bộ điểm danh vào sổ chính"
@@ -942,7 +987,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   variant="primary"
                   size="sm"
-                  className="min-h-[40px] bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-xs rounded-xl active:scale-95"
+                  className="min-h-[38px] bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-xs rounded-xl active:scale-95 cursor-pointer"
                   leftIcon={<Play className="w-4 h-4" />}
                   onClick={handleStartSession}
                 >
@@ -952,7 +997,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   variant="secondary"
                   size="sm"
-                  className="min-h-[40px] border-2 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-xs rounded-xl active:scale-95"
+                  className="min-h-[38px] border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-xs rounded-xl active:scale-95 cursor-pointer"
                   leftIcon={<Pause className="w-4 h-4" />}
                   onClick={handlePauseSession}
                 >
@@ -962,7 +1007,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   variant="primary"
                   size="sm"
-                  className="min-h-[40px] bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-xs rounded-xl active:scale-95"
+                  className="min-h-[38px] bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-xs rounded-xl active:scale-95 cursor-pointer"
                   leftIcon={<Play className="w-4 h-4" />}
                   onClick={handleResumeSession}
                 >
@@ -970,19 +1015,19 @@ export const LiveClassroomActivePage: React.FC = () => {
                 </Button>
               )}
 
-              {/* Primary Hero CTA: In-place Fullscreen Presentation Toggle */}
+              {/* PRIMARY HERO CTA: In-place Fullscreen Presentation Toggle */}
               <button
                 type="button"
                 onClick={togglePresentationMode}
-                className={`min-h-[40px] px-4 py-2 rounded-xl font-black text-xs transition-all flex items-center gap-2 shadow-md active:scale-95 ${
+                className={`min-h-[38px] px-4 py-2 rounded-xl font-black text-xs transition-all flex items-center gap-2 shadow-md active:scale-95 cursor-pointer ${
                   isPresentationMode
                     ? 'bg-amber-100 text-amber-950 border-2 border-amber-400 hover:bg-amber-200'
-                    : 'bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 hover:from-amber-600 hover:to-yellow-600 text-slate-950 hover:shadow-lg scale-[1.02]'
+                    : 'bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-500 hover:to-yellow-500 text-slate-950 hover:shadow-lg scale-[1.02] ring-2 ring-amber-300'
                 }`}
                 title={isPresentationMode ? 'Thu nhỏ về chế độ thường (Esc)' : 'Trình chiếu toàn màn hình (Phím F)'}
               >
                 {isPresentationMode ? <Minimize2 className="w-4 h-4" /> : <Tv className="w-4 h-4" />}
-                <span>{isPresentationMode ? 'Thoát Trình Chiếu' : 'Trình Chiếu (F)'}</span>
+                <span>{isPresentationMode ? 'Thoát Trình Chiếu' : '▶ TRÌNH CHIẾU (F)'}</span>
               </button>
 
               {/* Projector Tab */}
@@ -990,7 +1035,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="min-h-[40px] border-2 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-xs hidden md:inline-flex rounded-xl"
+                  className="min-h-[38px] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-xs hidden md:inline-flex rounded-xl cursor-pointer"
                   leftIcon={<Tv className="w-4 h-4" />}
                   onClick={() => navigate(`/live-classroom/${session.id}/present`)}
                   title="Mở tab trình chiếu máy chiếu phụ"
@@ -999,11 +1044,11 @@ export const LiveClassroomActivePage: React.FC = () => {
                 </Button>
               )}
 
-              {/* End Session */}
+              {/* End Session (Danger Action) */}
               <Button
                 variant="outline"
                 size="sm"
-                className="min-h-[40px] border-2 border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 hover:border-rose-300 font-bold text-xs rounded-xl active:scale-95"
+                className="min-h-[38px] border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 hover:border-rose-300 font-bold text-xs rounded-xl active:scale-95 cursor-pointer"
                 leftIcon={<CheckCircle className="w-4 h-4" />}
                 onClick={handleCompleteSession}
                 title="Kết thúc và hoàn thành phiên học"
@@ -1016,27 +1061,74 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSettingsModalOpen(true)}
-                  className="p-2.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 min-h-[40px] min-w-[40px] flex items-center justify-center transition-all shadow-2xs active:scale-95"
+                  className="p-2 rounded-2xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 min-h-[38px] min-w-[38px] flex items-center justify-center transition-all shadow-2xs active:scale-95 cursor-pointer"
                   title="Cấu hình phiên học"
                   aria-label="Cài đặt phiên học"
                 >
-                  <Settings className="w-4.5 h-4.5" />
+                  <Settings className="w-4 h-4" />
                 </button>
               )}
             </div>
+          </header>
+
+          {/* LIVE JOURNEY PROGRESS BAR & CURRENT ACTIVITY BANNER */}
+          <div className="px-1 animate-fadeIn space-y-2.5">
+            <JourneyProgressBar
+              currentStepId={currentJourneyStep}
+              onStepClick={(stepId) => {
+                setCurrentJourneyStep(stepId);
+                if (stepId === 'honor') {
+                  setMascotReactionState('honor');
+                } else if (stepId === 'attendance') {
+                  setMascotReactionState('attendance_complete');
+                } else if (stepId === 'interaction') {
+                  setMascotReactionState('random_call');
+                } else {
+                  setMascotReactionState('learning');
+                }
+              }}
+            />
+
+            {/* CURRENT ACTIVITY HERO BANNER */}
+            <div className="p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-sky-50 via-indigo-50/70 to-purple-50 dark:from-sky-950/40 dark:via-indigo-950/40 dark:to-purple-950/40 border border-sky-200 dark:border-sky-800 shadow-2xs flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center font-black text-base shadow-xs shrink-0">
+                  🎯
+                </div>
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-sky-700 dark:text-sky-300">
+                    Hoạt Động Hiện Tại
+                  </span>
+                  <h3 className="font-black text-xs sm:text-sm text-slate-900 dark:text-slate-100">
+                    {currentJourneyStep === 'start' && '🚪 Chào Mừng & Ổn Định Lớp Học'}
+                    {currentJourneyStep === 'attendance' && '✅ Kiểm Tra Sĩ Số & Điểm Danh 100%'}
+                    {currentJourneyStep === 'challenge' && `🎯 Thử Thách ${session.subject || 'Học Tập'}: Giải Quyết Bài Tập & Phát Biểu`}
+                    {currentJourneyStep === 'interaction' && '✨ Tương Tác: Gọi Tên Ngẫu Nhiên & Bình Chọn'}
+                    {currentJourneyStep === 'honor' && '🏆 Chuẩn Bị Vinh Danh & Tổng Kết Tiết Học'}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-300">
+                <span className="hidden md:inline text-xs">Có mặt:</span>
+                <span className="px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 font-mono font-black border border-emerald-400 dark:border-emerald-700 shadow-2xs">
+                  {participants.filter((p) => p.attendanceStatus === 'present' || p.attendanceStatus === 'late').length}/{participants.length} HS
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* MULTI-SELECT BATCH ACTION BAR (Shown when 1 or more students checked) */}
+          {/* MULTI-SELECT BATCH ACTION FLOATING BAR */}
           {selectedStudentIds.size > 0 && (
-            <Card className="p-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-3xl flex flex-wrap items-center justify-between gap-3 animate-fadeIn shadow-xl border-2 border-blue-400/40 backdrop-blur-md">
+            <div className="p-3 sm:p-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-3xl flex flex-wrap items-center justify-between gap-3 animate-fadeIn shadow-xl border-2 border-blue-400/40 backdrop-blur-md sticky top-24 z-20">
               <div className="flex items-center gap-3">
                 <Badge variant="primary" className="bg-white text-blue-900 font-black text-xs px-3 py-1 shadow-xs">
                   Đã chọn {selectedStudentIds.size} học sinh
                 </Badge>
-                <button onClick={handleSelectAllStudents} className="text-xs font-black underline hover:text-blue-100 transition-colors">
+                <button onClick={handleSelectAllStudents} className="text-xs font-black underline hover:text-blue-100 transition-colors cursor-pointer">
                   Chọn tất cả ({filteredParticipants.length})
                 </button>
-                <button onClick={handleDeselectAllStudents} className="text-xs font-black underline hover:text-blue-100 transition-colors">
+                <button onClick={handleDeselectAllStudents} className="text-xs font-black underline hover:text-blue-100 transition-colors cursor-pointer">
                   Bỏ chọn tất cả
                 </button>
               </div>
@@ -1045,7 +1137,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="bg-white text-blue-700 font-black hover:bg-blue-50 rounded-xl shadow-xs active:scale-95"
+                  className="bg-white text-blue-700 font-black hover:bg-blue-50 rounded-xl shadow-xs active:scale-95 cursor-pointer"
                   leftIcon={<Plus className="w-4 h-4" />}
                   onClick={() => handleBatchAwardPoints(1, 'Tích cực phát biểu cùng lúc')}
                 >
@@ -1054,7 +1146,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="bg-gradient-to-r from-amber-300 to-yellow-300 text-amber-950 font-black hover:from-amber-400 hover:to-yellow-400 rounded-xl shadow-xs active:scale-95"
+                  className="bg-gradient-to-r from-amber-300 to-yellow-300 text-amber-950 font-black hover:from-amber-400 hover:to-yellow-400 rounded-xl shadow-xs active:scale-95 cursor-pointer"
                   leftIcon={<Award className="w-4 h-4" />}
                   onClick={() => handleBatchAwardPoints(2, 'Cùng hoàn thành xuất sắc bài tập')}
                 >
@@ -1063,20 +1155,20 @@ export const LiveClassroomActivePage: React.FC = () => {
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="bg-gradient-to-r from-purple-300 to-fuchsia-300 text-purple-950 font-black hover:from-purple-400 hover:to-fuchsia-400 rounded-xl shadow-xs active:scale-95"
+                  className="bg-gradient-to-r from-purple-300 to-fuchsia-300 text-purple-950 font-black hover:from-purple-400 hover:to-fuchsia-400 rounded-xl shadow-xs active:scale-95 cursor-pointer"
                   leftIcon={<Sparkles className="w-4 h-4" />}
                   onClick={() => handleBatchAwardPoints(5, 'Cùng đạt thành tích xuất sắc')}
                 >
                   +5 Điểm tất cả
                 </Button>
               </div>
-            </Card>
+            </div>
           )}
 
-          {/* MAIN LAYOUT: FULL-WIDTH STUDENT GRID */}
+          {/* MAIN LAYOUT: FULL-WIDTH DIGITAL STUDENT CLASSROOM GRID */}
           <div className="w-full space-y-4">
             {/* DENSITY & SEARCH COMMAND BAR */}
-            <Card className="p-3.5 sm:p-4 rounded-3xl border-2 border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shadow-xs backdrop-blur-md">
+            <div className="p-3 sm:p-3.5 rounded-3xl border-2 border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shadow-xs backdrop-blur-md">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
                   <Input
@@ -1106,15 +1198,15 @@ export const LiveClassroomActivePage: React.FC = () => {
                   />
                 </div>
 
-                {/* DENSITY SWITCHER 4 MODES: Tự động | Lớn | Vừa | Gọn */}
+                {/* DENSITY SEGMENTED CONTROL: Tự động | Lớn | Vừa | Gọn */}
                 <div className="flex items-center gap-3 justify-between w-full sm:w-auto">
-                  <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl text-xs font-black shadow-inner border border-slate-200/80 dark:border-slate-700">
+                  <div className="segmented-control-track flex items-center gap-1">
                     <button
                       onClick={() => setCardDensity('auto')}
-                      className={`px-3 py-1.5 rounded-xl transition-all ${
+                      className={`px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                         cardDensity === 'auto'
-                          ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600 dark:text-blue-400 font-black'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                          ? 'bg-white dark:bg-slate-800 shadow-sm text-sky-600 dark:text-sky-400 font-black'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 font-bold'
                       }`}
                       title="Tự động co giãn theo kích thước màn hình"
                     >
@@ -1122,10 +1214,10 @@ export const LiveClassroomActivePage: React.FC = () => {
                     </button>
                     <button
                       onClick={() => setCardDensity('large')}
-                      className={`px-3 py-1.5 rounded-xl transition-all ${
+                      className={`px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                         cardDensity === 'large'
-                          ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600 dark:text-blue-400 font-black'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                          ? 'bg-white dark:bg-slate-800 shadow-sm text-sky-600 dark:text-sky-400 font-black'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 font-bold'
                       }`}
                       title="Hiển thị thẻ to, chữ to, avatar lớn"
                     >
@@ -1133,10 +1225,10 @@ export const LiveClassroomActivePage: React.FC = () => {
                     </button>
                     <button
                       onClick={() => setCardDensity('medium')}
-                      className={`px-3 py-1.5 rounded-xl transition-all ${
+                      className={`px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                         cardDensity === 'medium'
-                          ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600 dark:text-blue-400 font-black'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                          ? 'bg-white dark:bg-slate-800 shadow-sm text-sky-600 dark:text-sky-400 font-black'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 font-bold'
                       }`}
                       title="Cân bằng giữa kích thước và số lượng thẻ"
                     >
@@ -1144,10 +1236,10 @@ export const LiveClassroomActivePage: React.FC = () => {
                     </button>
                     <button
                       onClick={() => setCardDensity('compact')}
-                      className={`px-3 py-1.5 rounded-xl transition-all ${
+                      className={`px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                         cardDensity === 'compact'
-                          ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600 dark:text-blue-400 font-black'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                          ? 'bg-white dark:bg-slate-800 shadow-sm text-sky-600 dark:text-sky-400 font-black'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 font-bold'
                       }`}
                       title="Hiển thị nhiều thẻ học sinh hơn"
                     >
@@ -1160,7 +1252,7 @@ export const LiveClassroomActivePage: React.FC = () => {
                   </span>
                 </div>
               </div>
-            </Card>
+            </div>
 
             {/* EMPTY SEARCH STATE */}
             {filteredParticipants.length === 0 && (
